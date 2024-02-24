@@ -8,7 +8,7 @@ function App() {
 
   useEffect(() => {
     // fetch data from 5000 where app.py is
-    fetch("http://localhost:5000/members") // not sure how to avoid entering full URL using proxy
+    fetch("api/members")
       .then(res => {
         if (!res.ok) { // error handling
           throw new Error(`HTTP error! Status: ${res.status}`);
@@ -36,7 +36,7 @@ function App() {
     console.log(`pressed sub:\n${inputData}`);
 
     try {
-      const response = await fetch("http://localhost:5000/submit", {
+      const response = await fetch("api/submit", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
