@@ -58,34 +58,44 @@ function App() {
   };
   // === PROCESS TEXTAREA DATA ===
 
+
+  // input box 1
+
+  const inputBoxOne = () => {
+    return (
+      <>
+      <div>
+        {(typeof data.members === 'undefined') ? (
+          <p>Loading...</p> // if undefined
+        ) : (
+          data.members.map((member, i) => (
+            <p key={i}>{member}</p>
+          ))
+        )}
+      </div>
+  
+      <div>
+        <form onSubmit={handleSubmit}>
+          <textarea
+            name="input_data"
+            value={inputData}
+            onChange={(e) => setInputData(e.target.value)}
+            cols={30}
+            rows={10}
+          ></textarea>
+          <br />
+          <input type="submit" value="Submit" />
+        </form>
+  
+      </div>
+  
+      </>
+      );
+  }
+
+
   return (
-    <>
-    <div>
-      {(typeof data.members === 'undefined') ? (
-        <p>Loading...</p> // if undefined
-      ) : (
-        data.members.map((member, i) => (
-          <p key={i}>{member}</p>
-        ))
-      )}
-    </div>
-
-    <div>
-      <form onSubmit={handleSubmit}>
-        <textarea
-          name="input_data"
-          value={inputData}
-          onChange={(e) => setInputData(e.target.value)}
-          cols={30}
-          rows={10}
-        ></textarea>
-        <br />
-        <input type="submit" value="Submit" />
-      </form>
-
-    </div>
-
-    </>
+    inputBoxOne()
     );
 };
 
