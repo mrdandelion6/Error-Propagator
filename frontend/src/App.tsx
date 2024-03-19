@@ -14,14 +14,14 @@ function NominalValueBox({ data, handleSubmit }: NominalValueBoxProps) {
         {typeof data.members === 'undefined' ? (
           <p>Loading...</p>
         ) : (
-          data.members.map((member: any, i: any) => (
+          data.members.map((member: string, i: number) => ( // callback for map(): callback(currentVal, index, array)
             <p key={i}>{member}</p>
           ))
         )}
       </div>
 
       <div>
-        <form onSubmit={(e) => handleSubmit(e, inputData)}>
+        <form>
           <textarea
             name="input_data"
             value={inputData}
@@ -30,7 +30,6 @@ function NominalValueBox({ data, handleSubmit }: NominalValueBoxProps) {
             rows={10}
           ></textarea>
           <br />
-          <input type="submit" value="Submit" />
         </form>
       </div>
     </>
