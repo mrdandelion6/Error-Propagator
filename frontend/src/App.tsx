@@ -5,9 +5,26 @@ interface NominalValueBoxProps { // interfaces can be used as a nice packing for
   handleSubmit: (event: React.FormEvent<HTMLFormElement>, inputData: string) => void; 
 }
 
+function EquationBox() {
+  const [inputData, setInputData] = useState("");
+  return (
+    <div>
+    <form>
+      <textarea
+        name="input_data"
+        value={inputData}
+        onChange={(e) => setInputData(e.target.value)}
+        cols={30}
+        rows={10}
+      ></textarea>
+      <br />
+    </form>
+  </div>
+  );
+}
+
 function NominalValueBox({ data, handleSubmit }: NominalValueBoxProps) {
   const [inputData, setInputData] = useState("");
-
   return (
     <>
       <div>
