@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 
-interface NominalValueBoxProps {
-  data: { members: string[] }; // Type annotation for data object
-  handleSubmit: (event: React.FormEvent<HTMLFormElement>, inputData: string) => void; // Type annotation for handleSubmit function
+interface NominalValueBoxProps { // interfaces can be used as a nice packing for types
+  data: { members: string[] }; 
+  handleSubmit: (event: React.FormEvent<HTMLFormElement>, inputData: string) => void; 
 }
 
 function NominalValueBox({ data, handleSubmit }: NominalValueBoxProps) {
