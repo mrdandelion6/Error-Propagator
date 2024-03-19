@@ -1,3 +1,4 @@
 # dependencies
+.vscode
 frontend/node_modules
 backend/env
