@@ -1,19 +1,54 @@
-import { useEffect, useState } from "react"
+import React, { useEffect, useState } from "react";
+
+interface NominalValueBoxProps {
+  data: { members: string[] }; // Type annotation for data object
+  handleSubmit: (event: React.FormEvent<HTMLFormElement>, inputData: string) => void; // Type annotation for handleSubmit function
+}
+
+function NominalValueBox({ data, handleSubmit }: NominalValueBoxProps) {
+  const [inputData, setInputData] = useState("");
+
+  return (
+    <>
+      <div>
+        {typeof data.members === 'undefined' ? (
+          <p>Loading...</p>
+        ) : (
+          data.members.map((member: any, i: any) => (
+            <p key={i}>{member}</p>
+          ))
+        )}
+      </div>
+
+      <div>
+        <form onSubmit={(e) => handleSubmit(e, inputData)}>
+          <textarea
+            name="input_data"
+            value={inputData}
+            onChange={(e) => setInputData(e.target.value)}
+            cols={30}
+            rows={10}
+          ></textarea>
+          <br />
+          <input type="submit" value="Submit" />
+        </form>
+      </div>
+    </>
+  );
+}
 
 function App() {
-  
-  
-  // === SAMPLE ===
-  const [data, setData] = useState({ members: [] })
+  const [data, setData] = useState({ members: [] });
+  const [response, setResponse] = useState<number | null>(null);
 
   useEffect(() => {
-    // fetch data from 5000 where app.py is
+    // fetch data from API
     fetch("api/members")
       .then(res => {
-        if (!res.ok) { // error handling
+        if (!res.ok) {
           throw new Error(`HTTP error! Status: ${res.status}`);
         }
-        return res.json(); // return json result
+        return res.json();
       })
       .then(data => {
         setData(data);
@@ -23,15 +58,8 @@ function App() {
         console.error("Fetch error:", error);
       });
   }, []);
-   // add empty array at end of useEffect to ensure it only runs once
-  // === SAMPLE ===
 
-
-  // === PROCESS TEXTAREA DATA ===
-
-  const [inputData, setInputData] = useState("");
-  const [response, setResponse] = useState<number | null>(null);
-  const handleSubmit = async (event: React.FormEvent) => {
+  const handleSubmit = async (event: React.FormEvent, inputData: string) => {
     event.preventDefault();
     console.log(`pressed sub:\n${inputData}`);
 
@@ -48,7 +76,6 @@ function App() {
         const data: number = await response.json();
         setResponse(data);
         console.log(data);
-        
       } else {
         console.error("Server returned an error:", response.statusText);
       }
@@ -56,47 +83,19 @@ function App() {
       console.error(`Form error: ${error}`);
     }
   };
-  // === PROCESS TEXTAREA DATA ===
-
-
-  const nominalValueBox = () => {
-    return (
-      <>
-        <div>
-          {(typeof data.members === 'undefined') ? (
-            <p>Loading...</p> // if undefined
-          ) : (
-            data.members.map((member, i) => (
-              <p key={i}>{member}</p>
-            ))
-          )}
-        </div>
-    
-        <div>
-          <form onSubmit={handleSubmit}>
-            <textarea
-              name="input_data"
-              value={inputData}
-              onChange={(e) => setInputData(e.target.value)}
-              cols={30}
-              rows={10}
-            ></textarea>
-            <br />
-            <input type="submit" value="Submit" />
-          </form>
-    
-        </div>
-      </>
-      );
-  }
-
 
   return (
     <>
-      {nominalValueBox()},
-      {nominalValueBox()},
+      <NominalValueBox
+        data={data}
+        handleSubmit={handleSubmit}
+      />
+      <NominalValueBox
+        data={data}
+        handleSubmit={handleSubmit}
+      />
     </>
   );
-};
+}
 
-export default App
+export default App;
