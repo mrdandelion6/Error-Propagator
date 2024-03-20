@@ -1,0 +1,44 @@
+$box-color: rgb(206, 202, 202);
+$text-color: rgb(41, 40, 40);
+$box-border-color: rgb(128, 120, 120);
+
+textarea {
+  background-color: $box-color;
+  color: $text-color;
+  border-color: $box-border-color;
+  font-size: 17px;
+  font-family: inherit;
+  font-weight: 500;
+  resize: none;
+
+  &::-webkit-scrollbar {
+    width: 0.6em;
+    height: 0.6em;
+  }
+
+  &::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(255, 255, 255, 0);
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: rgb(53, 51, 51);
+    outline: 1px solid rgba(255, 255, 255, 0);
+  }
+}
+
+textarea:hover::-webkit-scrollbar-thumb {
+  cursor: pointer; // Change cursor to pointer when hovering over the scrollbar thumb
+}
+
+
+.valueBox {
+    width: 6vw;
+    height: 500px;
+    border-radius: 5px;
+    white-space: nowrap;
+    overflow-x: auto;
+  }
+  
+  .equationBox {
+
+  }

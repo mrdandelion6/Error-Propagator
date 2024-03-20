@@ -53,11 +53,9 @@ function App() {
     <>
       <EquationBox />
       <ValueBox
-        data={data}
         handleSubmit={handleSubmit}
       />
       <ValueBox
-        data={data}
         handleSubmit={handleSubmit}
       />
     </>

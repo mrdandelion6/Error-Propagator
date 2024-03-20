@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import './EquationBox.scss';
+import './InputBoxes.scss';
 import { Parser } from "expr-eval";
 
-function validateEquation(eqn, eqnVars) {
+function validateEquation(eqn: string, eqnVars: {properties: string}) {
   const p = new Parser();
   try {
     p.evaluate(eqn, eqnVars);
@@ -18,11 +18,13 @@ function EquationBox() {
     <div>
     <form>
       <textarea
+        className="equationBox"
         name="equation"
         value={inputData}
         onChange={(e) => setInputData(e.target.value)}
         cols={30}
         rows={10}
+        onBlur={() => console.log("ya")}
       ></textarea>
       <br />
     </form>
