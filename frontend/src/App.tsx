@@ -52,12 +52,14 @@ function App() {
   return (
     <>
       <EquationBox />
-      <ValueBox
-        handleSubmit={handleSubmit}
-      />
-      <ValueBox
-        handleSubmit={handleSubmit}
-      />
+      <div className="valueBoxes">
+        <ValueBox
+          handleSubmit={handleSubmit}
+        />
+        <ValueBox
+          handleSubmit={handleSubmit}
+        />
+      </div>
     </>
   );
 }

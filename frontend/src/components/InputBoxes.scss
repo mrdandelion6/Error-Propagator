@@ -1,6 +1,7 @@
 $box-color: rgb(206, 202, 202);
 $text-color: rgb(41, 40, 40);
 $box-border-color: rgb(128, 120, 120);
+$box-spacing: 2vw;
 
 textarea {
   background-color: $box-color;
@@ -49,6 +50,7 @@ textarea {
   width: calc(6vw + 43px);
   background-color: rgba(0, 195, 255, 0.315);
   border-radius: 10px;
+  margin-right: $box-spacing;
 }
 
 .inputBox{
@@ -56,6 +58,7 @@ textarea {
   background-color: $box-color;
   border: 1px solid $box-border-color;
   border-radius: 8px;
+  margin-right: $box-spacing;
 
   .valueBox {
     width: 6vw;
@@ -67,6 +70,10 @@ textarea {
   
   .equationBox {
 
+  }
+
+  &:focus {
+    outline: 5px solid blue;
   }
 }
 
