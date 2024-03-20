@@ -25,6 +25,7 @@ function EquationBox() {
         cols={30}
         rows={10}
         onBlur={() => console.log("ya")}
+        spellCheck="false"
       ></textarea>
       <br />
     </form>

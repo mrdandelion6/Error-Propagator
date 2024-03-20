@@ -5,15 +5,18 @@ $box-border-color: rgb(128, 120, 120);
 textarea {
   background-color: $box-color;
   color: $text-color;
-  border-color: $box-border-color;
+  border: none;
   font-size: 17px;
   font-family: inherit;
   font-weight: 500;
   resize: none;
+  padding-right: calc(6vw);
+  padding-left: 10px;
+  margin-top: 8px;
 
   &::-webkit-scrollbar {
-    width: 0.6em;
-    height: 0.6em;
+    width: 0.5em;
+    height: 0.5em;
   }
 
   &::-webkit-scrollbar-track {
@@ -23,15 +26,38 @@ textarea {
   &::-webkit-scrollbar-thumb {
     background-color: rgb(53, 51, 51);
     outline: 1px solid rgba(255, 255, 255, 0);
+    border-radius: 10px;
+    position: absolute;
+    left: 11px;
   }
+
+  &:focus {
+    outline: none;
+  }
+
+  &::-webkit-scrollbar-corner {
+    display: none;
+  }
+
+  &.hoveringScrollbar {
+    cursor: pointer;
+  }
+
 }
 
-textarea:hover::-webkit-scrollbar-thumb {
-  cursor: pointer; // Change cursor to pointer when hovering over the scrollbar thumb
+.focusedBox{
+  width: calc(6vw + 43px);
+  background-color: rgba(0, 195, 255, 0.315);
+  border-radius: 10px;
 }
 
+.inputBox{
+  width: calc(6vw + 34px);
+  background-color: $box-color;
+  border: 1px solid $box-border-color;
+  border-radius: 8px;
 
-.valueBox {
+  .valueBox {
     width: 6vw;
     height: 500px;
     border-radius: 5px;
@@ -42,3 +68,5 @@ textarea:hover::-webkit-scrollbar-thumb {
   .equationBox {
 
   }
+}
+
