@@ -31,3 +31,5 @@ def process_data():
 if __name__ == "__main__":
     app.run(debug=True)
 
+# TODO: 
+    # implement custom functions for ceil(x), floor(x), round(x), trunc(x)
