@@ -22,8 +22,8 @@ function EquationBox() {
         name="equation"
         value={inputData}
         onChange={(e) => setInputData(e.target.value)}
-        cols={30}
-        rows={10}
+        cols={1}
+        rows={1}
         onBlur={() => console.log("ya")}
         spellCheck="false"
       ></textarea>

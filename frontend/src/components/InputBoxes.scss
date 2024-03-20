@@ -69,11 +69,11 @@ textarea {
   }
   
   .equationBox {
-
+    width: 10vw;
+    white-space: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
   }
 
-  &:focus {
-    outline: 5px solid blue;
-  }
 }
 
