@@ -1,4 +1,5 @@
 $button-color: rgb(58, 138, 236);
+$page-margins: 20vw;
 
 * {
   margin: 0;
@@ -36,13 +37,14 @@ body {
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
-  margin-left: 25vw;
-  margin-right: 25vw;
+  margin-left: $page-margins;
+  margin-right: $page-margins;
 }
 
 h1 {
-  font-size: 3.2em;
+  font-size: 3.0em;
   line-height: 1.1;
+  margin-bottom: 30px;
 }
 
 input {
@@ -63,7 +65,7 @@ button {
   margin-bottom: 100px;
 
   &:hover {
-    border-color: #646cff;
+    background-color: #646cff;
   }
 
 }

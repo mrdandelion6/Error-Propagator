@@ -3,7 +3,7 @@ $text-color: rgb(41, 40, 40);
 $box-border-color: rgb(128, 120, 120);
 $box-spacing: 2vw;
 $box-width: 7vw;
-$secondary-color: rgb(85, 81, 81);
+$secondary-color: rgb(168, 168, 168);
 
 textarea {
   background-color: $box-color;
@@ -97,5 +97,6 @@ textarea {
   margin-left: 4px;
   position: absolute;
   top: -38px;
+  border: 1px solid rgb(131, 127, 127);
 }
 

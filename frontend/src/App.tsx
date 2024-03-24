@@ -72,6 +72,7 @@ function App() {
 
   return (
     <>
+    <h1>Error Propagator</h1>
     <p>Currently in development :)</p>
       <EquationBox />
       <button onClick={addNewTextArea}>Add Variable</button>
