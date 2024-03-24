@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
 import './InputBoxes.scss';
 import { Parser } from "expr-eval";
+import React, { useState } from "react";
 
 function validateEquation(eqn: string, eqnVars: {properties: string}) {
   const p = new Parser();
@@ -13,27 +13,30 @@ function validateEquation(eqn: string, eqnVars: {properties: string}) {
 }
 
 interface EquationBoxProps { // interfaces can be used as a nice packing for types 
-  handleSubmit: (event: React.FormEvent<HTMLFormElement>, inputData: string) => void; 
+  value: string;
+  onChange: (value: string) => void;
 }
 
-function EquationBox() {
-  const [inputData, setInputData] = useState("");
+function EquationBox({ value, onChange }: EquationBoxProps) {
+  const [isFocused, setIsFocused] = useState(false);
+
   return (
     <div>
-    <form>
-      <textarea
-        className="equationBox"
-        name="equation"
-        value={inputData}
-        onChange={(e) => setInputData(e.target.value)}
-        cols={1}
-        rows={1}
-        onBlur={() => console.log("ya")}
-        spellCheck="false"
-        placeholder="Enter Equation"
-      ></textarea>
-      <br />
-    </form>
+      <div className={ isFocused ? "equationCase focusedElement" : "equationCase"}>
+        <textarea
+          className="equationBox"
+          name="equation"
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          cols={1}
+          rows={1}
+          onBlur={() => setIsFocused(false)}
+          onFocus={() => setIsFocused(true)}
+          spellCheck="false"
+          placeholder="Enter Equation"
+        ></textarea>
+        <br />
+      </div>
   </div>
   );
 }

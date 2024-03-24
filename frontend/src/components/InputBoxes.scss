@@ -1,9 +1,9 @@
-$box-color: rgb(206, 202, 202);
+$box-color: rgb(231, 230, 230);
 $text-color: rgb(41, 40, 40);
 $box-border-color: rgb(128, 120, 120);
 $box-spacing: 2vw;
 $box-width: 7vw;
-$secondary-color: rgb(168, 168, 168);
+$secondary-color: rgb(255, 255, 255);
 
 textarea {
   background-color: $box-color;
@@ -46,17 +46,6 @@ textarea {
     cursor: pointer;
   }
 
-  &.equationBox {
-    width: 40vw;
-    white-space: nowrap;
-    overflow-x: auto;
-    overflow-y: hidden;
-    border: 1px solid $box-border-color;
-    border-radius: 8px;
-    margin: 0;
-    margin-bottom: 20px;
-  }
-
 }
 
 .focusedBox{
@@ -68,7 +57,32 @@ textarea {
   margin-right: $box-spacing;
 }
 
-.inputBox{
+.equationCase {
+  background-color: $box-color;
+  border: 1px solid $box-border-color;
+  border-radius: 8px;
+  width: 58vw;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+
+  .equationBox {
+    width: 40vw;
+    white-space: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+    border-radius: 8px;
+    margin: 0;
+  }
+
+  &.focusedElement {
+    outline: 2px solid rgba(71, 208, 250, 0.473);
+  }
+
+}
+
+.valueCase{
   width: calc($box-width + 34px);
   background-color: $box-color;
   border: 1px solid $box-border-color;
@@ -91,7 +105,7 @@ textarea {
 
 .valBoxHeader {
   width: calc($box-width + 34px);
-  height: 50px;
+  height: 40px;
   background-color: $secondary-color;
   border-top-left-radius: 10px; 
   border-top-right-radius: 10px;
@@ -102,12 +116,12 @@ textarea {
 
   .deleteButton {
     background-color: rgb(255, 49, 83);
-    width: 50px;
-    height: 48px;
+    width: 40px;
+    height: 38px;
     position: absolute;
     top: 0px;
     right: 0%;
-    border-top-right-radius: 10px;
+    border-top-right-radius: 8px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -118,7 +132,7 @@ textarea {
     }
 
     img {
-      width: 70%;
+      width: 80%;
     }
   }
 

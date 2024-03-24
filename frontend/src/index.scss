@@ -1,5 +1,5 @@
 $button-color: rgb(58, 138, 236);
-$page-margins: 20vw;
+$page-margins: 18vw;
 
 * {
   margin: 0;
@@ -14,7 +14,7 @@ $page-margins: 20vw;
 
   color-scheme: light dark;
   color: rgba(10, 10, 10, 0.87);
-  background-color: #dadada;
+  background-color: #ffffff;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -62,7 +62,7 @@ button {
   cursor: pointer;
   transition: border-color 0.25s;
   margin-left: 8px;
-  margin-bottom: 100px;
+  margin-bottom: 60px;
 
   &:hover {
     background-color: #646cff;
@@ -84,4 +84,5 @@ button {
 
 .valueBoxes{
   display: flex;
+  flex-wrap: wrap
 }

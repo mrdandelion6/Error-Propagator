@@ -6,8 +6,9 @@ function App() {
   const [data, setData] = useState({ members: [] });
   const [response, setResponse] = useState<number | null>(null);
 
-  // trying some new stuff:
+  // box component states:
   const [textAreas, setTextAreas] = useState<string[]>(['']);
+  const [equation, setEquation] = useState<string>('');
 
   const addNewTextArea = () => {
     setTextAreas([...textAreas, '']);
@@ -76,7 +77,10 @@ function App() {
     <>
     <h1>Error Propagator</h1>
     <p>Currently in development :)</p>
-      <EquationBox />
+      <EquationBox 
+        value={equation}
+        onChange={(value: string) => setEquation(value)}
+      />
       <button onClick={addNewTextArea}>Add Variable</button>
 
       <div className="valueBoxes">

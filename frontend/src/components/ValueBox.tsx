@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import './InputBoxes.scss';
 import deleteImage from '../assets/delete.png';
 
@@ -31,7 +31,7 @@ function ValueBox({ value, onChange, del }: ValueBoxProps) {
         </div>
       </div>
       <div className={isFocused ? "focusedBox" : ""}>
-        <div className="inputBox">
+        <div className="valueCase">
           <textarea
             className={isHoveringOverScrollbar ? "valueBox hoveringScrollbar" : "valueBox"}
             name="input_data"
