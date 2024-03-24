@@ -22,7 +22,7 @@ function EquationBox({ value, onChange }: EquationBoxProps) {
   const [isHoveringBar, setIsHoveringBar] = useState(false);
 
   const scrollBarHoverCheck = (event: React.MouseEvent<HTMLTextAreaElement, MouseEvent>) => {
-    const { clientX, clientY } = event;
+    const { clientY } = event;
     const rect = (event.target as HTMLDivElement).getBoundingClientRect();
     
     const isInsideElement = (rect.bottom - 7 <= clientY && clientY <= rect.bottom);
