@@ -2,12 +2,13 @@ import React, { useEffect, useState } from "react";
 import './InputBoxes.scss';
 
 interface ValueBoxProps { // interfaces can be used as a nice packing for types 
-    handleSubmit: (event: React.FormEvent<HTMLFormElement>, inputData: string) => void; 
+  value: string;
+  onChange: (value: string) => void;
+  del: () => void; // delete function
 }
 
   
-function ValueBox({ handleSubmit }: ValueBoxProps) {
-  const [inputData, setInputData] = useState("");
+function ValueBox({ value, onChange, del }: ValueBoxProps) {
   const[isHoveringOverScrollbar, setIsHoveringOverScrollbar] = useState(false);
   const[isFocused, setIsFocused] = useState(false);
 
@@ -24,15 +25,17 @@ function ValueBox({ handleSubmit }: ValueBoxProps) {
   return (
     <div className="valueBoxPackage">
       <div className="valBoxHeader">
-
+        <div className="deleteButton"
+        onClick={() => del()}>
+        </div>
       </div>
       <div className={isFocused ? "focusedBox" : ""}>
         <div className="inputBox">
           <textarea
             className={isHoveringOverScrollbar ? "valueBox hoveringScrollbar" : "valueBox"}
             name="input_data"
-            value={inputData}
-            onChange={(e) => setInputData(e.target.value)}
+            value={value}
+            onChange={(e) => onChange(e.target.value)}
             cols={30}
             rows={10}
             spellCheck="false"

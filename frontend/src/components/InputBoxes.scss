@@ -65,6 +65,7 @@ textarea {
   border-bottom-left-radius: 10px;
   border-bottom-right-radius: 10px;
   border-radius: 10px;
+  margin-right: $box-spacing;
 }
 
 .inputBox{
@@ -95,8 +96,25 @@ textarea {
   border-top-left-radius: 10px; 
   border-top-right-radius: 10px;
   margin-left: 4px;
-  position: absolute;
-  top: -38px;
+  position: relative;
+  top: 10px;
   border: 1px solid rgb(131, 127, 127);
+
+  .deleteButton {
+    background-color: rgb(255, 49, 83);
+    width: 50px;
+    height: 48px;
+    position: absolute;
+    top: 0px;
+    right: 0%;
+    border-top-right-radius: 10px;
+    // border-radius: 10px;
+
+    &:hover {
+      cursor: pointer;
+      background-color: rgb(255, 78, 107);
+    }
+  }
+
 }
 

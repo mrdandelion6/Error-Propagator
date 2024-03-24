@@ -11,6 +11,8 @@ function App() {
 
   const addNewTextArea = () => {
     setTextAreas([...textAreas, '']);
+    console.log(textAreas);
+    
   };
 
   const handleTextChange = (index: number, value: string) => {
@@ -76,11 +78,21 @@ function App() {
     <p>Currently in development :)</p>
       <EquationBox />
       <button onClick={addNewTextArea}>Add Variable</button>
+
       <div className="valueBoxes">
-        <ValueBox
-          handleSubmit={handleSubmit}
-        />
+
+      {textAreas.map((text, index) => (
+        <div key={index}>
+          <ValueBox
+            value={text}
+            onChange={(value: string) => handleTextChange(index, value)}
+            del={() => removeTextArea(index)}
+          />
+        </div>
+      ))}
+
       </div>
+
     </>
   );
 }
