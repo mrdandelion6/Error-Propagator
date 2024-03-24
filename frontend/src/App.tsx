@@ -9,6 +9,7 @@ function App() {
   // box component states:
   const [textAreas, setTextAreas] = useState<string[]>(['']);
   const [equation, setEquation] = useState<string>('');
+  // TODO: figure out variable names and error boxes
 
   const addNewTextArea = () => {
     setTextAreas([...textAreas, '']);
