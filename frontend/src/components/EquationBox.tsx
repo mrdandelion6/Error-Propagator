@@ -12,6 +12,10 @@ function validateEquation(eqn: string, eqnVars: {properties: string}) {
   }
 }
 
+interface EquationBoxProps { // interfaces can be used as a nice packing for types 
+  handleSubmit: (event: React.FormEvent<HTMLFormElement>, inputData: string) => void; 
+}
+
 function EquationBox() {
   const [inputData, setInputData] = useState("");
   return (
@@ -26,6 +30,7 @@ function EquationBox() {
         rows={1}
         onBlur={() => console.log("ya")}
         spellCheck="false"
+        placeholder="Enter Equation"
       ></textarea>
       <br />
     </form>

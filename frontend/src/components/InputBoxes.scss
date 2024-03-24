@@ -2,6 +2,7 @@ $box-color: rgb(206, 202, 202);
 $text-color: rgb(41, 40, 40);
 $box-border-color: rgb(128, 120, 120);
 $box-spacing: 2vw;
+$secondary-color: rgb(85, 81, 81);
 
 textarea {
   background-color: $box-color;
@@ -9,7 +10,7 @@ textarea {
   border: none;
   font-size: 17px;
   font-family: inherit;
-  font-weight: 500;
+  font-weight: 400;
   resize: none;
   padding-right: calc(6vw);
   padding-left: 10px;
@@ -44,6 +45,17 @@ textarea {
     cursor: pointer;
   }
 
+  &.equationBox {
+    width: 40vw;
+    white-space: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+    border: 1px solid $box-border-color;
+    border-radius: 8px;
+    margin: 0;
+    margin-bottom: 20px;
+  }
+
 }
 
 .focusedBox{
@@ -67,13 +79,7 @@ textarea {
     white-space: nowrap;
     overflow-x: auto;
   }
-  
-  .equationBox {
-    width: 10vw;
-    white-space: nowrap;
-    overflow-x: auto;
-    overflow-y: hidden;
-  }
 
 }
+
 

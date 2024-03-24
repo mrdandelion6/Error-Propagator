@@ -25,7 +25,6 @@ function ValueBox({ handleSubmit }: ValueBoxProps) {
     <>
     <div className={isFocused ? "focusedBox" : ""}>
         <div className="inputBox">
-          <form>
             <textarea
               className={isHoveringOverScrollbar ? "valueBox hoveringScrollbar" : "valueBox"}
               name="input_data"
@@ -38,8 +37,6 @@ function ValueBox({ handleSubmit }: ValueBoxProps) {
               onFocus={() => {setIsFocused(true)}}
               onBlur={() => {setIsFocused(false)}}
             ></textarea>
-            <br />
-          </form>
         </div>
       </div>
     </>

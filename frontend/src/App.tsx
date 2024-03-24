@@ -6,6 +6,26 @@ function App() {
   const [data, setData] = useState({ members: [] });
   const [response, setResponse] = useState<number | null>(null);
 
+  // trying some new stuff:
+  const [textAreas, setTextAreas] = useState<string[]>(['']);
+
+  const addNewTextArea = () => {
+    setTextAreas([...textAreas, '']);
+  };
+
+  const handleTextChange = (index: number, value: string) => {
+    const newTextAreaState = [...textAreas];
+    newTextAreaState[index] = value; // update the state of the specific box
+    setTextAreas(newTextAreaState);
+  };
+
+  const removeTextArea = (index: number) => {
+    const newTextAreaState = [...textAreas];
+    newTextAreaState.splice(index, 1); // splice removes 1 element starting at index (so basically same as .remove(index))
+    setTextAreas(newTextAreaState);
+  };
+
+  // this is for testing and can be deleted later
   useEffect(() => {
     // fetch data from API
     fetch("api/members")
@@ -24,6 +44,7 @@ function App() {
       });
   }, []);
 
+  // alter this to actually deal with data from several things
   const handleSubmit = async (event: React.FormEvent, inputData: string) => {
     event.preventDefault();
     console.log(`pressed sub:\n${inputData}`);
@@ -51,11 +72,10 @@ function App() {
 
   return (
     <>
+    <p>Currently in development :)</p>
       <EquationBox />
+      <button onClick={addNewTextArea}>Add Variable</button>
       <div className="valueBoxes">
-        <ValueBox
-          handleSubmit={handleSubmit}
-        />
         <ValueBox
           handleSubmit={handleSubmit}
         />
