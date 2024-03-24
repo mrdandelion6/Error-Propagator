@@ -108,11 +108,17 @@ textarea {
     top: 0px;
     right: 0%;
     border-top-right-radius: 10px;
-    // border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 
     &:hover {
       cursor: pointer;
-      background-color: rgb(255, 78, 107);
+      background-color: rgb(255, 25, 63);
+    }
+
+    img {
+      width: 70%;
     }
   }
 

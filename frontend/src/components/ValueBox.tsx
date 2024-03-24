@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import './InputBoxes.scss';
+import deleteImage from '../assets/delete.png';
 
 interface ValueBoxProps { // interfaces can be used as a nice packing for types 
   value: string;
@@ -25,8 +26,8 @@ function ValueBox({ value, onChange, del }: ValueBoxProps) {
   return (
     <div className="valueBoxPackage">
       <div className="valBoxHeader">
-        <div className="deleteButton"
-        onClick={() => del()}>
+        <div className="deleteButton" onClick={() => del()}>
+          <img src={deleteImage} alt="delete button" />
         </div>
       </div>
       <div className={isFocused ? "focusedBox" : ""}>
