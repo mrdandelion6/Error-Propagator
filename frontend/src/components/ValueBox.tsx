@@ -22,24 +22,27 @@ function ValueBox({ handleSubmit }: ValueBoxProps) {
   }
 
   return (
-    <>
-    <div className={isFocused ? "focusedBox" : ""}>
+    <div className="valueBoxPackage">
+      <div className="valBoxHeader">
+
+      </div>
+      <div className={isFocused ? "focusedBox" : ""}>
         <div className="inputBox">
-            <textarea
-              className={isHoveringOverScrollbar ? "valueBox hoveringScrollbar" : "valueBox"}
-              name="input_data"
-              value={inputData}
-              onChange={(e) => setInputData(e.target.value)}
-              cols={30}
-              rows={10}
-              spellCheck="false"
-              onMouseMove={(e) => scrollBarHoverCheck(e)}
-              onFocus={() => {setIsFocused(true)}}
-              onBlur={() => {setIsFocused(false)}}
-            ></textarea>
+          <textarea
+            className={isHoveringOverScrollbar ? "valueBox hoveringScrollbar" : "valueBox"}
+            name="input_data"
+            value={inputData}
+            onChange={(e) => setInputData(e.target.value)}
+            cols={30}
+            rows={10}
+            spellCheck="false"
+            onMouseMove={(e) => scrollBarHoverCheck(e)}
+            onFocus={() => {setIsFocused(true)}}
+            onBlur={() => {setIsFocused(false)}}
+          ></textarea>
         </div>
       </div>
-    </>
+    </div>
   );
 }
 

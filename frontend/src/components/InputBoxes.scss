@@ -2,6 +2,7 @@ $box-color: rgb(206, 202, 202);
 $text-color: rgb(41, 40, 40);
 $box-border-color: rgb(128, 120, 120);
 $box-spacing: 2vw;
+$box-width: 7vw;
 $secondary-color: rgb(85, 81, 81);
 
 textarea {
@@ -59,14 +60,15 @@ textarea {
 }
 
 .focusedBox{
-  width: calc(6vw + 43px);
+  width: calc($box-width + 42px);
   background-color: rgba(0, 195, 255, 0.315);
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
   border-radius: 10px;
-  margin-right: $box-spacing;
 }
 
 .inputBox{
-  width: calc(6vw + 34px);
+  width: calc($box-width + 34px);
   background-color: $box-color;
   border: 1px solid $box-border-color;
   border-radius: 8px;
@@ -82,4 +84,18 @@ textarea {
 
 }
 
+.valueBoxPackage {
+  position: relative;  
+}
+
+.valBoxHeader {
+  width: calc($box-width + 34px);
+  height: 50px;
+  background-color: $secondary-color;
+  border-top-left-radius: 10px; 
+  border-top-right-radius: 10px;
+  margin-left: 4px;
+  position: absolute;
+  top: -38px;
+}
 

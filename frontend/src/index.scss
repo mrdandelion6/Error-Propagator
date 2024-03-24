@@ -1,4 +1,4 @@
-$secondary-color: rgb(58, 138, 236);
+$button-color: rgb(58, 138, 236);
 
 * {
   margin: 0;
@@ -56,7 +56,7 @@ button {
   font-size: 1em;
   font-weight: 400;
   font-family: inherit;
-  background-color: $secondary-color;
+  background-color: $button-color;
   cursor: pointer;
   transition: border-color 0.25s;
   margin-left: 8px;
