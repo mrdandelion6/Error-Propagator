@@ -4,6 +4,7 @@ $box-border-color: rgb(128, 120, 120);
 $box-spacing: 2vw;
 $box-width: 7vw;
 $secondary-color: rgb(255, 255, 255);
+$equation-width: 58vw;
 
 textarea {
   background-color: $box-color;
@@ -18,8 +19,8 @@ textarea {
   margin-top: 8px;
 
   &::-webkit-scrollbar {
-    width: 0.5em;
-    height: 0.5em;
+    width: 0.4em;
+    height: 0.4em;
   }
 
   &::-webkit-scrollbar-track {
@@ -27,7 +28,7 @@ textarea {
   }
 
   &::-webkit-scrollbar-thumb {
-    background-color: rgb(53, 51, 51);
+    background-color: rgb(94, 92, 92);
     outline: 1px solid rgba(255, 255, 255, 0);
     border-radius: 10px;
     position: absolute;
@@ -61,19 +62,26 @@ textarea {
   background-color: $box-color;
   border: 1px solid $box-border-color;
   border-radius: 8px;
-  width: 58vw;
+  width: $equation-width;
   height: 50px;
   display: flex;
   align-items: center;
   margin-bottom: 20px;
 
   .equationBox {
-    width: 40vw;
+    width: calc($equation-width - 5px);
     white-space: nowrap;
     overflow-x: auto;
     overflow-y: hidden;
     border-radius: 8px;
     margin: 0;
+    position: relative;
+    line-height: 2;
+
+    &.hoveringScrollbar {
+      cursor: pointer;
+    }
+
   }
 
   &.focusedElement {
@@ -88,13 +96,17 @@ textarea {
   border: 1px solid $box-border-color;
   border-radius: 8px;
   margin-right: $box-spacing;
+  padding-bottom: 0px;
+  margin-bottom: 0px;
+  display: flex;
 
   .valueBox {
-    width: 6vw;
+    width: calc($box-width + 24px);
     height: 500px;
     border-radius: 5px;
     white-space: nowrap;
     overflow-x: auto;
+    margin-bottom: 5px;
   }
 
 }

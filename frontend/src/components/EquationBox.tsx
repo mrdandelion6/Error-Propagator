@@ -19,12 +19,22 @@ interface EquationBoxProps { // interfaces can be used as a nice packing for typ
 
 function EquationBox({ value, onChange }: EquationBoxProps) {
   const [isFocused, setIsFocused] = useState(false);
+  const [isHoveringBar, setIsHoveringBar] = useState(false);
+
+  const scrollBarHoverCheck = (event: React.MouseEvent<HTMLTextAreaElement, MouseEvent>) => {
+    const { clientX, clientY } = event;
+    const rect = (event.target as HTMLDivElement).getBoundingClientRect();
+    
+    const isInsideElement = (rect.bottom - 7 <= clientY && clientY <= rect.bottom);
+
+    setIsHoveringBar(isInsideElement);
+  }
 
   return (
     <div>
       <div className={ isFocused ? "equationCase focusedElement" : "equationCase"}>
         <textarea
-          className="equationBox"
+          className={ isHoveringBar ? "equationBox hoveringScrollbar" : "equationBox"}
           name="equation"
           value={value}
           onChange={(e) => onChange(e.target.value)}
@@ -34,6 +44,7 @@ function EquationBox({ value, onChange }: EquationBoxProps) {
           onFocus={() => setIsFocused(true)}
           spellCheck="false"
           placeholder="Enter Equation"
+          onMouseMove={(e) => scrollBarHoverCheck(e)}
         ></textarea>
         <br />
       </div>

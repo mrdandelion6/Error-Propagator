@@ -17,8 +17,8 @@ function ValueBox({ value, onChange, del }: ValueBoxProps) {
     const { clientX, clientY } = event;
     const rect = (event.target as HTMLDivElement).getBoundingClientRect();
     
-    const isInsideElement = (rect.right - 10.2 <= clientX && clientX <= rect.right) ||
-                            (rect.bottom - 10.2 <= clientY && clientY <= rect.bottom);
+    const isInsideElement = (rect.right - 7 <= clientX && clientX <= rect.right) ||
+                            (rect.bottom - 7 <= clientY && clientY <= rect.bottom - 1);
 
     setIsHoveringOverScrollbar(isInsideElement);
   }
