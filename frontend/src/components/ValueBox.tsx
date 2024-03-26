@@ -4,12 +4,14 @@ import deleteImage from '../assets/delete.png';
 
 interface ValueBoxProps { // interfaces can be used as a nice packing for types 
   value: string;
-  onChange: (value: string) => void;
+  varX: string;
+  onTextChange: (value: string) => void;
+  onVarChange: (value: string) => void;
   del: () => void; // delete function
 }
 
   
-function ValueBox({ value, onChange, del }: ValueBoxProps) {
+function ValueBox({ value, varX, onTextChange, onVarChange, del }: ValueBoxProps) {
   const[isHoveringOverScrollbar, setIsHoveringOverScrollbar] = useState(false);
   const[isFocused, setIsFocused] = useState(false);
 
@@ -26,6 +28,13 @@ function ValueBox({ value, onChange, del }: ValueBoxProps) {
   return (
     <div className="valueBoxPackage">
       <div className="valBoxHeader">
+        <input 
+          className="boxVar" 
+          type="text" 
+          maxLength={4}
+          value={varX}
+          onChange={(e) => onVarChange(e.target.value)}
+        />
         <div className="deleteButton" onClick={() => del()}>
           <img src={deleteImage} alt="delete button" />
         </div>
@@ -36,7 +45,7 @@ function ValueBox({ value, onChange, del }: ValueBoxProps) {
             className={isHoveringOverScrollbar ? "valueBox hoveringScrollbar" : "valueBox"}
             name="input_data"
             value={value}
-            onChange={(e) => onChange(e.target.value)}
+            onChange={(e) => onTextChange(e.target.value)}
             cols={30}
             rows={10}
             spellCheck="false"
