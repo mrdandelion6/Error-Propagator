@@ -17,34 +17,34 @@ function App() {
   const [variables, setVariables] = useState<string[]>(['x']);
   // TODO: figure out variable names and error boxes
 
-  const addNewTextArea = () => {
-
-    const determineVar = (num: number): string => {
-      console.log(numBoxes);
-      
-      let s: string = 'x'; // determine the new variable to add
-      switch (true) {
-        case !variables.includes('x'):
-          break;
-        case !variables.includes('y'):
-          s = 'y';
-          break;
-        case !variables.includes('z'):
-          s = 'z';
-          break;
-        default:
-          s += (num - 2);
-          break;
-      }
-      
-      if (variables.includes(s)) {
-        return determineVar(num + 1);
-      }
-           
-      num ++;
-      setNumBoxes(num);
-      return s;
+  const determineVar = (num: number): string => {
+    console.log(numBoxes);
+    
+    let s: string = 'x'; // determine the new variable to add
+    switch (true) {
+      case !variables.includes('x'):
+        break;
+      case !variables.includes('y'):
+        s = 'y';
+        break;
+      case !variables.includes('z'):
+        s = 'z';
+        break;
+      default:
+        s += (num - 2);
+        break;
     }
+    
+    if (variables.includes(s)) {
+      return determineVar(num + 1);
+    }
+         
+    num ++;
+    setNumBoxes(num);
+    return s;
+  }
+
+  const addNewTextArea = () => {
 
     const s: string= determineVar(numBoxes);
 
