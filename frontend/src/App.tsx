@@ -145,6 +145,7 @@ function App() {
         {variables.map((key, index) => (
         <div key={index}>
           <ValueBox
+            errX={1}
             value={textAreas[key]}
             varX={key}
             onTextChange={(value: string) => handleTextChange(key, value)}

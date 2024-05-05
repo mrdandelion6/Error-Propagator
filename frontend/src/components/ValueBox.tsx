@@ -1,16 +1,18 @@
 import React, { useState } from "react";
 import './InputBoxes.scss';
 import deleteImage from '../assets/delete.png';
+import { InlineMath } from 'react-katex';
 
 interface ValueBoxProps { // interfaces can be used as a nice packing for types 
   value: string;
   varX: string;
+  errX: string | number; // error value will either be number or a variable name
   onTextChange: (value: string) => void;
   onVarChange: (value: string) => void;
   del: () => void; // delete function
 }
 
-  
+
 function ValueBox({ value, varX, onTextChange, onVarChange, del }: ValueBoxProps) {
   const[isHoveringOverScrollbar, setIsHoveringOverScrollbar] = useState(false);
   const[isFocused, setIsFocused] = useState(false);
@@ -25,6 +27,10 @@ function ValueBox({ value, varX, onTextChange, onVarChange, del }: ValueBoxProps
     setIsHoveringOverScrollbar(isInsideElement);
   }
 
+  function errorPress() { // implement error button reaction
+    
+  }
+
   return (
     <div className="valueBoxPackage">
       <div className="valBoxHeader">
@@ -35,6 +41,11 @@ function ValueBox({ value, varX, onTextChange, onVarChange, del }: ValueBoxProps
           value={varX}
           onChange={(e) => onVarChange(e.target.value)}
         />
+        
+        <div className="errorButton" onClick={() => errorPress()}>
+          { false ? <InlineMath className="inline-math" math="\sigma" /> : <InlineMath className="inline-math" math="\sigma(x)" /> }
+        </div>
+
         <div className="deleteButton" onClick={() => del()}>
           <img src={deleteImage} alt="delete button" />
         </div>
