@@ -32,6 +32,8 @@ if __name__ == "__main__":
     app.run(debug=True)
 
 # TODO: 
+    # parse the error values as custom ones if a string is provided for errors, or as a constant error applied to every value if it is provided as a number instead
     # implement custom functions for ceil(x), floor(x), round(x), trunc(x)
     # implement custom functions for sum(x), mean_s(x) sample mean, mean_p(x) population mean
-    # implement visaulization of data 
+    # implement error propagation sample with latex (ambitious)
+    # implement visaulization of data (ambitious)

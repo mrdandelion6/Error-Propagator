@@ -7,12 +7,14 @@ function App() {
   const [response, setResponse] = useState<number | null>(null);
 
   type TextAreasState = {
-    [key: string]: string;
+    [key: string]: string | number; // can also have a number if it's an error value with constant error
   };
 
   // box component states:
-  const [numBoxes, setNumBoxes] = useState<number>(1);
-  const [textAreas, setTextAreas] = useState<TextAreasState>({'x': ''});
+  const [numBoxes, setNumBoxes] = useState<number>(1); // track the number of boxes
+  const [nominalValues, setNominalValues] = useState<TextAreasState>({'x': ''}); // track the state of the text areas for actual values
+  const [errorValues, setErrorValues] = useState<TextAreasState>({'x': 1}); // track the state of the text areas for error values
+
   const [equation, setEquation] = useState<string>('');
   const [variables, setVariables] = useState<string[]>(['x']);
   // TODO: figure out variable names and error boxes
@@ -44,30 +46,39 @@ function App() {
     return s;
   }
 
-  const addNewTextArea = () => {
+  const addValueBox = () => {
+    // add a new value box to the list of boxes to be rendered
 
-    const s: string= determineVar(numBoxes);
-
+    // add a variable to the list of variables
+    const s: string = determineVar(numBoxes);
     setVariables([...variables, s]);
 
-    setTextAreas(prevState => {
+    // add a new string to the list of nominal values
+    setNominalValues(prevState => {
       const newState = { ...prevState }; // using functional update pattern
       newState[s] = '';
       return newState;
     });
-    console.log(textAreas);
+    
+    // add a new string/number to the list of error values
+    setErrorValues(prevState => {
+      const newState = { ...prevState }; // using functional update pattern
+      newState[s] = 1;
+      return newState;
+    });
+
   };
 
-  const handleTextChange = (varX: string, value: string) => {
-    const newTextAreaState = {...textAreas};
+  const handleValChange = (varX: string, value: string) => {
+    const newTextAreaState = {...nominalValues};
     newTextAreaState[varX] = value; // update the state of the specific box
-    setTextAreas(newTextAreaState);
+    setNominalValues(newTextAreaState);
   };
 
-  const removeTextArea = (varX: string) => {
-    const newTextAreaState = {...textAreas};
+  const removeValueBox = (varX: string) => {
+    const newTextAreaState = {...nominalValues};
     delete newTextAreaState[varX]; // delete the property from object    
-    setTextAreas(newTextAreaState);
+    setNominalValues(newTextAreaState);
     const newVariables = [...variables];
 
     const indexToRemove = newVariables.indexOf(varX);
@@ -84,6 +95,9 @@ function App() {
     newVariables[index] = value; // update the state of the specific box
     setVariables(newVariables);
   };
+
+
+  /////////////////////////////////////////////
 
   // this is for testing and can be deleted later
   useEffect(() => {
@@ -130,6 +144,8 @@ function App() {
     }
   };
 
+  /////////////////////////////////////////////
+
   return (
     <>
     <h1>Error Propagator</h1>
@@ -138,7 +154,7 @@ function App() {
         value={equation}
         onChange={(value: string) => setEquation(value)}
       />
-      <button onClick={addNewTextArea}>Add Variable</button>
+      <button onClick={addValueBox}>Add Variable</button>
 
       <div className="valueBoxes">
 
@@ -146,11 +162,11 @@ function App() {
         <div key={index}>
           <ValueBox
             errX={1}
-            value={textAreas[key]}
+            value={nominalValues[key] as string}
             varX={key}
-            onTextChange={(value: string) => handleTextChange(key, value)}
+            onValChange={(value: string) => handleValChange(key, value)}
             onVarChange={(value: string) => handleVarChange(index, value)}
-            del={() => removeTextArea(key)}
+            del={() => removeValueBox(key)}
           />
         </div>
         ))}

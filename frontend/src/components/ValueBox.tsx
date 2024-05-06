@@ -7,13 +7,13 @@ interface ValueBoxProps { // interfaces can be used as a nice packing for types
   value: string;
   varX: string;
   errX: string | number; // error value will either be number or a variable name
-  onTextChange: (value: string) => void;
+  onValChange: (value: string) => void;
   onVarChange: (value: string) => void;
   del: () => void; // delete function
 }
 
 
-function ValueBox({ value, varX, onTextChange, onVarChange, del }: ValueBoxProps) {
+function ValueBox({ value, varX, errX, onValChange, onVarChange, del }: ValueBoxProps) {
   const[isHoveringOverScrollbar, setIsHoveringOverScrollbar] = useState(false);
   const[isFocused, setIsFocused] = useState(false);
 
@@ -43,7 +43,7 @@ function ValueBox({ value, varX, onTextChange, onVarChange, del }: ValueBoxProps
         />
         
         <div className="errorButton" onClick={() => errorPress()}>
-          { false ? <InlineMath className="inline-math" math="\sigma" /> : <InlineMath className="inline-math" math="\sigma(x)" /> }
+          { typeof(errX) == 'number' ? <InlineMath className="inline-math" math="\sigma_c" /> : <InlineMath className="inline-math" math="\sigma(x)" /> }
         </div>
 
         <div className="deleteButton" onClick={() => del()}>
@@ -56,7 +56,7 @@ function ValueBox({ value, varX, onTextChange, onVarChange, del }: ValueBoxProps
             className={isHoveringOverScrollbar ? "valueBox hoveringScrollbar" : "valueBox"}
             name="input_data"
             value={value}
-            onChange={(e) => onTextChange(e.target.value)}
+            onChange={(e) => onValChange(e.target.value)}
             cols={30}
             rows={10}
             spellCheck="false"
