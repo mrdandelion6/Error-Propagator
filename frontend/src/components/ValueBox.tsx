@@ -9,13 +9,16 @@ interface ValueBoxProps { // interfaces can be used as a nice packing for types
   errX: string | number; // error value will either be number or a variable name
   onValChange: (value: string) => void;
   onVarChange: (value: string) => void;
+  onErrChange: (value: string) => void;
   del: () => void; // delete function
+  errorPress: () => void; // delete function
 }
 
 
-function ValueBox({ value, varX, errX, onValChange, onVarChange, del }: ValueBoxProps) {
+function ValueBox({ value, varX, errX, onValChange, onVarChange, onErrChange, del, errorPress }: ValueBoxProps) {
   const[isHoveringOverScrollbar, setIsHoveringOverScrollbar] = useState(false);
   const[isFocused, setIsFocused] = useState(false);
+  const[isConst, setIsConst] = useState(1); // keep track of whether the error is a constant or variable one
 
   const scrollBarHoverCheck = (event: React.MouseEvent<HTMLTextAreaElement, MouseEvent>) => {
     const { clientX, clientY } = event;
@@ -25,10 +28,6 @@ function ValueBox({ value, varX, errX, onValChange, onVarChange, del }: ValueBox
                             (rect.bottom - 7 <= clientY && clientY <= rect.bottom - 1);
 
     setIsHoveringOverScrollbar(isInsideElement);
-  }
-
-  function errorPress() { // implement error button reaction
-    
   }
 
   return (
@@ -70,4 +69,4 @@ function ValueBox({ value, varX, errX, onValChange, onVarChange, del }: ValueBox
   );
 }
 
-  export default ValueBox;
+export default ValueBox;

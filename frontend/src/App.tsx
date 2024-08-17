@@ -3,21 +3,25 @@ import ValueBox from './components/ValueBox'
 import EquationBox from './components/EquationBox'
 
 function App() {
+
+  // eslint-disable-next-line
   const [data, setData] = useState({ members: [] });
+
+  // eslint-disable-next-line
   const [response, setResponse] = useState<number | null>(null);
 
   type TextAreasState = {
-    [key: string]: string | number; // can also have a number if it's an error value with constant error
+    [key: string]: string | number; // figure out if we ever want numeric errors
   };
 
   // box component states:
   const [numBoxes, setNumBoxes] = useState<number>(1); // track the number of boxes
   const [nominalValues, setNominalValues] = useState<TextAreasState>({'x': ''}); // track the state of the text areas for actual values
-  const [errorValues, setErrorValues] = useState<TextAreasState>({'x': 1}); // track the state of the text areas for error values
+  const [errorValues, setErrorValues] = useState<TextAreasState>({'x': '1'}); // track the state of the text areas for error values
 
-  const [equation, setEquation] = useState<string>('');
-  const [variables, setVariables] = useState<string[]>(['x']);
-  // TODO: figure out variable names and error boxes
+  const [equation, setEquation] = useState<string>();
+  const [variables, setVariables] = useState<string[]>([]);
+  // TODO: figure out error boxes
 
   const determineVar = (num: number): string => {
     console.log(numBoxes);
@@ -69,36 +73,72 @@ function App() {
 
   };
 
+
+  const removeValueBox = (varX: string) => {
+    const newNominalValueState = {...nominalValues};
+    const newErrorValueState = {...errorValues};
+
+    delete newNominalValueState[varX]; // delete the property from nominal values    
+    delete newErrorValueState[varX]; // delete the property from error values    
+    setNominalValues(newNominalValueState);
+    setErrorValues(newErrorValueState);
+    
+    const newVariables = [...variables];
+    const indexToRemove = newVariables.indexOf(varX);
+    if (indexToRemove !== -1) {
+        newVariables.splice(indexToRemove, 1);
+    }
+    setVariables(newVariables);
+    setNumBoxes(numBoxes - 1);
+  };
+
+  const handleVarChange = (index: number, value: string) => {
+
+    // update the nominal and error keys
+    const newNominalValueState = {...nominalValues};
+    const newErrorValueState = {...errorValues};
+    
+    // update existing nominal value keys
+    newNominalValueState[value] = newNominalValueState[variables[index]];
+    delete newNominalValueState[variables[index]]; // delete the old property from nominal values
+    setNominalValues(newNominalValueState);
+
+    // update existing error value keys
+    newErrorValueState[value] = newErrorValueState[variables[index]];
+    delete newErrorValueState[variables[index]]; // delete the old property from nominal values
+    setNominalValues(newErrorValueState);
+
+    // update the list of variables
+    const newVariables = [...variables];
+    newVariables[index] = value; // update the state of the specific box
+    setVariables(newVariables);
+
+  };
+
   const handleValChange = (varX: string, value: string) => {
     const newTextAreaState = {...nominalValues};
     newTextAreaState[varX] = value; // update the state of the specific box
     setNominalValues(newTextAreaState);
   };
 
-  const removeValueBox = (varX: string) => {
-    const newTextAreaState = {...nominalValues};
-    delete newTextAreaState[varX]; // delete the property from object    
-    setNominalValues(newTextAreaState);
-    const newVariables = [...variables];
-
-    const indexToRemove = newVariables.indexOf(varX);
-    if (indexToRemove !== -1) {
-        newVariables.splice(indexToRemove, 1);
-    }
-    setVariables(newVariables);
-    let num = numBoxes - 1;
-    setNumBoxes(num);
+  const handleErrChange = (varX: string, errors: string) => {
+    const newTextAreaState = {...errorValues};
+    newTextAreaState[varX] = errors; // update the state of the specific box
+    setErrorValues(newTextAreaState);
   };
 
-  const handleVarChange = (index: number, value: string) => {
-    const newVariables = [...variables];
-    newVariables[index] = value; // update the state of the specific box
-    setVariables(newVariables);
-  };
+  // eslint-disable-next-line
+  function errorButton(varX: string) { // implement error button reaction
+    // when users click the error change button which swaps between constant error and variable error
+    
+  }
 
+  // get rid of this eslint warning later
+  useEffect(() => {
+    addValueBox();
+  }, []);
 
   /////////////////////////////////////////////
-
   // this is for testing and can be deleted later
   useEffect(() => {
     // fetch data from API
@@ -119,6 +159,7 @@ function App() {
   }, []);
 
   // alter this to actually deal with data from several things
+  // eslint-disable-next-line
   const handleSubmit = async (event: React.FormEvent, inputData: string) => {
     event.preventDefault();
     console.log(`pressed sub:\n${inputData}`);
@@ -151,7 +192,7 @@ function App() {
     <h1>Error Propagator</h1>
     <p>Currently in development :)</p>
       <EquationBox 
-        value={equation}
+        value={equation ?? ''}
         onChange={(value: string) => setEquation(value)}
       />
       <button onClick={addValueBox}>Add Variable</button>
@@ -161,12 +202,14 @@ function App() {
         {variables.map((key, index) => (
         <div key={index}>
           <ValueBox
-            errX={1}
+            errX={errorValues[key] as string}
             value={nominalValues[key] as string}
             varX={key}
             onValChange={(value: string) => handleValChange(key, value)}
             onVarChange={(value: string) => handleVarChange(index, value)}
+            onErrChange={(value: string) => handleErrChange(key, value)}
             del={() => removeValueBox(key)}
+            errorPress={() => errorButton(key)}
           />
         </div>
         ))}
