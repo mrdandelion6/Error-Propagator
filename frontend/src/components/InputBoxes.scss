@@ -1,11 +1,23 @@
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Math&display=swap');
 @import 'katex/dist/katex.min.css';
 
+// general styling
 $box-color: rgb(240, 239, 239);
 $text-color: rgb(41, 40, 40);
 $box-border-color: rgb(128, 120, 120);
 $box-spacing: 2vw;
-$box-width: max(calc(8vw + 34px), 140px);
+
+// header styling
+$button-height: 39px;
+$delete-button-width: 40px;
+$error-button-width: 60px;
+
+// box styling
+$val-box-width: calc(max(calc(8vw + 34px), 140px) );
+$val-box-margin: 5px;
+$err-box-margin: 5px;
+$err-box-width: calc($error-button-width + $delete-button-width - 2 * $err-box-margin - 1px);
+$box-width: calc($val-box-width + $err-box-width + $val-box-margin + 2 * $err-box-margin);
 $secondary-color: rgb(255, 255, 255);
 $equation-width: 58vw;
 
@@ -93,7 +105,7 @@ textarea {
 
 }
 
-.valueCase{
+.boxCase {
   width: $box-width;
   background-color: $box-color;
   border: 1px solid $box-border-color;
@@ -104,12 +116,31 @@ textarea {
   display: flex;
 
   .valueBox {
-    width: $box-width;
+    padding: 0px;
+    width: $val-box-width;
     height: 500px;
-    border-radius: 5px;
     white-space: nowrap;
     overflow-x: auto;
     margin-bottom: 5px;
+    margin-right: $val-box-margin;
+  }
+
+  .separatingLine {
+    width: 1px;
+    background-color: $box-border-color;
+    margin: 0px;
+    padding: 0px;
+  }
+
+  .errorBox {
+    padding: 0px;
+    width: $err-box-width;
+    height: 500px;
+    white-space: nowrap;
+    overflow-x: auto;
+    margin-bottom: 5px;
+    margin-right: $err-box-margin;
+    margin-left: $err-box-margin;
   }
 
 }
@@ -133,8 +164,8 @@ textarea {
 
   .deleteButton {
     background-color: rgb(255, 49, 83);
-    width: 40px;
-    height: 39px;
+    width: $delete-button-width;
+    height: $button-height;
     position: absolute;
     top: 0px;
     right: 0%;
@@ -155,8 +186,8 @@ textarea {
 
   .errorButton{
     background-color: rgb(6, 122, 255);
-    width: 60px;
-    height: 39px;
+    width: $error-button-width;
+    height: $button-height;
     position: absolute;
     top: 0px;
     right: 40px;
@@ -204,8 +235,8 @@ textarea {
     background-color: white;
     border: none;
     outline: none;
-    margin-left: calc($box-width * 0.05);
-    width: calc($box-width * 0.45);
+    margin-left: calc($val-box-width * 0.05);
+    width: calc($val-box-width * 0.45);
     font-family: inherit;
     font-weight: 600;
     font-size: 18px;
