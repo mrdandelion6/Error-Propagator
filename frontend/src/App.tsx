@@ -14,24 +14,60 @@ function App() {
   // box component states:
   const [numBoxes, setNumBoxes] = useState<number>(1); // track the number of boxes
   const [equation, setEquation] = useState<string>();
-  const [variables, setVariables] = useState<string[]>([]);
-  const [nominalValues, setNominalValues] = useState<string[]>([]);
-  const [errorValues, setErrorValues] = useState<string[]>([]);
-  const [constErrors, setConstErrors] = useState<boolean>(true); // keep track if we have constant or variable error
 
-  updateNominalValues = (newNominalValues: string[]) => {
+  const [constErrors, setConstErrors] = useState<boolean[]>([true]); // keep track if we have constant or variable error
+  const [variables, setVariables] = useState<string[]>(['x']);
+  const [nominalValues, setNominalValues] = useState<string[]>(['']);
 
+  // we have two sets of errors, one for when the error is constant and one for when the error is variable
+  const [errorValuesVariable, setErrorValuesVariable] = useState<string[]>(['']);
+  const[errorValuesConstant, setErrorValuesConstant] = useState<string[]>(['']);
+
+  // toggle this to trigger a useEffect in the ValueBox component
+  const[boxesChanged, setBoxesChanged] = useState<boolean>(false);
+
+
+  useEffect(() => {
+    setBoxesChanged(prev => !prev);
+  }, [numBoxes, constErrors]);
+
+  const updateNominalValues = (index: number, newNominalValue: string) => {
+    const newNominalValuesList = [...nominalValues];
+    newNominalValuesList[index] = newNominalValue;
+    setNominalValues(newNominalValuesList);
   }
 
-  updateErrorValues = (newErrorValues: string[]) => {
-
+  const updateErrorValuesVariable = (index: number, newErrorValue: string) => {
+    const newErrorValuesVariable = [...errorValuesVariable];
+    newErrorValuesVariable[index] = newErrorValue;
+    setErrorValuesVariable(newErrorValuesVariable);
   }
 
-  updateConstErrors = (newConstError: boolean) => {
-
+  const updateErrorValuesConstant = (index: number, newErrorValue: string) => {
+    // ensure that it is a single value
+    const flags = [",", " ", "\n", "\t"];
+    if (flags.some(flag => newErrorValue.includes(flag))) {
+      console.log("Error: constant error value must be a single value");
+      return;
+    }
+    if (isNaN(Number(newErrorValue))) {
+      // TODO: add functionality for red squiggly line and do not allow submission
+      console.log("Error: constant error value must be a number");
+      return;
+    }
+    const newErrorValuesConstant = [...errorValuesConstant];
+    newErrorValuesConstant[index] = newErrorValue;
+    setErrorValuesConstant(newErrorValuesConstant);
   }
 
-  const determineVar = (num: number): string => {
+  const updateConstErrors = (index:number, newConstError: boolean) => {
+    // update the array which keeps track of which boxes have constant errors
+    const newConstErrorsList = [...constErrors];
+    newConstErrorsList[index] = newConstError;
+    setConstErrors(newConstErrorsList);
+  }
+
+  const determineVar = (numberLabel: number): string => {
     
     let s: string = 'x'; // determine the new variable to add
     switch (true) {
@@ -44,50 +80,57 @@ function App() {
         s = 'z';
         break;
       default:
-        s += (num - 2);
-        break;
+        s += (numberLabel - 3);
+        break;  
     }
     
     if (variables.includes(s)) {
-      return determineVar(num + 1);
+      return determineVar(numberLabel + 1);
     }
-         
-    num ++;
-    setNumBoxes(num);
+  
     return s;
   }
 
   const addValueBox = () => {
-    // add a new value box to the list of boxes to be rendered
-
     // add a variable to the list of variables
+    setNumBoxes(numBoxes + 1);
     const s: string = determineVar(numBoxes);
     setVariables([...variables, s]);
+    setNominalValues([...nominalValues, '']);
+    setErrorValuesVariable([...errorValuesVariable, '']);
+    setErrorValuesConstant([...errorValuesConstant, '']);
+    setConstErrors([...constErrors, true]);
   };
 
 
-  const removeValueBox = (varX: string) => {
+  const removeValueBox = (index: number) => {
     const newVariables = [...variables];
-    const indexToRemove = newVariables.indexOf(varX);
-    if (indexToRemove !== -1) {
-        newVariables.splice(indexToRemove, 1);
+    const newNominalValues = [...nominalValues];
+    const newErrorValuesVariable = [...errorValuesVariable];
+    const newErrorValuesConstant = [...errorValuesConstant];
+    const newConstErrors = [...constErrors];
+    if (index !== -1) {
+        newVariables.splice(index, 1);
+        newNominalValues.splice(index, 1);
+        newErrorValuesVariable.splice(index, 1);
+        newErrorValuesConstant.splice(index, 1);
+        newConstErrors.splice(index, 1);
     }
     setVariables(newVariables);
+    setNominalValues(newNominalValues);
+    setErrorValuesVariable(newErrorValuesVariable);
+    setErrorValuesConstant(newErrorValuesConstant);
+    setConstErrors(newConstErrors);
     setNumBoxes(numBoxes - 1);
   };
 
-  const handleVarChange = (index: number, value: string) => {
+  const updateVariables = (index: number, value: string) => {
     // update the list of variables
+    // console.log(`changing variable ${value}`);
     const newVariables = [...variables];
     newVariables[index] = value; // update the state of the specific box
     setVariables(newVariables);
   };
-
-
-  // get rid of this eslint warning later
-  useEffect(() => {
-    addValueBox();
-  }, []);
 
   /////////////////////////////////////////////
   // this is for testing and can be deleted later
@@ -102,7 +145,7 @@ function App() {
       })
       .then(data => {
         setData(data);
-        console.log(data);
+        // console.log(data);
       })
       .catch(error => {
         console.error("Fetch error:", error);
@@ -150,12 +193,17 @@ function App() {
 
       <div className="valueBoxes">
 
-        {variables.map((key, index) => (
+        {variables.slice().reverse().map((_, index) => (
         <div key={index}>
           <ValueBox
-            onVarChange={(value: string) => handleVarChange(index, value)}
-            onBoxDelete={() => removeValueBox(key)}
             variableName={variables[index]}
+            onBoxDelete={() => removeValueBox(index)}
+            updateVariables={(value: string) => updateVariables(index, value)}
+            updateNominalValues={(nominalValue: string) => updateNominalValues(index, nominalValue)}
+            updateErrorValuesVariable={(errorValue: string) => updateErrorValuesVariable(index, errorValue)}
+            updateErrorValuesConstant={(errorValue: string) => updateErrorValuesConstant(index, errorValue)}
+            updateConstErrors={(constError: boolean) => updateConstErrors(index, constError)}
+            toggle={boxesChanged}
           />
         </div>
         ))}

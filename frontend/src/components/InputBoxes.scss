@@ -19,7 +19,7 @@ $err-box-margin: 5px;
 $err-box-width: calc($error-button-width + $delete-button-width - 2 * $err-box-margin - 1px);
 $box-width: calc($val-box-width + $err-box-width + $val-box-margin + 2 * $err-box-margin);
 $secondary-color: rgb(255, 255, 255);
-$equation-width: 58vw;
+$equation-width: 70vw;
 
 textarea {
   background-color: $box-color;
@@ -61,7 +61,25 @@ textarea {
   &.hoveringScrollbar {
     cursor: pointer;
   }
+}
 
+
+input {
+  background-color: $box-color;
+  color: $text-color;
+  border: none;
+  font-size: 17px;
+  font-family: inherit;
+  font-weight: 400;
+  padding-left: 10px;
+  padding-right: 10px;
+  margin-top: 0px;
+
+  &&:
+
+  &:focus {
+    outline: none;
+  }
 }
 
 .focusedBox{
@@ -73,18 +91,32 @@ textarea {
   margin-right: $box-spacing;
 }
 
+.constErrorField {
+  width: calc($val-box-width + $val-box-margin);
+  height: 40px;
+  background-color: $box-color;
+  border: 1px solid $box-border-color;
+  font-family: inherit;
+  padding-top: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  
+}
+
 .equationCase {
   background-color: $box-color;
   border: 1px solid $box-border-color;
   border-radius: 8px;
-  width: $equation-width;
+  width: calc($equation-width - 40px);
   height: 50px;
   display: flex;
   align-items: center;
   margin-bottom: 20px;
+  padding-right: 4px;
+  padding-left: 4px;
 
   .equationBox {
-    width: calc($equation-width - 5px);
+    width: calc($equation-width - 13px);
     white-space: nowrap;
     overflow-x: auto;
     overflow-y: hidden;
@@ -92,6 +124,7 @@ textarea {
     margin: 0;
     position: relative;
     line-height: 2;
+    padding-right: 0px;
 
     &.hoveringScrollbar {
       cursor: pointer;
@@ -142,12 +175,34 @@ textarea {
     margin-right: $err-box-margin;
     margin-left: $err-box-margin;
   }
-
 }
 
 .valueBoxPackage {
-  position: relative;  
+  position: relative;
+
+  &.constError {
+    // for constant errors
+    .boxCase {
+      width: calc($val-box-width + $val-box-margin);
+      border-top-left-radius: 0px;
+      border-top-right-radius: 0px;
+      border-top: none;
+    }
+    .valBoxHeader {
+      width: calc($val-box-width + $val-box-margin);
+    }
+
+    .errorButton {
+      width: calc($error-button-width - 15px);
+      // right: 65px;
+    }
+
+    .focusedBox {
+      width: calc($val-box-width + $val-box-margin + 8px);
+    }
+  }
 }
+
 
 .valBoxHeader {
   width: $box-width;
@@ -243,4 +298,3 @@ textarea {
   }
 
 }
-
