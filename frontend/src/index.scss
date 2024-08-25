@@ -1,4 +1,9 @@
+// @tailwind base;
+// @tailwind components;
+// @tailwind utilities;
+
 $button-color: rgb(58, 138, 236);
+$btn-hover: #535bf2;
 $page-margins: 15vw;
 
 * {
@@ -22,13 +27,14 @@ $page-margins: 15vw;
   -moz-osx-font-smoothing: grayscale;
 }
 
+
 a {
   font-weight: 500;
   color: #646cff;
   text-decoration: inherit;
 }
 a:hover {
-  color: #535bf2;
+  color: $btn-hover;
 }
 
 body {
@@ -63,14 +69,13 @@ button {
   transition: border-color 0.25s;
   margin-left: 8px;
   margin-bottom: 60px;
+  color: white;
 
   &:hover {
     background-color: #646cff;
   }
 
 }
-
-
 
 @media (prefers-color-scheme: light) {
   :root {
@@ -86,3 +91,4 @@ button {
   display: flex;
   flex-wrap: wrap
 }
+
