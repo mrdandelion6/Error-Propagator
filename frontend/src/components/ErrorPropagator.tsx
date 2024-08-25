@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import ValueBox from './components/ValueBox'
-import EquationBox from './components/EquationBox'
+import ValueBox from './ValueBox'
+import EquationBox from './EquationBox'
 
 function ErrorPropagator() {
 

@@ -1,6 +1,6 @@
 import { Routes, Route } from 'react-router-dom';
 import TopNavBar from './components/TopNavBar'
-import ErrorPropagator from './ErrorPropagator';
+import ErrorPropagator from './components/ErrorPropagator';
 import Docs from './Docs';
 import Membership from './Membership';
 import About from './About';
