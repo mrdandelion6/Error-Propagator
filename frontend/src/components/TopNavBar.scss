@@ -1,7 +1,7 @@
 $nav-bar-color: #535bf2;
 $btn-hover-color: #5d64ec;
-$btn-width: 80px;
-$nav-bar-height: 80px;
+$btn-width: 60px; // this is only what it defaults to, specific widths are in TopNavBar.tsx
+$nav-bar-height: 70px;
 
 .topNavBar {
   position: fixed;
@@ -55,6 +55,11 @@ $nav-bar-height: 80px;
       &:hover {
         background-color: $btn-hover-color;
         cursor: pointer;
+      }
+
+      img {
+        height: 80%;
+        object-fit: contain;
       }
     }
 

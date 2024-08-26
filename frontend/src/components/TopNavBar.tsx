@@ -1,16 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { NavLink } from 'react-router-dom';
-import homeImg from '../assets/error.png';
-import clubLogoImg from '../assets/club_logo_1.png';
-import docsImg from '../assets/docs.png';
-import aboutImg from '../assets/about.png';
-import discordImg from '../assets/discord.png';
-import trayImg from '../assets/tray.png';
+import { NavLink, useLocation } from 'react-router-dom';
+import homeImg from '../assets/navbar/error.png';
+import clubLogoImg from '../assets/navbar/club_logo_2.png';
+import docsImg from '../assets/navbar/book.png';
+import aboutImg from '../assets/navbar/about.png';
+import discordImg from '../assets/navbar/discord.png';
+// import trayImg from '../assets/navbar/tray.png';
 
 
 import './TopNavBar.scss';
 
-const assets_path = "../assets/";
 const buttons = {
   "names": ["Home", "Physics Club", "Docs", "About", "Discord", ],
   "links": ["/", 
@@ -21,25 +20,29 @@ const buttons = {
   "external": [0, 1, 0, 0, 1],
   "images": [homeImg, clubLogoImg, docsImg, aboutImg, discordImg],
   "right": [0, 0, 1, 1, 1],  
-  "width": [110, 200, 100, 100, 100]
+  "width": [80, 350, 75, 75, 75], // in px
+  "img_height": [80, 80, 75, 60, 50], // in percentage
 };
-
-// add the assets path to the images
-for (let i = 0; i < buttons.images.length; i++) {
-  buttons.images[i] = assets_path + buttons.images[i];
-}
 
 // the following button is used when the view width is less than 650px
 const buttonTray = {
   // always goes to the right
-  "name": assets_path + "Tray",
-  "image": trayImg,
+  "name": "Tray",
+  "image": aboutImg, // replace with trayImg later
   "width": 100
 }
 
 function TopNavBar() {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [showMenu, setShowMenu] = useState(false);
+  const { pathname } = useLocation();
+
+  const handleNavLinkClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>, link: string) => {
+    if (pathname === link) {
+      event.preventDefault();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
 
   const toggleMenu = () => {
     setShowMenu(!showMenu);
@@ -64,8 +67,10 @@ function TopNavBar() {
       style={{
         width: buttons.width[index] + "px"
       }}>
-          <img src={buttons.images[index]} 
+          <img 
+            src={buttons.images[index]} 
             alt={buttons.names[index]} 
+            style={{width: buttons.width[index] + "%", height: buttons.img_height[index] + "%"}}
           />
       </li>
     );
@@ -86,6 +91,7 @@ function TopNavBar() {
       <NavLink to={buttons.links[index]}
         key={index}
         className="navLink"
+        onClick={(e) => handleNavLinkClick(e, buttons.links[index])}
       >
         {loadLi(index)}
       </NavLink>
