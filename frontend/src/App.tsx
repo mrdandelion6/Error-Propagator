@@ -1,9 +1,9 @@
 import { Routes, Route } from 'react-router-dom';
 import TopNavBar from './components/TopNavBar'
 import ErrorPropagator from './components/ErrorPropagator';
-import Docs from './Docs';
-import Membership from './Membership';
-import About from './About';
+import Docs from './components/Docs';
+import Membership from './components/Membership';
+import About from './components/About';
 // import './index.scss';
 
 function App() {
@@ -12,9 +12,9 @@ function App() {
       <TopNavBar/>
       <Routes>
         <Route path="/" element={ <ErrorPropagator /> }/>
-        {/* <Route path="/Docs" element={ <Docs /> }/>
+        <Route path="/Docs" element={ <Docs /> }/>
         <Route path="/Membership" element={ <Membership /> }/>
-        <Route path="/About" element={ <About /> }/> */}
+        <Route path="/About" element={ <About /> }/>
       </Routes>
     </div>
   );

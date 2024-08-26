@@ -182,36 +182,33 @@ function ErrorPropagator() {
   /////////////////////////////////////////////
 
   return (
-    <>
-      <div className="main">
-        <h1>Error Propagator</h1>
-        <p>Currently in development :)</p>
-          <EquationBox 
-            value={equation ?? ''}
-            onChange={(value: string) => setEquation(value)}
-          />
-          <button onClick={addValueBox}>Add Variable</button>
+    <div className="main">
+      <h1>Error Propagator</h1>
+      <p>Currently in development :)</p>
+        <EquationBox 
+          value={equation ?? ''}
+          onChange={(value: string) => setEquation(value)}
+        />
+        <button onClick={addValueBox}>Add Variable</button>
 
-          <div className="valueBoxes">
+        <div className="valueBoxes">
 
-            {variables.map((_, index) => (
-            <div key={index}>
-              <ValueBox
-                variableName={variables[index]}
-                onBoxDelete={() => removeValueBox(index)}
-                updateVariables={(value: string) => updateVariables(index, value)}
-                updateNominalValues={(nominalValue: string) => updateNominalValues(index, nominalValue)}
-                updateErrorValuesVariable={(errorValue: string) => updateErrorValuesVariable(index, errorValue)}
-                updateErrorValuesConstant={(errorValue: string) => updateErrorValuesConstant(index, errorValue)}
-                updateConstErrors={(constError: boolean) => updateConstErrors(index, constError)}
-                toggle={boxesChanged}
-              />
-            </div>
-            ))}
-
+          {variables.map((_, index) => (
+          <div key={index}>
+            <ValueBox
+              variableName={variables[index]}
+              onBoxDelete={() => removeValueBox(index)}
+              updateVariables={(value: string) => updateVariables(index, value)}
+              updateNominalValues={(nominalValue: string) => updateNominalValues(index, nominalValue)}
+              updateErrorValuesVariable={(errorValue: string) => updateErrorValuesVariable(index, errorValue)}
+              updateErrorValuesConstant={(errorValue: string) => updateErrorValuesConstant(index, errorValue)}
+              updateConstErrors={(constError: boolean) => updateConstErrors(index, constError)}
+              toggle={boxesChanged}
+            />
           </div>
+          ))}
         </div>
-    </>
+      </div>
   );
 }
 
