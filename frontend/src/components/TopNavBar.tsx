@@ -51,6 +51,9 @@ function TopNavBar() {
   useEffect(() => {
     const handleResize = () => {
       setWindowWidth(window.innerWidth);
+      if (windowWidth > 650) {
+        setShowMenu(false);
+      }
     };
 
     // some classic js dom listening
@@ -83,18 +86,16 @@ function TopNavBar() {
   buttons.names.forEach((_, index) => {
     const item = buttons.external[index] === 1 ? ( // external link, use classic html anchors
       <a href={buttons.links[index]}
-      key={index}
-      target="_blank"
-      rel="noopener noreferrer"
+        key={index}
+        target="_blank"
+        rel="noopener noreferrer"
       >{loadLi(index)}</a>
     ) : ( // internal link, use react router
       <NavLink to={buttons.links[index]}
         key={index}
         className="navLink"
         onClick={(e) => handleNavLinkClick(e, buttons.links[index])}
-      >
-        {loadLi(index)}
-      </NavLink>
+      >{loadLi(index)}</NavLink>
     );
 
     if (buttons.right[index]) {
