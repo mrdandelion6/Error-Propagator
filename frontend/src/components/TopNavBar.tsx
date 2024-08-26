@@ -1,5 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
+import homeImg from '../assets/error.png';
+import clubLogoImg from '../assets/club_logo_1.png';
+import docsImg from '../assets/docs.png';
+import aboutImg from '../assets/about.png';
+import discordImg from '../assets/discord.png';
+import trayImg from '../assets/tray.png';
+
+
 import './TopNavBar.scss';
 
 const assets_path = "../assets/";
@@ -11,22 +19,22 @@ const buttons = {
             "/about", 
             "https://discord.gg/558RfzrPNj"],
   "external": [0, 1, 0, 0, 1],
-  "images": ["home.png", "club_logo_1.png", "docs.png", "about.png", "discord.png"],
+  "images": [homeImg, clubLogoImg, docsImg, aboutImg, discordImg],
   "right": [0, 0, 1, 1, 1],  
   "width": [110, 200, 100, 100, 100]
 };
+
+// add the assets path to the images
+for (let i = 0; i < buttons.images.length; i++) {
+  buttons.images[i] = assets_path + buttons.images[i];
+}
 
 // the following button is used when the view width is less than 650px
 const buttonTray = {
   // always goes to the right
   "name": assets_path + "Tray",
-  "image": "tray.png",
+  "image": trayImg,
   "width": 100
-}
-
-// add the assets path to the images
-for (let i = 0; i < buttons.images.length; i++) {
-  buttons.images[i] = assets_path + buttons.images[i];
 }
 
 function TopNavBar() {
@@ -76,8 +84,8 @@ function TopNavBar() {
       >{loadLi(index)}</a>
     ) : ( // internal link, use react router
       <NavLink to={buttons.links[index]}
-      key={index}
-      className="navLink"
+        key={index}
+        className="navLink"
       >
         {loadLi(index)}
       </NavLink>
@@ -97,7 +105,7 @@ function TopNavBar() {
         <div className="rightGroup">
           { windowWidth > 650 ? rightItems : 
             <div className="trayButton" onClick={toggleMenu}
-            style={{width: buttonTray.width + "px"}}
+              style={{width: buttonTray.width + "px"}}
             >
               <img src={buttonTray.image} alt={buttonTray.name} />
             </div>
