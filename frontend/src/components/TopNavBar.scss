@@ -1,4 +1,7 @@
 $nav-bar-color: #535bf2;
+$btn-hover-color: #5d64ec;
+$btn-width: 80px;
+$nav-bar-height: 80px;
 
 .topNavBar {
   position: fixed;
@@ -10,6 +13,51 @@ $nav-bar-color: #535bf2;
   background-color: $nav-bar-color;
   color: white;
   width: 100%;
-  height: 80px;
+  height: $nav-bar-height;
   z-index: 1000;
+  margin: 0;
+  padding: 0;
+
+  .rightGroup {
+    height: 100%;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    margin-left: auto;
+  }
+
+  ul {
+    display: flex;
+    list-style: none;
+    margin-right: 20px;
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    align-items: center;
+
+    a, .navLink {
+      height: 100%;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    li, .trayButton {
+      margin: 0;
+      padding: 0;
+      background-color: $nav-bar-color;
+      width: $btn-width;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      &:hover {
+        background-color: $btn-hover-color;
+        cursor: pointer;
+      }
+    }
+
+  }
+
 }
