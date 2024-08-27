@@ -1,29 +1,52 @@
 import React, { useState, useEffect } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
+import './TopNavBar.scss';
 import homeImg from '../assets/scratch/error_propagator_3.png';
 import clubLogoImg from '../assets/navbar/club_logo_2.png';
-// import docsImg from '../assets/navbar/book.png';
 import aboutImg from '../assets/navbar/about.png';
 import discordImg from '../assets/navbar/discord.png';
 // import trayImg from '../assets/navbar/tray.png';
+// import docsImg from '../assets/navbar/book.png';
 
+interface Buttons {
+  names: string[];
+  links: string[];
+  external: number[];
+  images: (string | undefined)[];
+  right: number[];
+  width: number[];
+  height: number[];
+  spacing: number[];
+  img_height: number[];
+  highlight: number[];
+}
 
-import './TopNavBar.scss';
-
-const buttons = {
-  "names": ["Home", "Physics Club", "Docs", "About", "Login", "Discord", ],
+const buttons: Buttons = {
+  // these are all the settings for the buttons
+  // i have them here in a json object so that it is very easy to modify and add new buttons
+  // the order of the buttons is determined by the order of the names
+  "names": ["Home", "Physics Club", "Docs", "About", "Pro", "Login", "Discord", ],
   "links": ["/", 
             "https://www.utm.utoronto.ca/cps/university-toronto-mississauga-physics-club",
             "/docs", 
             "/about",
+            "/pro",
             "/login", 
             "https://discord.gg/558RfzrPNj"],
   "external": [0, 1, 0, 0, 0, 1],
-  "images": [homeImg, clubLogoImg, undefined, undefined, undefined, discordImg],
-  "right": [0, 0, 1, 1, 1, 1],  
-  "width": [80, 350, 60, 60, 120, 70], // in px
-  "img_height": [80, 80, 75, 60, 60, 50], // in percentage
-  "highlight": [0, 0, 0, 0, 1, 0]
+  "images": [homeImg, 
+             clubLogoImg,
+             undefined, // undefined for text instead of image (uses text from Names)
+             undefined,
+             undefined,
+             undefined,
+             discordImg],
+  "right": [0, 0, 1, 1, 1, 1, 1],  
+  "width": [70, 350, 65, 65, 65, 120, 70], // in px for li
+  "height": [56, 56, 30, 30, 30, 30, 56], // in px for li
+  "spacing": [8, 8, 8, 8, 8, 8, 8], // in px for li, the left and right margin
+  "img_height": [90, 90, 75, 60, 60, 60, 60], // in percentage, for scaling images inside the li
+  "highlight": [0, 0, 0, 0, 0, 1, 0]
 };
 
 // the following button is used when the view width is less than 800px
@@ -68,15 +91,16 @@ function TopNavBar() {
 
   const loadLi = (index: number) => {
     return (
-      <li key={index} 
-      style={{
-        width: buttons.width[index] + "px"
-      }}>
-          { buttons.images[index] ? (<img 
+      <li key={index}>
+        { buttons.images[index] ? (
+          <img 
             src={buttons.images[index]} 
             alt={buttons.names[index]} 
-            style={{width: buttons.width[index] + "%", height: buttons.img_height[index] + "%"}}
-          />) : <p>{buttons.names[index]}</p> }
+            style={{width: buttons.width[index] + "%", height: buttons.img_height[index] + "%"}  }
+          />
+        ) : (
+          <p>{buttons.names[index]}</p> 
+        )}
       </li>
     );
   }
@@ -88,12 +112,25 @@ function TopNavBar() {
   buttons.names.forEach((_, index) => {
     const item = buttons.external[index] === 1 ? ( // external link, use classic html anchors
       <a href={buttons.links[index]}
+        style=
+        {{
+          width: buttons.width[index] + "px",
+          height: buttons.height[index] + "px",
+          marginLeft: buttons.spacing[index] + "px",
+          marginRight: buttons.spacing[index] + "px",
+        }}
         key={index}
         target="_blank"
         rel="noopener noreferrer"
       >{loadLi(index)}</a>
     ) : ( // internal link, use react router
       <NavLink to={buttons.links[index]}
+        style=
+        {{width: buttons.width[index] + "px", 
+          height: buttons.height[index] + "px",
+          marginLeft: buttons.spacing[index] + "px",
+          marginRight: buttons.spacing[index] + "px",
+        }}
         key={index}
         className="navLink"
         onClick={(e) => handleNavLinkClick(e, buttons.links[index])}
@@ -110,7 +147,7 @@ function TopNavBar() {
   return (
     <nav className="topNavBar">
       <ul>
-        <div className='navSide'></div>
+        <div className='navSideSpacing'></div>
         {leftItems}
         <div className="rightGroup">
           { windowWidth > 650 ? rightItems : 
@@ -123,7 +160,7 @@ function TopNavBar() {
         </div>
       </ul>
       { showMenu ? null : null }
-      <div className='navSide'></div>
+      <div className='navSideSpacing'></div>
     </nav>
   );
 }
