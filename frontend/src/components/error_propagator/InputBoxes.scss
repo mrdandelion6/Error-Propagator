@@ -5,7 +5,7 @@
 $box-color: rgb(240, 239, 239);
 $text-color: rgb(41, 40, 40);
 $box-border-color: rgb(128, 120, 120);
-$box-spacing-horizontal: 3.5vw;
+$box-spacing-horizontal: 4.7vw;
 $box-spacing-vertical: 30px;
 $box-height: 500px;
 
@@ -22,7 +22,6 @@ $err-box-margin: 5px;
 $err-box-width: calc($error-button-width + $delete-button-width - 2 * $err-box-margin - 1px);
 $box-width: calc($val-box-width + $err-box-width + $val-box-margin + 2 * $err-box-margin);
 $secondary-color: rgb(255, 255, 255);
-$equation-width: 70vw;
 
 textarea {
   background-color: $box-color;
@@ -112,7 +111,7 @@ input {
   background-color: $box-color;
   border: 1px solid $box-border-color;
   border-radius: 8px;
-  width: calc($equation-width - 40px);
+  width: 100%;
   height: 50px;
   display: flex;
   align-items: center;
@@ -122,7 +121,7 @@ input {
   padding-left: 4px;
 
   .equationBox {
-    width: calc($equation-width - 13px);
+    width: 100%;
     white-space: nowrap;
     overflow-x: auto;
     overflow-y: hidden;

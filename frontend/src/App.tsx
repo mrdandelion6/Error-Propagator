@@ -10,7 +10,7 @@ import Pro from './components/pro/Pro';
 
 function App() {
   return (
-    <div className="app">
+    <div className="app noMP">
       <TopNavBar/>
       <Routes>
         <Route path="/" element={ <ErrorPropagator /> }/>

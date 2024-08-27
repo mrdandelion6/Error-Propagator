@@ -12,6 +12,19 @@ $page-margins: 15vw;
   box-sizing: border-box;
 }
 
+html, body {
+  padding: 0;
+}
+
+#root {
+  margin: 0;
+  padding: 0;
+}
+
+app, main, #root {
+  width: 100%;
+} 
+
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -57,7 +70,7 @@ body {
   min-width: 320px;
   min-height: 100vh;
   margin-left: $page-margins;
-  margin-right: $page-margins;
+  margin-right: $page-margins ;
 }
 
 h1 {
