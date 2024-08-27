@@ -31,7 +31,7 @@ function EquationBox({ value, onChange }: EquationBoxProps) {
   }
 
   return (
-    <div>
+    <div className='noMP'>
       <div className={ isFocused ? "equationCase focusedElement" : "equationCase"}>
         <textarea
           className={ isHoveringBar ? "equationBox hoveringScrollbar" : "equationBox"}

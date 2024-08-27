@@ -5,6 +5,7 @@ import homeImg from '../assets/scratch/error_propagator_3.png';
 import clubLogoImg from '../assets/navbar/club_logo_2.png';
 import aboutImg from '../assets/navbar/about.png';
 import discordImg from '../assets/navbar/discord.png';
+// import clubLogoSmall from '../assets/navbar/club_logo_3.png';
 // import trayImg from '../assets/navbar/tray.png';
 // import docsImg from '../assets/navbar/book.png';
 
@@ -13,12 +14,13 @@ interface Buttons {
   links: string[];
   external: number[];
   images: (string | undefined)[];
+  smaller_images: (string | undefined)[];
   right: number[];
   width: number[];
   height: number[];
   spacing: number[];
   img_height: number[];
-  highlight: number[];
+  special_btn: number[];
 }
 
 const buttons: Buttons = {
@@ -33,20 +35,21 @@ const buttons: Buttons = {
             "/pro",
             "/login", 
             "https://discord.gg/558RfzrPNj"],
-  "external": [0, 1, 0, 0, 0, 1],
+  "external": [0, 1, 0, 0, 0, 0, 1],
   "images": [homeImg, 
              clubLogoImg,
              undefined, // undefined for text instead of image (uses text from Names)
              undefined,
              undefined,
              undefined,
-             discordImg],
+             discordImg], // TODO: make second undefined be clubLogoSmall
+  "smaller_images": [homeImg, undefined, undefined, undefined, undefined, undefined, discordImg],
   "right": [0, 0, 1, 1, 1, 1, 1],  
-  "width": [70, 350, 65, 65, 65, 120, 70], // in px for li
-  "height": [56, 56, 30, 30, 30, 30, 56], // in px for li
-  "spacing": [8, 8, 8, 8, 8, 8, 8], // in px for li, the left and right margin
-  "img_height": [90, 90, 75, 60, 60, 60, 60], // in percentage, for scaling images inside the li
-  "highlight": [0, 0, 0, 0, 0, 1, 0]
+  "width": [70, 350, 73, 73, 73, 120, 70], // in px for li
+  "height": [56, 56, 36, 36, 36, 36, 56], // in px for li
+  "spacing": [2, 2, 2, 2, 2, 2, 2], // in px for li, the left and right margin
+  "img_height": [90, 90, 75, 60, 60, 60, 50], // in percentage, for scaling images inside the li
+  "special_btn": [0, 0, 0, 0, 0, 1, 0] // special buttons get a unique background color
 };
 
 // the following button is used when the view width is less than 800px
@@ -91,7 +94,7 @@ function TopNavBar() {
 
   const loadLi = (index: number) => {
     return (
-      <li key={index}>
+      <li key={index} className={buttons.special_btn[index] ? "specialBtn" : ""}>
         { buttons.images[index] ? (
           <img 
             src={buttons.images[index]} 

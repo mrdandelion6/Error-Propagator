@@ -27,6 +27,11 @@ $page-margins: 15vw;
   -moz-osx-font-smoothing: grayscale;
 }
 
+.noMP {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
 .main {
   margin-top: 90px !important;
   padding: 0px;
@@ -59,6 +64,11 @@ h1 {
   font-size: 3.0em;
   line-height: 1.1;
   margin-bottom: 30px;
+  padding: 0;
+}
+
+p {
+  padding: 0;
 }
 
 input {
@@ -93,10 +103,5 @@ button {
   a:hover {
     color: #747bff;
   }
-}
-
-.valueBoxes{
-  display: flex;
-  flex-wrap: wrap
 }
 

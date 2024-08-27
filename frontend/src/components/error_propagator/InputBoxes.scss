@@ -5,7 +5,8 @@
 $box-color: rgb(240, 239, 239);
 $text-color: rgb(41, 40, 40);
 $box-border-color: rgb(128, 120, 120);
-$box-spacing: 2vw;
+$box-spacing-horizontal: 3.5vw;
+$box-spacing-vertical: 30px;
 $box-height: 500px;
 
 // header styling
@@ -82,12 +83,17 @@ input {
 }
 
 .focusedBox{
+  position: absolute;
   width: calc($box-width + 8px);
-  background-color: rgba(0, 195, 255, 0.315);
+  height: calc($box-height + 16px);
+  border: 5px solid rgba(0, 195, 255, 0.315);
+  border-top: none;
   border-bottom-left-radius: 10px;
   border-bottom-right-radius: 10px;
-  border-radius: 10px;
-  margin-right: $box-spacing;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  left: -4px;
+  top: 46px
 }
 
 .constErrorField {
@@ -111,6 +117,7 @@ input {
   display: flex;
   align-items: center;
   margin-bottom: 20px;
+  margin-top: 10px;
   padding-right: 4px;
   padding-left: 4px;
 
@@ -142,7 +149,7 @@ input {
   background-color: $box-color;
   border: 1px solid $box-border-color;
   border-radius: 8px;
-  margin-right: $box-spacing;
+  margin-right: $box-spacing-horizontal;
   padding-bottom: 0px;
   margin-bottom: 0px;
   display: flex;
@@ -213,11 +220,11 @@ input {
   background-color: $secondary-color;
   border-top-left-radius: 10px; 
   border-top-right-radius: 10px;
-  margin-left: 4px;
   position: relative;
   top: 10px;
   border: 1px solid rgb(131, 127, 127);
   display: flex;
+  margin-top: $box-spacing-vertical;
   
 
   .deleteButton {

@@ -1,15 +1,14 @@
 import React, { useEffect, useState } from "react";
 import ValueBox from './ValueBox'
 import EquationBox from './EquationBox'
+import './ErrorPropagator.scss';
 
 function ErrorPropagator() {
 
   // eslint-disable-next-line
   const [data, setData] = useState({ members: [] });
-
   // eslint-disable-next-line
   const [response, setResponse] = useState<number | null>(null);
-
 
   // box component states:
   const [numBoxes, setNumBoxes] = useState<number>(1); // track the number of boxes
@@ -21,15 +20,7 @@ function ErrorPropagator() {
 
   // we have two sets of errors, one for when the error is constant and one for when the error is variable
   const [errorValuesVariable, setErrorValuesVariable] = useState<string[]>(['']);
-  const[errorValuesConstant, setErrorValuesConstant] = useState<string[]>(['']);
-
-  // toggle this to trigger a useEffect in the ValueBox component
-  const[boxesChanged, setBoxesChanged] = useState<boolean>(false);
-
-
-  useEffect(() => {
-    setBoxesChanged(prev => !prev);
-  }, [numBoxes, constErrors]);
+  const [errorValuesConstant, setErrorValuesConstant] = useState<string[]>(['']);
 
   const updateNominalValues = (index: number, newNominalValue: string) => {
     const newNominalValuesList = [...nominalValues];
@@ -179,6 +170,10 @@ function ErrorPropagator() {
     }
   };
 
+  const handlePropagation = () => {
+    // TODO: if there are no issues with the input, propagate the error by making a POST request to the server
+  };
+
   /////////////////////////////////////////////
 
   return (
@@ -189,12 +184,14 @@ function ErrorPropagator() {
           value={equation ?? ''}
           onChange={(value: string) => setEquation(value)}
         />
-        <button onClick={addValueBox}>Add Variable</button>
+        <div className="noMP propagatorButtons">
+          <button onClick={addValueBox}>Add Variable</button>
+          <button className="propagationBtn" onClick={handlePropagation}>Propagate</button>
+        </div>
 
         <div className="valueBoxes">
-
           {variables.map((_, index) => (
-          <div key={index}>
+          <div key={index} className="noMP">
             <ValueBox
               variableName={variables[index]}
               onBoxDelete={() => removeValueBox(index)}
@@ -203,7 +200,6 @@ function ErrorPropagator() {
               updateErrorValuesVariable={(errorValue: string) => updateErrorValuesVariable(index, errorValue)}
               updateErrorValuesConstant={(errorValue: string) => updateErrorValuesConstant(index, errorValue)}
               updateConstErrors={(constError: boolean) => updateConstErrors(index, constError)}
-              toggle={boxesChanged}
             />
           </div>
           ))}
