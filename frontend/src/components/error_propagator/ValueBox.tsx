@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import './InputBoxes.scss';
-import deleteImage from '../assets/delete.png';
+import deleteImage from '../../assets/delete.png';
 import { InlineMath } from 'react-katex';
 
 interface ValueBoxProps { // interfaces can be used as a nice packing for types 

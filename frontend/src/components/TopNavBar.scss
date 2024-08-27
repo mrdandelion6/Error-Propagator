@@ -18,6 +18,12 @@ $nav-bar-height: 70px;
   margin: 0;
   padding: 0;
 
+  .navSide {
+    margin: 0;
+    padding: 0;
+    width: 1%;
+  }
+
   .rightGroup {
     height: 100%;
     padding: 0;
@@ -51,10 +57,17 @@ $nav-bar-height: 70px;
       display: flex;
       justify-content: center;
       align-items: center;
+      color: white;
 
       &:hover {
-        background-color: $btn-hover-color;
+        // background-color: $btn-hover-color;
         cursor: pointer;
+
+      }
+
+      img, p {
+        color: inherit;
+        font-size: 1.1em;
       }
 
       img {

@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
-import homeImg from '../assets/navbar/error.png';
+import homeImg from '../assets/scratch/error_propagator_3.png';
 import clubLogoImg from '../assets/navbar/club_logo_2.png';
-import docsImg from '../assets/navbar/book.png';
+// import docsImg from '../assets/navbar/book.png';
 import aboutImg from '../assets/navbar/about.png';
 import discordImg from '../assets/navbar/discord.png';
 // import trayImg from '../assets/navbar/tray.png';
@@ -11,20 +11,22 @@ import discordImg from '../assets/navbar/discord.png';
 import './TopNavBar.scss';
 
 const buttons = {
-  "names": ["Home", "Physics Club", "Docs", "About", "Discord", ],
+  "names": ["Home", "Physics Club", "Docs", "About", "Login", "Discord", ],
   "links": ["/", 
             "https://www.utm.utoronto.ca/cps/university-toronto-mississauga-physics-club",
-            "/Docs", 
-            "/About", 
+            "/docs", 
+            "/about",
+            "/login", 
             "https://discord.gg/558RfzrPNj"],
-  "external": [0, 1, 0, 0, 1],
-  "images": [homeImg, clubLogoImg, docsImg, aboutImg, discordImg],
-  "right": [0, 0, 1, 1, 1],  
-  "width": [80, 350, 75, 75, 75], // in px
-  "img_height": [80, 80, 75, 60, 50], // in percentage
+  "external": [0, 1, 0, 0, 0, 1],
+  "images": [homeImg, clubLogoImg, undefined, undefined, undefined, discordImg],
+  "right": [0, 0, 1, 1, 1, 1],  
+  "width": [80, 350, 60, 60, 120, 70], // in px
+  "img_height": [80, 80, 75, 60, 60, 50], // in percentage
+  "highlight": [0, 0, 0, 0, 1, 0]
 };
 
-// the following button is used when the view width is less than 650px
+// the following button is used when the view width is less than 800px
 const buttonTray = {
   // always goes to the right
   "name": "Tray",
@@ -70,11 +72,11 @@ function TopNavBar() {
       style={{
         width: buttons.width[index] + "px"
       }}>
-          <img 
+          { buttons.images[index] ? (<img 
             src={buttons.images[index]} 
             alt={buttons.names[index]} 
             style={{width: buttons.width[index] + "%", height: buttons.img_height[index] + "%"}}
-          />
+          />) : <p>{buttons.names[index]}</p> }
       </li>
     );
   }
@@ -108,6 +110,7 @@ function TopNavBar() {
   return (
     <nav className="topNavBar">
       <ul>
+        <div className='navSide'></div>
         {leftItems}
         <div className="rightGroup">
           { windowWidth > 650 ? rightItems : 
@@ -120,6 +123,7 @@ function TopNavBar() {
         </div>
       </ul>
       { showMenu ? null : null }
+      <div className='navSide'></div>
     </nav>
   );
 }

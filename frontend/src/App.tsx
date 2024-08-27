@@ -1,9 +1,11 @@
 import { Routes, Route } from 'react-router-dom';
 import TopNavBar from './components/TopNavBar'
-import ErrorPropagator from './components/ErrorPropagator';
-import Docs from './components/Docs';
-import Membership from './components/Membership';
-import About from './components/About';
+import ErrorPropagator from './components/error_propagator/ErrorPropagator';
+import Docs from './components/docs/Docs';
+import Membership from './components/membership/Membership';
+import About from './components/about/About';
+import Login from './components/login/Login';
+import Pro from './components/pro/Pro';
 // import './index.scss';
 
 function App() {
@@ -12,9 +14,11 @@ function App() {
       <TopNavBar/>
       <Routes>
         <Route path="/" element={ <ErrorPropagator /> }/>
-        <Route path="/Docs" element={ <Docs /> }/>
-        <Route path="/Membership" element={ <Membership /> }/>
-        <Route path="/About" element={ <About /> }/>
+        <Route path="/docs" element={ <Docs /> }/>
+        <Route path="/membership" element={ <Membership /> }/>
+        <Route path="/about" element={ <About /> }/>
+        <Route path="/login" element={ <Login /> }/>
+        <Route path="/pro" element={ <Pro /> }/>
       </Routes>
     </div>
   );
