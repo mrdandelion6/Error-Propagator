@@ -183,6 +183,7 @@ function ErrorPropagator() {
         <EquationBox 
           value={equation ?? ''}
           onChange={(value: string) => setEquation(value)}
+          vars={variables}
         />
         <div className="noMP propagatorButtons">
           <button onClick={addValueBox}>Add Variable</button>

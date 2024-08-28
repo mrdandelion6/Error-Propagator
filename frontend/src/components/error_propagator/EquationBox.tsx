@@ -1,20 +1,11 @@
 import './InputBoxes.scss';
-import { Parser } from "expr-eval";
 import React, { useState } from "react";
-
-function validateEquation(eqn: string, eqnVars: {properties: string}) {
-  const p = new Parser();
-  try {
-    p.evaluate(eqn, eqnVars);
-    return true;
-  } catch (error) {
-    return false;
-  }
-}
+// import validateEquation from '../../utils/validateEquation';
 
 interface EquationBoxProps { // interfaces can be used as a nice packing for types 
   value: string;
   onChange: (value: string) => void;
+  vars: string[];
 }
 
 function EquationBox({ value, onChange }: EquationBoxProps) {

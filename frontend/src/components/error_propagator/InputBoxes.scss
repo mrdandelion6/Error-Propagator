@@ -161,6 +161,7 @@ input {
     overflow-x: auto;
     margin-bottom: 5px;
     margin-right: $val-box-margin;
+    z-index: 1;
   }
 
   .separatingLine {
