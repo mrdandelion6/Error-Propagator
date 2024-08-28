@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import ValueBox from './ValueBox'
 import EquationBox from './EquationBox'
 import './ErrorPropagator.scss';
+import { validateEquation } from '../../utils/verifyInput';
+
 
 function ErrorPropagator() {
 
@@ -170,6 +172,14 @@ function ErrorPropagator() {
     }
   };
 
+  const handleEquationChange = (value: string) => {
+    // validate the equation
+    const equationResult: string = validateEquation(value, variables);
+    if (equationResult !== 'valid') {
+      console.log(equationResult);
+    }
+  };
+
   const handlePropagation = () => {
     // TODO: if there are no issues with the input, propagate the error by making a POST request to the server
   };
@@ -183,7 +193,7 @@ function ErrorPropagator() {
         <EquationBox 
           value={equation ?? ''}
           onChange={(value: string) => setEquation(value)}
-          vars={variables}
+          checkEquation={(value: string) => handleEquationChange(value)}
         />
         <div className="noMP propagatorButtons">
           <button onClick={addValueBox}>Add Variable</button>

@@ -49,4 +49,9 @@ describe('validateEquation', () => {
     expect(validateEquation('x + )y * z', ['x', 'y', 'z'])).toBe('Unexpected parenthesis');
     expect(validateEquation(')x + y * z', ['x', 'y', 'z'])).toBe('Unexpected parenthesis');
   });
+
+  // leading numbers
+  it('should not have an issue with leading numbers in variable names', () => {
+    expect(validateEquation('3x + 2y + 8z', ['x', 'y', 'z'])).toBe('');
+  });
 });

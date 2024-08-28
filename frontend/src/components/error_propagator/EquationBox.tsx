@@ -1,16 +1,17 @@
 import './InputBoxes.scss';
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 // import validateEquation from '../../utils/validateEquation';
 
 interface EquationBoxProps { // interfaces can be used as a nice packing for types 
   value: string;
   onChange: (value: string) => void;
-  vars: string[];
+  checkEquation: (value: string) => void;
 }
 
-function EquationBox({ value, onChange }: EquationBoxProps) {
+function EquationBox({ value, onChange, checkEquation }: EquationBoxProps) {
   const [isFocused, setIsFocused] = useState(false);
   const [isHoveringBar, setIsHoveringBar] = useState(false);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const scrollBarHoverCheck = (event: React.MouseEvent<HTMLTextAreaElement, MouseEvent>) => {
     const { clientY } = event;
@@ -21,21 +22,35 @@ function EquationBox({ value, onChange }: EquationBoxProps) {
     setIsHoveringBar(isInsideElement);
   }
 
+  const handleBlur = () => {
+    setIsFocused(false);
+    checkEquation(value);
+  }
+
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      textareaRef.current?.blur();
+    }
+  }
+
   return (
     <div className='noMP'>
       <div className={ isFocused ? "equationCase focusedElement" : "equationCase"}>
         <textarea
+          ref={textareaRef}
           className={ isHoveringBar ? "equationBox hoveringScrollbar" : "equationBox"}
           name="equation"
           value={value}
           onChange={(e) => onChange(e.target.value)}
           cols={1}
           rows={1}
-          onBlur={() => setIsFocused(false)}
+          onBlur={() => handleBlur()}
           onFocus={() => setIsFocused(true)}
           spellCheck="false"
           placeholder="Enter Equation"
           onMouseMove={(e) => scrollBarHoverCheck(e)}
+          onKeyDown={(e) => handleKeyDown(e)}
         ></textarea>
         <br />
       </div>

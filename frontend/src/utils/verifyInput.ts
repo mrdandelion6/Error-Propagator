@@ -52,7 +52,9 @@ export function validateEquation(eqn: string, vars: string[]): string {
   try {
     const parsed = p.parse(eqn);
     const enteredVariables = parsed.variables();
-    const unknownVars = enteredVariables.filter((v: string) => !vars.includes(v));
+    const unknownVars = enteredVariables.filter((v: string) => {
+      return !vars.some(knownVar => new RegExp(`^\\d*${knownVar}$`).test(v));
+    });
     if (unknownVars.length === 1) {
       return `Unknown variable: ${unknownVars[0]}`;
     }
