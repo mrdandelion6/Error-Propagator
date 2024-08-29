@@ -48,6 +48,8 @@ export function validateEquation(eqn: string, vars: string[]): string[] {
       'tparen' : "parenthesis",
       'top' : "operator",
       'tnumber' : "number",
+      'tbracket': "bracket",
+      'unknown character': 'invalid character',
     }
     for (const x in replaceItems) {
       if (Object.prototype.hasOwnProperty.call(replaceItems, x)) {
