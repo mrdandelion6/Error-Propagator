@@ -176,8 +176,10 @@ function ErrorPropagator() {
 
   const handleEquationChange = (value: string) => {
     // validate the equation
-    const equationResult: string = validateEquation(value, variables);
+    const equationResult = validateEquation(value, variables)[0];
     setEquationBadInputMessage(equationResult);
+    const newEquation = validateEquation(value, variables)[1];
+    setEquation(newEquation);
   };
 
   const handlePropagation = () => {
@@ -194,6 +196,7 @@ function ErrorPropagator() {
           value={equation ?? ''}
           onChange={(value: string) => setEquation(value)}
           checkEquation={(value: string) => handleEquationChange(value)}
+          equationBadInputMessage={equationBadInputMessage}
         />
         { equationBadInputMessage !== '' && 
           <p className="badInputMessage">{equationBadInputMessage}</p>

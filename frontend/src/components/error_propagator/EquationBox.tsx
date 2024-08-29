@@ -6,9 +6,10 @@ interface EquationBoxProps { // interfaces can be used as a nice packing for typ
   value: string;
   onChange: (value: string) => void;
   checkEquation: (value: string) => void;
+  equationBadInputMessage: string;
 }
 
-function EquationBox({ value, onChange, checkEquation }: EquationBoxProps) {
+function EquationBox({ value, onChange, checkEquation, equationBadInputMessage }: EquationBoxProps) {
   const [isFocused, setIsFocused] = useState(false);
   const [isHoveringBar, setIsHoveringBar] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -36,7 +37,8 @@ function EquationBox({ value, onChange, checkEquation }: EquationBoxProps) {
 
   return (
     <div className='noMP'>
-      <div className={ isFocused ? "equationCase focusedElement" : "equationCase"}>
+      <div className={ equationBadInputMessage !== '' ? "equationCase badInput" :
+        (isFocused ? "equationCase focusedElement" : "equationCase") }>
         <textarea
           ref={textareaRef}
           className={ isHoveringBar ? "equationBox hoveringScrollbar" : "equationBox"}
@@ -52,7 +54,6 @@ function EquationBox({ value, onChange, checkEquation }: EquationBoxProps) {
           onMouseMove={(e) => scrollBarHoverCheck(e)}
           onKeyDown={(e) => handleKeyDown(e)}
         ></textarea>
-        <br />
       </div>
   </div>
   );
