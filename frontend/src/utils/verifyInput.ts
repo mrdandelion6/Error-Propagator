@@ -123,4 +123,4 @@ export function validateValueBox(single: boolean, value: string): string[] {
     return ['Invalid error values provided', value];
   }
   return ['', value];
-}
+} // TODO: integrate this function into the ErrorPropagator component
