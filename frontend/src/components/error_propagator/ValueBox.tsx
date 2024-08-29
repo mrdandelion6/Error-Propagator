@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import './InputBoxes.scss';
 import deleteImage from '../../assets/delete.png';
 import { InlineMath } from 'react-katex';
+import { validateValueBox  } from "../../utils/verifyInput";
 
 interface ValueBoxProps { // interfaces can be used as a nice packing for types 
   variableName: string; // this prop needs to be determined by the parent component
@@ -74,7 +75,25 @@ function ValueBox({
 
   const handleBlur = (field: string) => {
     setIsFocused(false);
+    let validation: string[] = [];x
     // TODO: add validation checks and updates for the input
+    switch (field) {
+      case "nominalValue": {
+        validation = validateValueBox(true, nominalValue);
+        break;
+      }
+      case "variableError": {
+        validation = validateValueBox(false, variableErrorValue);
+        break;
+      }
+      case "constantError": {
+        validation = validateValueBox(true, constantErrorValue);
+        break;
+      }
+      default:
+        validation = ['', '']; // this should never happen but..
+        break;
+    }
   }
 
   return (
