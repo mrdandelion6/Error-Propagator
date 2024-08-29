@@ -4,6 +4,7 @@ function Login() {
     return (
         <div className="main">
         <h1>Login</h1>
+        <p>Coming soon...</p>
         <form>
             <label htmlFor="username">Username</label>
             <input type="text" id="username" name="username" />

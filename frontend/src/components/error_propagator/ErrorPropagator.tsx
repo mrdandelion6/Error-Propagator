@@ -206,21 +206,25 @@ function ErrorPropagator() {
           <button className="propagationBtn" onClick={handlePropagation}>Propagate</button>
         </div>
 
-        <div className="valueBoxes">
-          {variables.map((_, index) => (
-          <div key={index} className="noMP">
-            <ValueBox
-              variableName={variables[index]}
-              onBoxDelete={() => removeValueBox(index)}
-              updateVariables={(value: string) => updateVariables(index, value)}
-              updateNominalValues={(nominalValue: string) => updateNominalValues(index, nominalValue)}
-              updateErrorValuesVariable={(errorValue: string) => updateErrorValuesVariable(index, errorValue)}
-              updateErrorValuesConstant={(errorValue: string) => updateErrorValuesConstant(index, errorValue)}
-              updateConstErrors={(constError: boolean) => updateConstErrors(index, constError)}
-            />
+        { numBoxes > 0 ? (
+          <div className="valueBoxes">
+            {variables.map((_, index) => (
+            <div key={index} className="noMP">
+              <ValueBox
+                variableName={variables[index]}
+                onBoxDelete={() => removeValueBox(index)}
+                updateVariables={(value: string) => updateVariables(index, value)}
+                updateNominalValues={(nominalValue: string) => updateNominalValues(index, nominalValue)}
+                updateErrorValuesVariable={(errorValue: string) => updateErrorValuesVariable(index, errorValue)}
+                updateErrorValuesConstant={(errorValue: string) => updateErrorValuesConstant(index, errorValue)}
+                updateConstErrors={(constError: boolean) => updateConstErrors(index, constError)}
+              />
+            </div>
+            ))}
           </div>
-          ))}
-        </div>
+        ) : ( <><p className="noVarsMessage">Wow, it's looking empty here! To start, click "Add Variable".</p>
+          <p style={{ marginTop: "10px"}}>Read the <strong>docs</strong> for help.</p></>
+        )}
       </div>
   );
 }
