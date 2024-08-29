@@ -79,4 +79,8 @@ describe('validateEquation', () => {
     expect(validateEquation('          ', ['x', 'y'])[0]).toBe('');
   });
 
+  // unknown characters
+  it('should correctly point out the unknown character \\', () => {
+    expect(validateEquation('x\\ + y', ['x', 'y'])[0]).toBe("Unknown character \"\\\"");
+  });
 });

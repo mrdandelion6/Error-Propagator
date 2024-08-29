@@ -22,25 +22,38 @@ export function validateEquation(eqn: string, vars: string[]): string[] {
       return message;
     }
 
-    if (message.startsWith('parse error') && message.includes('Expected')) {
+    message = message.toLowerCase();
+    message = message.trim();
+
+    console.log("message is: ", message);
+    
+
+    if (message.startsWith('parse error')) {
       const words = message.split(' ');
-      message=words.slice(words.indexOf('Expected')).join(' ');
-      const errorLocation = words[words.indexOf('Expected') -1].slice(0, -1);
-      if ( errorLocation.endsWith(']') && errorLocation.startsWith('[') ) {
-        message += ' at character ' + errorLocation.slice(errorLocation.indexOf(':') + 1, errorLocation.indexOf(']'));
+      if (message.includes('expected')) {
+        message=words.slice(words.indexOf('expected')).join(' ');
+        const errorLocation = words[words.indexOf('expected') -1].slice(0, -1);
+        if ( errorLocation.endsWith(']') && errorLocation.startsWith('[') ) {
+          message += ' at character ' + errorLocation.slice(errorLocation.indexOf(':') + 1, errorLocation.indexOf(']'));
+        }
+      }
+      else {
+        if (words.length > words.indexOf('error') + 2) {
+          message = words.slice(words.indexOf('error') + 2).join(' ');
+        }
       }
     }
     const replaceItems: {[key: string]: string} = {
-      'EOF' : "end of equation",
-      'TPAREN' : "parenthesis",
-      'TOP' : "operator",
-      'TNUMBER' : "number",
+      'eof' : "end of equation",
+      'tparen' : "parenthesis",
+      'top' : "operator",
+      'tnumber' : "number",
     }
     for (const x in replaceItems) {
       if (Object.prototype.hasOwnProperty.call(replaceItems, x)) {
         message = message.replace(new RegExp(x, 'g'), replaceItems[x]);
         
-        if (x == 'TPAREN')  {
+        if (x == 'tparen')  {
           message = message.replace(/[:\s(]+$/, '');
           message = message.replace(/[:\s)]+$/, '');
         }
