@@ -37,6 +37,10 @@ function ValueBox({
   const[constantErrorValue, setConstantErrorValue] = useState('');
   const[constError, setConstError] = useState(true); // keep track if we have constant or variable error
 
+  // bad input messages
+  const[badNominalInputMessage, setBadNominalInputMessage] = useState<string>('');
+  const[badErrorInputMessage, setBadErrorInputMessage] = useState<string>('');
+
   const scrollBarHoverCheck = (event: React.MouseEvent<HTMLTextAreaElement, MouseEvent>) => {
     const { clientX, clientY } = event;
     const rect = (event.target as HTMLDivElement).getBoundingClientRect();
@@ -62,11 +66,15 @@ function ValueBox({
     updateErrorValuesConstant(error);
   };
 
-  // eslint-disable-next-line
   const errorToggle = () => { // implement error button reaction
     // when users click the error change button which swaps between constant error and variable error
     setConstError(!constError);
     updateConstErrors(!constError);
+  }
+
+  const handleBlur = (field: string) => {
+    setIsFocused(false);
+    // TODO: add validation checks and updates for the input
   }
 
   return (
@@ -99,7 +107,7 @@ function ValueBox({
         value={constantErrorValue}
         onChange={(e) => handleConstantErrorChange(e.target.value)}
         onFocus={() => {setIsFocused(true)}}
-        onBlur={() => {setIsFocused(false)}}
+        onBlur={() => {handleBlur("constantError")}}
       />
       )}
       <div className="boxCase">
@@ -113,7 +121,7 @@ function ValueBox({
           spellCheck="false"
           onMouseMove={(e) => scrollBarHoverCheck(e)}
           onFocus={() => {setIsFocused(true)}}
-          onBlur={() => {setIsFocused(false)}}
+          onBlur={() => {handleBlur("nominalValue")}}
         ></textarea>
         {!constError && (
         <>
@@ -128,7 +136,7 @@ function ValueBox({
             spellCheck="false"
             onMouseMove={(e) => scrollBarHoverCheck(e)}
             onFocus={() => {setIsFocused(true)}}
-            onBlur={() => {setIsFocused(false)}}
+            onBlur={() => {handleBlur("variableError")}}
           ></textarea></>
         )}
       </div>
