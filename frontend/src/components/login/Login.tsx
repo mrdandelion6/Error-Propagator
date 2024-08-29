@@ -2,7 +2,7 @@
 
 function Login() {
     return (
-        <div className="login">
+        <div className="main">
         <h1>Login</h1>
         <form>
             <label htmlFor="username">Username</label>

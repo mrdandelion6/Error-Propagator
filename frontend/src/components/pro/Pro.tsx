@@ -2,7 +2,7 @@
 
 function Pro() {
   return (
-    <div>
+    <div className="main">
       <h1>Pro</h1>
     </div>
   );
