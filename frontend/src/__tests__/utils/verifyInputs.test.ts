@@ -15,6 +15,10 @@ describe('validateEquation', () => {
     expect(validateEquation('x + y', ['x', 'y', 'z'])).toBe('');
   });
 
+  it('should not throw errors for empty equations', () => {
+    expect(validateEquation('', ['x', 'y'])).toBe('');
+  });
+
   // special functions
   it('should not have an issue with trig functions', () => {
     expect(validateEquation('sin(x^y^x^(3+x)) + cos(y)', ['x', 'y'])).toBe('');

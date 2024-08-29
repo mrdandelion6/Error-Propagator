@@ -24,6 +24,8 @@ function ErrorPropagator() {
   const [errorValuesVariable, setErrorValuesVariable] = useState<string[]>(['']);
   const [errorValuesConstant, setErrorValuesConstant] = useState<string[]>(['']);
 
+  const [equationBadInputMessage, setEquationBadInputMessage] = useState<string>('');
+
   const updateNominalValues = (index: number, newNominalValue: string) => {
     const newNominalValuesList = [...nominalValues];
     newNominalValuesList[index] = newNominalValue;
@@ -175,9 +177,7 @@ function ErrorPropagator() {
   const handleEquationChange = (value: string) => {
     // validate the equation
     const equationResult: string = validateEquation(value, variables);
-    if (equationResult !== 'valid') {
-      console.log(equationResult);
-    }
+    setEquationBadInputMessage(equationResult);
   };
 
   const handlePropagation = () => {
@@ -195,6 +195,9 @@ function ErrorPropagator() {
           onChange={(value: string) => setEquation(value)}
           checkEquation={(value: string) => handleEquationChange(value)}
         />
+        { equationBadInputMessage !== '' && 
+          <p className="badInputMessage">{equationBadInputMessage}</p>
+        }
         <div className="noMP propagatorButtons">
           <button onClick={addValueBox}>Add Variable</button>
           <button className="propagationBtn" onClick={handlePropagation}>Propagate</button>

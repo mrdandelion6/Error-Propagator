@@ -8,6 +8,10 @@ export function validateEquation(eqn: string, vars: string[]): string {
     The error message is displayed to the user in the ErrorPropagator component.
   */
 
+  if (eqn === '') {
+    return ''; // no errors
+  }
+
   const clean = (message: string): string => {
     // console.log(message);
 
