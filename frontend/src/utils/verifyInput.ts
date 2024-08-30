@@ -114,8 +114,11 @@ export function validateEquation(eqn: string, vars: string[]): string[] {
 
 export function validateValueBox(single: boolean, value: string): string[] {
   // this function is called by the ValueBox component to validate both nominal and error values entered by the user
-  // single is a boolean that indicates the value box is for a single value or for a variable (allows for nice recursion)
   // returns an array with two elements: the error message and the modified value: [error message, modified value]
+  // value: the value to be validated
+  // single: a boolean that indicates the value box is for a single value or for a variable (allows for nice recursion)
+
+  value = value.trim();
   if (value === '') {
     return ['', '']; // no errors
   }
@@ -131,7 +134,6 @@ export function validateValueBox(single: boolean, value: string): string[] {
   }
 
   // we have multiple values
-  value = value.trim();
   value = value.replace(',', '');
   const errors = value.split('\n');
   if (!errors.some(e => validateValueBox(true, e)[0] != '')) { // if there is some error message that is invalid

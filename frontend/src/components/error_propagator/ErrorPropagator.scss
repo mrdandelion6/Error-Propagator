@@ -1,3 +1,13 @@
+$delete-button-width: 40px;
+$error-button-width: 60px;
+$box-spacing-horizontal: 4.7vw;
+$val-box-width: calc(max(calc(8vw + 34px), 140px) );
+$val-box-margin: 5px;
+$err-box-margin: 5px;
+$err-box-width: calc($error-button-width + $delete-button-width - 2 * $err-box-margin - 1px);
+$box-width: calc($val-box-width + $err-box-width + $val-box-margin + 2 * $err-box-margin);
+
+
 .valueBoxes{
     display: flex;
     flex-wrap: wrap;
@@ -7,11 +17,17 @@
 
 .badInputMessage {
     color: red;
-    font-size: 1em;
+    font-size: 0.95em;
     margin-top: 0px;
     margin-bottom: 0px;
     margin-left: 0px;
     margin-right: 0px;
+    white-space: normal;
+    width: $box-width;
+
+    &.constError {
+        width: calc($val-box-width + $val-box-margin);
+    }
 }
 
 .propagatorButtons{
