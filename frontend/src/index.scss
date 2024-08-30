@@ -4,7 +4,8 @@
 
 $button-color: rgb(58, 138, 236);
 $btn-hover: #535bf2;
-$page-margins: 15vw;
+$page-width: calc(100vw - 14.2px);
+$page-margins: calc(0.15 * $page-width);
 
 * {
   margin: 0;

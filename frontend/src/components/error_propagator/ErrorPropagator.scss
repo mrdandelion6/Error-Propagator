@@ -1,17 +1,19 @@
+$page-scroll-bar-width: 14px;
+$page-width: calc(100vw - $page-scroll-bar-width);
+
 $delete-button-width: 40px;
 $error-button-width: 60px;
-$box-spacing-horizontal: 4.7vw;
 $val-box-width: calc(max(calc(8vw + 34px), 140px) );
-$val-box-margin: 5px;
-$err-box-margin: 5px;
-$err-box-width: calc($error-button-width + $delete-button-width - 2 * $err-box-margin - 1px);
-$box-width: calc($val-box-width + $err-box-width + $val-box-margin + 2 * $err-box-margin);
+$err-box-width: calc($error-button-width + $delete-button-width - 1px);
+$box-width: calc($val-box-width + $err-box-width);
+
+$box-spacing-horizontal: calc(max((0.7 * $page-width - 5 * $val-box-width) / 4, 10px));
 
 
 .valueBoxes{
     display: flex;
     flex-wrap: wrap;
-    margin-right: -4.7vw;
+    margin-right: calc(-1 * $box-spacing-horizontal - 2px);
     padding: 0px;
 }
 
@@ -26,7 +28,7 @@ $box-width: calc($val-box-width + $err-box-width + $val-box-margin + 2 * $err-bo
     width: $box-width;
 
     &.constError {
-        width: calc($val-box-width + $val-box-margin);
+        width: calc($val-box-width);
     }
 }
 
@@ -36,7 +38,7 @@ $box-width: calc($val-box-width + $err-box-width + $val-box-margin + 2 * $err-bo
 
     button {
         margin-top: 35px;
-        margin-bottom: 0px;
+        margin-bottom: 10px;
         margin-left: 0px;
         margin-right: 15px;
     }

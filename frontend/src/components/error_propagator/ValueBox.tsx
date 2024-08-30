@@ -54,18 +54,20 @@ function ValueBox({
 
   const updateErrorMessageHeight = () => {
     if (errorRef.current) {
+      console.log("updating error message height: ", errorRef.current.clientHeight);
       setErrorMessageHeight(errorRef.current.clientHeight);
+    } else { // the errorRef.current will be null if the error message is not displayed
+      setErrorMessageHeight(0);
     }
   };
 
   useEffect(() => {
     updateErrorMessageHeight();
-
     window.addEventListener('resize', updateErrorMessageHeight);
     return () => {
       window.removeEventListener('resize', updateErrorMessageHeight);
     };
-  }, [badErrorInputMessage]);
+  }, [badErrorInputMessage, badNominalInputMessage]);
 
   const scrollBarHoverCheck = (event: React.MouseEvent<HTMLTextAreaElement, MouseEvent>) => {
     const { clientX, clientY } = event;
@@ -102,23 +104,28 @@ function ValueBox({
   const handleBlur = (field: string) => {
     setIsFocused(false);
     let validation: string[] = [];
+    let tempBadNominalInputMessage = badNominalInputMessage;
+    let tempBadErrorInputMessage = badErrorInputMessage;
     switch (field) {
       case "nominalValue": {
         validation = validateValueBox(true, nominalValue);
         setBadNominalInputMessage(validation[0]);
         setNominalValue(validation[1]);
+        tempBadNominalInputMessage = validation[0];
         break;
       }
       case "variableError": {
         validation = validateValueBox(false, variableErrorValue);
         setBadErrorInputMessage(validation[0]);
         setVariableErrorValue(validation[1]);
+        tempBadErrorInputMessage = validation[0];
         break;
       }
       case "constantError": {
         validation = validateValueBox(true, constantErrorValue);
         setBadErrorInputMessage(validation[0]);
         setConstantErrorValue(validation[1]);
+        tempBadErrorInputMessage = validation[0];
         break;
       }
       default:
@@ -126,109 +133,103 @@ function ValueBox({
         break;
     }
     if (validation[0] !== '') {
-      console.log("test 1");
-      
       setHasError(true);
-    } else if (badNominalInputMessage === '' && badErrorInputMessage === '') {
-      console.log("test 2");
+    } else if (tempBadNominalInputMessage + tempBadErrorInputMessage === '') {
       setHasError(false);
     }
   }
 
   return (
-    <>
-      <div className={ (() => {
-          let class_name = "valueBoxPackage noMP"
-          if (hasError) {
-            class_name += " badInput"
-          }
-          if (constError) {
-            class_name += " constError"
-          }
-          return class_name;
-        })() // using an IIFE to determine the class name
-      }>
-        <div className="valBoxHeader">
-          <input 
-            className="boxVar" 
-            type="text" 
-            maxLength={4}
-            value={variableName}
-            onChange={(e) => updateVariables(e.target.value)}
-          />
-          
-          <div className="errorButton" onClick={() => errorToggle()}>
-            {/* TODO: instead of doing sigma_{c} with inline math, just use an image */}
-            { constError ? <InlineMath className="inline-math" math="\sigma_{c}" /> : <InlineMath className="inline-math" math="\sigma(x)" /> }
-          </div>
-
-          <div className="deleteButton" onClick={() => onBoxDelete()}>
-            <img src={deleteImage} alt="delete button" />
-          </div>
-        </div>
-        <div className={ hasError ? "errorBox focusedBox noMP" : (isFocused ? "focusedBox noMP" : "noMP") }/>
-        {badNominalInputMessage !== '' ? (<div ref={errorRef} className={!constError ? "badInputMessage inBoxMessage" : "badInputMessage inBoxMessage constError"}>{badNominalInputMessage}</div>
-        ) : (
-          badErrorInputMessage !== '' ? (<div ref={errorRef} className={!constError ? "badInputMessage inBoxMessage" : "badInputMessage inBoxMessage constError"}>{badErrorInputMessage}</div>
-          ) : (null)
-        )}
-        {constError && (
-        <input
-          placeholder="Enter Error"
-          spellCheck="false"
-          className="constErrorField" 
-          type="text"
-          value={constantErrorValue}
-          onChange={(e) => handleConstantErrorChange(e.target.value)}
-          onFocus={() => {setIsFocused(true)}}
-          onBlur={() => {handleBlur("constantError")}}
-          style={ hasError ? {borderTop: "none"} : {}}
+    <div className={(() => {
+        let class_name = "valueBoxPackage noMP"
+        if (hasError) {
+          class_name += " badInput"
+        }
+        if (constError) {
+          class_name += " constError"
+        }
+        return class_name;
+      })() // using an IIFE to determine the class name
+    }>
+      <div className="valBoxHeader">
+        <input 
+          className="boxVar" 
+          type="text" 
+          maxLength={4}
+          value={variableName}
+          onChange={(e) => updateVariables(e.target.value)}
         />
-        )}
-        <div className="boxCase">
+        
+        <div className="errorButton" onClick={() => errorToggle()}>
+          {/* TODO: instead of doing sigma_{c} with inline math, just use an image */}
+          { constError ? <InlineMath className="inline-math" math="\sigma_{c}" /> : <InlineMath className="inline-math" math="\sigma(x)" /> }
+        </div>
+
+        <div className="deleteButton" onClick={() => onBoxDelete()}>
+          <img src={deleteImage} alt="delete button" />
+        </div>
+      </div>
+      <div className={ hasError ? "invalidBox focusedBox noMP" : (isFocused ? "focusedBox noMP" : "noMP") }/>
+      {badNominalInputMessage !== '' ? (<div ref={errorRef} className={!constError ? "badInputMessage inBoxMessage" : "badInputMessage inBoxMessage constError"}>{badNominalInputMessage}</div>
+      ) : (
+        badErrorInputMessage !== '' ? (<div ref={errorRef} className={!constError ? "badInputMessage inBoxMessage" : "badInputMessage inBoxMessage constError"}>{badErrorInputMessage}</div>
+        ) : (null)
+      )}
+      {constError && (
+      <input
+        placeholder="Enter Error"
+        spellCheck="false"
+        className="constErrorField" 
+        type="text"
+        value={constantErrorValue}
+        onChange={(e) => handleConstantErrorChange(e.target.value)}
+        onFocus={() => {setIsFocused(true)}}
+        onBlur={() => {handleBlur("constantError")}}
+        style={ hasError ? {borderTop: "none"} : {}}
+      />
+      )}
+      <div className="boxCase">
+        <textarea
+          className={isHoveringOverScrollbar ? "valueBox hoveringScrollbar" : "valueBox"}
+          name="nominals"
+          value={nominalValue}
+          onChange={(e) => handleNominalValChange(e.target.value)}
+          cols={30}
+          rows={10}
+          spellCheck="false"
+          onMouseMove={(e) => scrollBarHoverCheck(e)}
+          onFocus={() => {setIsFocused(true)}}
+          onBlur={() => {handleBlur("nominalValue")}}
+          style={{height: (() => {
+            let height = boxHeight;
+            if (constError) {
+              height -= 40;
+            }
+            height -= errorMessageHeight;
+            console.log(errorMessageHeight)             
+  
+            return String(height) + "px";
+          })()}}
+        ></textarea>
+        {!constError && (
+        <>
+          <div className="separatingLine"></div>
           <textarea
-            className={isHoveringOverScrollbar ? "valueBox hoveringScrollbar" : "valueBox"}
-            name="nominals"
-            value={nominalValue}
-            onChange={(e) => handleNominalValChange(e.target.value)}
-            cols={30}
+            className={isHoveringOverScrollbar ? "errorBox hoveringScrollbar" : "errorBox"}
+            name="errors"
+            value={variableErrorValue}
+            onChange={(e) => handleVariableErrorChange(e.target.value)}
+            cols={20}
             rows={10}
             spellCheck="false"
             onMouseMove={(e) => scrollBarHoverCheck(e)}
             onFocus={() => {setIsFocused(true)}}
-            onBlur={() => {handleBlur("nominalValue")}}
-            style={{height: (() => {
-              let height = boxHeight;
-              if (constError) {
-                height -= 40;
-              }
-              if (badErrorInputMessage !== '') {
-                height -= errorMessageHeight;
-                console.log("error message height: ", errorMessageHeight);
-                
-              }
-              return String(height) + "px";
-            })()}}
+            onBlur={() => {handleBlur("variableError")}}
           ></textarea>
-          {!constError && (
-          <>
-            <div className="separatingLine"></div>
-            <textarea
-              className={isHoveringOverScrollbar ? "errorBox hoveringScrollbar" : "errorBox"}
-              name="errors"
-              value={variableErrorValue}
-              onChange={(e) => handleVariableErrorChange(e.target.value)}
-              cols={20}
-              rows={10}
-              spellCheck="false"
-              onMouseMove={(e) => scrollBarHoverCheck(e)}
-              onFocus={() => {setIsFocused(true)}}
-              onBlur={() => {handleBlur("variableError")}}
-            ></textarea></>
-          )}
-        </div>
+        </>
+        )}
       </div>
-    </>
+    </div>
   );
 }
 

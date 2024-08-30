@@ -24,8 +24,7 @@ export function validateEquation(eqn: string, vars: string[]): string[] {
 
     message = message.toLowerCase();
     message = message.trim();
-
-    console.log("message is: ", message);
+    // console.log("message is: ", message);
     
 
     if (message.startsWith('parse error')) {
@@ -75,10 +74,10 @@ export function validateEquation(eqn: string, vars: string[]): string[] {
   try {
     // use regex to modify the equation and add * between the coefficient and the variable if there exist any coefficients with no space, e.g) 2x -> 2*x
     const regex = /(?<![a-zA-Z0-9])(\d+(?:\.\d+)?)([a-zA-Z]+)/g;
-    const matches = eqn.match(regex);
     eqn = eqn.replace(regex, '$1*$2');
-    console.log("matches are: ", matches);
-    console.log("eqn is: ", eqn);
+    // const matches = eqn.match(regex);
+    // console.log("matches are: ", matches);
+    // console.log("eqn is: ", eqn);
     const parsed = p.parse(eqn);
     const enteredVariables: string[] = parsed.variables();
     
@@ -118,23 +117,23 @@ export function validateValueBox(single: boolean, value: string): string[] {
   // value: the value to be validated
   // single: a boolean that indicates the value box is for a single value or for a variable (allows for nice recursion)
 
+  value = value.replace(',', '');
   value = value.trim();
   if (value === '') {
     return ['', '']; // no errors
   }
+  
   if (single) {
-    const num = parseFloat(value);
-    if (isNaN(num)) {
-      const numElements = value.split(' ').length;
-      if (numElements > 1) {
-        return ['Constant error value must be a single number', value];
-      }
+    if (['\n', '\t', ' '].some(flag => value.includes(flag))) {
+      return ['Constant error value must be a single number', value];
+    }
+    if (isNaN(Number(value))) {
       return ['Constant error value must be a number', value];
     }
+    return ['', value]; // no errors
   }
 
   // we have multiple values
-  value = value.replace(',', '');
   const errors = value.split('\n');
   if (!errors.some(e => validateValueBox(true, e)[0] != '')) { // if there is some error message that is invalid
     return ['Invalid error values provided', value];

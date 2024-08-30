@@ -1,4 +1,4 @@
-import { validateEquation } from '../../utils/verifyInput';
+import { validateEquation, validateValueBox } from '../../utils/verifyInput';
 
 describe('validateEquation', () => {
   // basic valid equations
@@ -82,5 +82,33 @@ describe('validateEquation', () => {
   // unknown characters
   it('should correctly point out the unknown character \\', () => {
     expect(validateEquation('x\\ + y', ['x', 'y'])[0]).toBe("Invalid character \"\\\"");
+  });
+});
+
+
+describe('validateValueBox', () => {
+  // basic valid equations
+  it('should return empty string for valid equations', () => {
+    expect(validateValueBox(true, '3.2')).toEqual(['', '3.2']);
+    expect(validateValueBox(true, '3')).toEqual(['', '3']);
+    expect(validateValueBox(true, '234234')).toEqual(['', '234234']);
+  });
+
+  it('should return a complaint when non numeric values are entered', () => {
+    expect(validateValueBox(true, '3.2a')).toEqual(['Constant error value must be a number', '3.2a']);
+    expect(validateValueBox(true, '3a')).toEqual(['Constant error value must be a number', '3a']);
+    expect(validateValueBox(true, '234234a')).toEqual(['Constant error value must be a number', '234234a']);
+  });
+
+  it('should return a unique complaint when multiple values are entered', () => {
+    expect(validateValueBox(true, '3.2, 3.2')).toEqual(['Constant error value must be a single number', '3.2 3.2']);
+    expect(validateValueBox(true, '3, 3')).toEqual(['Constant error value must be a single number', '3 3']);
+    expect(validateValueBox(true, '234234, 234234')).toEqual(['Constant error value must be a single number', '234234 234234']);
+    expect(validateValueBox(true, '3.2 4.5')).toEqual(['Constant error value must be a single number', '3.2 4.5']);
+    expect(validateValueBox(true, '3 4')).toEqual(['Constant error value must be a single number', '3 4']);
+    expect(validateValueBox(true, '234234 234234')).toEqual(['Constant error value must be a single number', '234234 234234']);
+    expect(validateValueBox(true, '3.2\n4.5')).toEqual(['Constant error value must be a single number', '3.2\n4.5']);
+    expect(validateValueBox(true, '3\n4')).toEqual(['Constant error value must be a single number', '3\n4']);
+    expect(validateValueBox(true, '234234\n234234')).toEqual(['Constant error value must be a single number', '234234\n234234']);
   });
 });

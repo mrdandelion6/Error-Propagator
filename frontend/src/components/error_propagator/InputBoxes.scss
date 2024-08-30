@@ -1,30 +1,32 @@
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Math&display=swap');
 @import 'katex/dist/katex.min.css';
 
+$page-scroll-bar-width: 14px;
+$page-width: calc(100vw - $page-scroll-bar-width);
+
 // general styling
 $box-color: rgb(240, 239, 239);
 $text-color: rgb(41, 40, 40);
 $box-border-color: rgb(128, 120, 120);
-$box-spacing-horizontal: 4.7vw;
 $box-spacing-vertical: 30px;
 $box-height: 500px;
 
 // header styling
-$button-height: 39px;
+$button-height: 40px;
 $delete-button-width: 40px;
 $error-button-width: 60px;
 $btn-hover: #535bf2;
 
 // box styling
-$val-box-width: calc(max(calc(8vw + 34px), 140px) );
-$val-box-margin: 5px;
-$err-box-margin: 5px;
-$err-box-width: calc($error-button-width + $delete-button-width - 2 * $err-box-margin - 1px);
-$box-width: calc($val-box-width + $err-box-width + $val-box-margin + 2 * $err-box-margin);
+$val-box-width: calc(max(calc(8vw + 34px), 140px));
+$err-box-width: calc($error-button-width + $delete-button-width - 1px);
+$box-width: calc($val-box-width + $err-box-width);
 $secondary-color: rgb(255, 255, 255);
 
 $focus-color: rgba(0, 195, 255, 0.315);
 $error-color: rgba(255, 80, 80, 0.473);
+
+$box-spacing-horizontal: calc(max((0.7 * $page-width - 5 * $val-box-width) / 4, 10px));
 
 textarea {
   background-color: $box-color;
@@ -87,7 +89,7 @@ input {
 .focusedBox{
   position: absolute;
   width: calc($box-width + 8px);
-  height: calc($box-height + 16px);
+  height: calc($box-height + 19px);
   border: 5px solid $focus-color;
   border-top: none;
   border-bottom-left-radius: 10px;
@@ -95,23 +97,12 @@ input {
   border-top-left-radius: 5px;
   border-top-right-radius: 5px;
   left: -4px;
-  top: 46px;
+  top: 39px;
 
-  &.errorBox {
+  &.invalidBox {
     border: 5px solid $error-color;
     border-top: none;
   } 
-}
-
-.constErrorField {
-  width: calc($val-box-width + $val-box-margin);
-  height: 40px;
-  background-color: $box-color;
-  border: 1px solid $box-border-color;
-  font-family: inherit;
-  padding-top: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
 }
 
 .equationCase {
@@ -162,8 +153,12 @@ input {
   border-radius: 8px;
   margin-right: $box-spacing-horizontal;
   padding-bottom: 0px;
+  padding-top: 0px;
   margin-bottom: 0px;
   display: flex;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  border-top: none;
 
   .valueBox {
     padding: 0px;
@@ -172,7 +167,6 @@ input {
     white-space: nowrap;
     overflow-x: auto;
     margin-bottom: 5px;
-    margin-right: $val-box-margin;
   }
 
   .separatingLine {
@@ -184,13 +178,12 @@ input {
 
   .errorBox {
     padding: 0px;
+    padding-left: 5px;
     width: $err-box-width;
     height: $box-height;
     white-space: nowrap;
     overflow-x: auto;
     margin-bottom: 5px;
-    margin-right: $err-box-margin;
-    margin-left: $err-box-margin;
   }
 }
 
@@ -199,16 +192,25 @@ input {
   position: relative;
   height: calc($box-height + 70px);
 
+  .focusedBox {
+    z-index: -1;
+  }
+
   &.constError {
     // for constant errors
     .boxCase {
-      width: calc($val-box-width + $val-box-margin);
+      width: calc($val-box-width);
       border-top-left-radius: 0px;
       border-top-right-radius: 0px;
       border-top: none;
     }
+
+    .focusedBox {
+      width: calc($val-box-width + 8px);
+    } 
+
     .valBoxHeader {
-      width: calc($val-box-width + $val-box-margin);
+      width: calc($val-box-width);
     }
 
     .errorButton {
@@ -216,13 +218,20 @@ input {
       // right: 65px;
     }
 
-    .focusedBox {
-      width: calc($val-box-width + $val-box-margin + 8px);
-      z-index: -1;
-    }
-
     .valueBox {
       height: calc($box-height - 40px);
+    }
+
+    .constErrorField {
+      width: calc($val-box-width);
+      height: 40px;
+      background-color: $box-color;
+      border: 1px solid $box-border-color;
+      font-family: inherit;
+      padding-top: 4px;
+      padding-left: 5px;
+      padding-right: 5px;
+      border-top: none;
     }
   }
 
@@ -233,7 +242,7 @@ input {
   }
 
   .inBoxMessage {
-    padding-top: 14px;
+    padding-top: 5px;
     background-color: white;
     border: 1px solid $box-border-color;
     border-top: none;
@@ -247,7 +256,7 @@ input {
   background-color: $secondary-color;
   border-top-left-radius: 10px; 
   border-top-right-radius: 10px;
-  position: relative;
+  // position: relative;
   top: 10px;
   border: 1px solid rgb(131, 127, 127);
   display: flex;
@@ -260,7 +269,7 @@ input {
     height: $button-height;
     position: absolute;
     top: 0px;
-    right: 0%;
+    right: calc(0% + $box-spacing-horizontal);
     border-top-right-radius: 9px;
     display: flex;
     justify-content: center;
@@ -282,7 +291,7 @@ input {
     height: $button-height;
     position: absolute;
     top: 0px;
-    right: 40px;
+    right: calc(0% + $box-spacing-horizontal + 40px);
     display: flex;
     justify-content: center;
     align-items: center;
