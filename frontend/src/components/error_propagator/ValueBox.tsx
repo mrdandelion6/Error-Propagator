@@ -57,9 +57,10 @@ function ValueBox({
   const variableErrorRef = useRef<HTMLTextAreaElement>(null);
   const constErrorRef = useRef<HTMLInputElement>(null);
 
+  const[focusedBefore, setFocusedBefore] = useState<boolean[]>([false, false, false]) // for [nominal, variable, constant] errors
+
   const updateErrorMessageHeight = () => {
     if (errorRef.current) {
-      console.log("updating error message height: ", errorRef.current.clientHeight);
       setErrorMessageHeight(errorRef.current.clientHeight);
     } else { // the errorRef.current will be null if the error message is not displayed
       setErrorMessageHeight(0);
@@ -103,43 +104,51 @@ function ValueBox({
     // when users click the error change button which swaps between constant error and variable error
     setConstError(!constError);
     updateConstErrors(!constError);
-    handleBlur(constError ? "variableError" : "constantError");
+    console.log("changing constError to: " + !constError);
+    handleBlur(!constError);
   }
 
-  const handleBlur = (field: string) => {
+  const handleFocus = (index: number) => {
+    const newFocusedBefore = [...focusedBefore];
+    newFocusedBefore[index] = true;
+    setFocusedBefore(newFocusedBefore);
+    console.log(focusedBefore);
+    setIsFocused(true);
+  }
+
+  const handleBlur = (constantError: boolean=constError) => {
+    if (!focusedBefore.includes(true)) {
+      return
+    }
+
     setIsFocused(false);
     let validation: string[] = [];
     let tempBadNominalInputMessage = badNominalInputMessage;
     let tempBadErrorInputMessage = badErrorInputMessage;
-    switch (field) {
-      case "nominalValue": {
-        validation = validateValueBox(false, nominalValue, false);
-        setBadNominalInputMessage(validation[0]);
-        setNominalValue(validation[1]);
-        tempBadNominalInputMessage = validation[0];
-        break;
-      }
-      case "variableError": {
-        validation = validateValueBox(false, variableErrorValue);
-        setBadErrorInputMessage(validation[0]);
-        setVariableErrorValue(validation[1]);
-        tempBadErrorInputMessage = validation[0];
-        break;
-      }
-      case "constantError": {
-        validation = validateValueBox(true, constantErrorValue);
-        setBadErrorInputMessage(validation[0]);
-        setConstantErrorValue(validation[1]);
-        tempBadErrorInputMessage = validation[0];
-        break;
-      }
-      default:
-        validation = ['', '']; // we should never get a default case
-        break;
+
+    // first check nominal vals
+    validation = validateValueBox(false, nominalValue, false);
+    setBadNominalInputMessage(validation[0]);
+    setNominalValue(validation[1]);
+    tempBadNominalInputMessage = validation[0];
+
+    // then check error vals
+    console.log("in handleBlur, constantError is: " + constantError);
+    if (constantError) {
+      validation = validateValueBox(true, constantErrorValue);
+      setBadErrorInputMessage(validation[0]);
+      setConstantErrorValue(validation[1]);
+      tempBadErrorInputMessage = validation[0];
+    } else {
+      validation = validateValueBox(false, variableErrorValue);
+      setBadErrorInputMessage(validation[0]);
+      setVariableErrorValue(validation[1]);
+      tempBadErrorInputMessage = validation[0];
     }
-    if (validation[0] !== '') {
+
+    if (tempBadNominalInputMessage + tempBadErrorInputMessage !== '') {
       setHasError(true);
-    } else if (tempBadNominalInputMessage + tempBadErrorInputMessage === '') {
+    } else {
       setHasError(false);
     }
   }
@@ -242,7 +251,7 @@ function ValueBox({
           value={variableName}
           onChange={(e) => updateVariables(e.target.value)}
           onFocus={() => {setIsFocused(true)}}
-          onBlur={() => {handleBlur("variableName")}}
+          onBlur={() => {handleBlur()}}
         />
         
         <div className="errorButton" onClick={() => errorToggle()}>
@@ -269,8 +278,8 @@ function ValueBox({
         type="text"
         value={constantErrorValue}
         onChange={(e) => handleConstantErrorChange(e.target.value)}
-        onFocus={() => {setIsFocused(true)}}
-        onBlur={() => {handleBlur("constantError")}}
+        onFocus={() => {handleFocus(2)}}
+        onBlur={() => {handleBlur()}}
         style={ hasError ? {borderTop: "none"} : {}}
         onKeyDown={(e) => handleKeyDown(e, "constantError")}
       />
@@ -286,8 +295,8 @@ function ValueBox({
           rows={10}
           spellCheck="false"
           onMouseMove={(e) => scrollBarHoverCheck(e)}
-          onFocus={() => {setIsFocused(true)}}
-          onBlur={() => {handleBlur("nominalValue")}}
+          onFocus={() => {handleFocus(0)}}
+          onBlur={() => {handleBlur()}}
           style={{height: String(getHeight()) + "px"}}
           onKeyDown={(e) => handleKeyDown(e, "nominalValue")}
         ></textarea>
@@ -304,8 +313,8 @@ function ValueBox({
             rows={10}
             spellCheck="false"
             onMouseMove={(e) => scrollBarHoverCheck(e)}
-            onFocus={() => {setIsFocused(true)}}
-            onBlur={() => {handleBlur("variableError")}}
+            onFocus={() => {handleFocus(1)}}
+            onBlur={() => {handleBlur()}}
             style={{height: String(getHeight()) + "px"}}
             onKeyDown={(e) => handleKeyDown(e, "variableError")}
           ></textarea>

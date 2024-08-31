@@ -11,7 +11,7 @@ export function validateEquation(eqn: string, vars: string[]): string[] {
 
   eqn = eqn.trim();
   if (eqn === '') {
-    return ['', '']; // no errors
+    return ['Empty equation', ''];
   }
 
   const clean = (message: string): string => {
@@ -116,11 +116,12 @@ export function validateValueBox(single: boolean, value: string, isError: boolea
   // returns an array with two elements: the error message and the modified value: [error message, modified value]
   // value: the value to be validated
   // single: a boolean that indicates the value box is for a single value or for a variable (allows for nice recursion)
-
+  
   value = value.replace(',', '');
   value = value.trim();
   if (value === '') {
-    return ['', '']; // no errors
+    const errorType = isError ? 'error' : 'nominal';
+    return [single ? `Empty ${errorType} field` : `Empty ${errorType} fields`, ''];
   }
   
   if (single) {
@@ -135,7 +136,7 @@ export function validateValueBox(single: boolean, value: string, isError: boolea
 
   // we have multiple values
   const errors = value.split('\n');
-  console.log("errors are: ", errors);
+  // console.log("we have errors in multiple values");
   
   if (errors.some(e => validateValueBox(true, e)[0] != '')) { // if there is some error message that is invalid
     if (isError) {

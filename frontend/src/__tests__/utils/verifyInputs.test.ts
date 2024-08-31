@@ -15,8 +15,8 @@ describe('validateEquation', () => {
     expect(validateEquation('x + y', ['x', 'y', 'z'])[0]).toBe('');
   });
 
-  it('should not throw errors for empty equations', () => {
-    expect(validateEquation('', ['x', 'y'])[0]).toBe('');
+  it('should not throw error for empty equations', () => {
+    expect(validateEquation('', ['x', 'y'])[0]).toBe('Empty equation');
   });
 
   // special functions
@@ -76,7 +76,7 @@ describe('validateEquation', () => {
     expect(validateEquation('x + y ', ['x', 'y'])[0]).toBe('');
     expect(validateEquation(' x + y', ['x', 'y'])[0]).toBe('');
     expect(validateEquation('x + y', ['x', 'y'])[0]).toBe('');
-    expect(validateEquation('          ', ['x', 'y'])[0]).toBe('');
+    expect(validateEquation('          ', ['x', 'y'])[0]).toBe('Empty equation');
   });
 
   // unknown characters
@@ -110,5 +110,12 @@ describe('validateValueBox', () => {
     expect(validateValueBox(true, '3.2\n4.5')).toEqual(['Constant error value must be a single number', '3.2\n4.5']);
     expect(validateValueBox(true, '3\n4')).toEqual(['Constant error value must be a single number', '3\n4']);
     expect(validateValueBox(true, '234234\n234234')).toEqual(['Constant error value must be a single number', '234234\n234234']);
+  });
+
+  it('should return a complaint when the value is empty', () => {
+    expect(validateValueBox(true, '')).toEqual(['Empty error field', '']);
+    expect(validateValueBox(false, '')).toEqual(['Empty error fields', '']);
+    expect(validateValueBox(true, '', false)).toEqual(['Empty nominal field', '']);
+    expect(validateValueBox(false, '', false)).toEqual(['Empty nominal fields', '']);
   });
 });

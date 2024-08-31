@@ -39,17 +39,6 @@ function ErrorPropagator() {
   }
 
   const updateErrorValuesConstant = (index: number, newErrorValue: string) => {
-    // ensure that it is a single value
-    const flags = [",", " ", "\n", "\t"];
-    if (flags.some(flag => newErrorValue.includes(flag))) {
-      console.log("Error: constant error value must be a single value");
-      return;
-    }
-    if (isNaN(Number(newErrorValue))) {
-      // TODO: add functionality for red squiggly line and do not allow submission
-      console.log("Error: constant error value must be a number");
-      return;
-    }
     const newErrorValuesConstant = [...errorValuesConstant];
     newErrorValuesConstant[index] = newErrorValue;
     setErrorValuesConstant(newErrorValuesConstant);
@@ -121,7 +110,6 @@ function ErrorPropagator() {
 
   const updateVariables = (index: number, value: string) => {
     // update the list of variables
-    // console.log(`changing variable ${value}`);
     const newVariables = [...variables];
     newVariables[index] = value; // update the state of the specific box
     setVariables(newVariables);
@@ -151,7 +139,6 @@ function ErrorPropagator() {
   // eslint-disable-next-line
   const handleSubmit = async (event: React.FormEvent, inputData: string) => {
     event.preventDefault();
-    console.log(`pressed sub:\n${inputData}`);
 
     try {
       const response = await fetch("api/submit", {
@@ -165,7 +152,6 @@ function ErrorPropagator() {
       if (response.ok) {
         const data: number = await response.json();
         setResponse(data);
-        console.log(data);
       } else {
         console.error("Server returned an error:", response.statusText);
       }
