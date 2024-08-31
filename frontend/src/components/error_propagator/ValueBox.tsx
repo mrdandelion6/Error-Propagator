@@ -52,6 +52,10 @@ function ValueBox({
   const errorRef = useRef<HTMLDivElement>(null);
   const [errorMessageHeight, setErrorMessageHeight] = useState(0);
 
+  // references to the text areas
+  const nominalRef = useRef<HTMLTextAreaElement>(null);
+  const variableErrorRef = useRef<HTMLTextAreaElement>(null);
+
   const updateErrorMessageHeight = () => {
     if (errorRef.current) {
       console.log("updating error message height: ", errorRef.current.clientHeight);
@@ -108,7 +112,7 @@ function ValueBox({
     let tempBadErrorInputMessage = badErrorInputMessage;
     switch (field) {
       case "nominalValue": {
-        validation = validateValueBox(true, nominalValue);
+        validation = validateValueBox(false, nominalValue, false);
         setBadNominalInputMessage(validation[0]);
         setNominalValue(validation[1]);
         tempBadNominalInputMessage = validation[0];
@@ -136,6 +140,98 @@ function ValueBox({
       setHasError(true);
     } else if (tempBadNominalInputMessage + tempBadErrorInputMessage === '') {
       setHasError(false);
+    }
+  }
+
+  const getHeight = (): number => {
+    // return the height of the box as a number
+    let height = boxHeight;
+    if (constError) {
+      height -= 40;
+    }
+    height -= errorMessageHeight;
+    return height;
+  }
+
+  const setFocus = (location: string) => {
+    switch (location) {
+      case "nominalValue":
+        nominalRef.current?.focus();
+        break;
+      case "variableError":
+        variableErrorRef.current?.focus();
+        break;
+      default:
+        break
+    }
+    if (!hasError) {
+      setIsFocused(true);
+    }
+  }
+
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>, eventLocation: string) => {
+    if (event.key === 'Enter') {
+      // only listening for the enter key
+      if (event.ctrlKey) { // if ctrl + enter
+        // should cause a blur event
+        const validLocations = ["nominalValue", "variableError", "constantError"];
+        if (!validLocations.includes(eventLocation)) {
+          return;
+        }
+        event.preventDefault();
+        switch (eventLocation) {
+          case "nominalValue":
+            handleBlur("nominalValue");
+            break;
+          case "variableError":
+            handleBlur("variableError");
+            break;
+          case "constantError":
+            handleBlur("constantError");
+            break;
+          // no default case, we should never get here because of the check at the beginning
+        }
+      }
+
+      else if (event.shiftKey) { // if shift + enter
+        // should cause a blur event then focus on the other box.
+        // pressing enter in contsantError will have same effect
+        const validLocations = ["nominalValue", "variableError, constantError"];
+        if (!validLocations.includes(eventLocation)) {
+          return;
+        }
+        event.preventDefault();
+        switch (eventLocation) {
+          case "nominalValue":
+            handleBlur("nominalValue");
+            setFocus("variableError");
+            break;
+          case "variableError": // there is nothing to focus on after variable error
+            handleBlur("variableError");
+            break;
+          case "constantError": 
+            handleBlur("constantError");
+            setFocus("nominalValue");
+            break;
+          // no default case, we should never get here because of the check at the beginning
+        }
+      }
+    
+      else {
+        // only for the constant error field, should cause blur then focus on nominal value box
+        const validLocations = ["constantError"];
+        if (!validLocations.includes(eventLocation)) {
+          return;
+        }
+        event.preventDefault();
+        switch (eventLocation) {
+          case "constantError":
+            handleBlur("constantError");
+            setFocus("nominalValue");
+            break;
+          // no default case, we should never get here because of the check at the beginning
+        }
+      }
     }
   }
 
@@ -190,6 +286,7 @@ function ValueBox({
       )}
       <div className="boxCase">
         <textarea
+          ref={nominalRef}
           className={isHoveringOverScrollbar ? "valueBox hoveringScrollbar" : "valueBox"}
           name="nominals"
           value={nominalValue}
@@ -200,21 +297,13 @@ function ValueBox({
           onMouseMove={(e) => scrollBarHoverCheck(e)}
           onFocus={() => {setIsFocused(true)}}
           onBlur={() => {handleBlur("nominalValue")}}
-          style={{height: (() => {
-            let height = boxHeight;
-            if (constError) {
-              height -= 40;
-            }
-            height -= errorMessageHeight;
-            console.log(errorMessageHeight)             
-  
-            return String(height) + "px";
-          })()}}
+          style={{height: String(getHeight()) + "px"}}
         ></textarea>
         {!constError && (
         <>
           <div className="separatingLine"></div>
           <textarea
+            ref={variableErrorRef}
             className={isHoveringOverScrollbar ? "errorBox hoveringScrollbar" : "errorBox"}
             name="errors"
             value={variableErrorValue}
@@ -225,6 +314,7 @@ function ValueBox({
             onMouseMove={(e) => scrollBarHoverCheck(e)}
             onFocus={() => {setIsFocused(true)}}
             onBlur={() => {handleBlur("variableError")}}
+            style={{height: String(getHeight()) + "px"}}
           ></textarea>
         </>
         )}
