@@ -6,6 +6,7 @@ import { validateValueBox  } from "../../utils/verifyInput";
 
 interface ValueBoxProps { // interfaces can be used as a nice packing for types 
   variableName: string; // this prop needs to be determined by the parent component
+  otherVariableNames: string[]; // this prop needs to be determined by the parent component
   onBoxDelete: () => void; // delete function
   updateVariables: (value: string) => void;
   updateNominalValues: (nominalValue: string) => void;
@@ -16,9 +17,10 @@ interface ValueBoxProps { // interfaces can be used as a nice packing for types
 
 
 function ValueBox({ 
+  variableName,
+  otherVariableNames,
   updateVariables,
   onBoxDelete,
-  variableName,
   updateNominalValues,
   updateErrorValuesVariable,
   updateErrorValuesConstant,

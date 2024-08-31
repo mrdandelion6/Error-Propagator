@@ -198,6 +198,7 @@ function ErrorPropagator() {
             <div key={index} className="noMP">
               <ValueBox
                 variableName={variables[index]}
+                otherVariableNames={variables.filter((_, i) => i !== index)}
                 onBoxDelete={() => removeValueBox(index)}
                 updateVariables={(value: string) => updateVariables(index, value)}
                 updateNominalValues={(nominalValue: string) => updateNominalValues(index, nominalValue)}

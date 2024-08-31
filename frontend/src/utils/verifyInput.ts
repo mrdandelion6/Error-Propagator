@@ -1,5 +1,7 @@
 import { Parser } from "expr-eval";
 
+const constants = ['pi', 'e'];
+
 export function validateEquation(eqn: string, vars: string[]): string[] {
   /* 
     This function is called by the ErrorPropagator component to validate the equation entered by the user.
@@ -65,9 +67,8 @@ export function validateEquation(eqn: string, vars: string[]): string[] {
     return message;
   }
 
-  const constants = ['pi', 'e'];
   if (vars.some(v => constants.includes(v))) {
-    return ['Variable name conflicts with known constants: pi, e', eqn];
+    return ['Variable name conflicts with known constants: ' + constants.join(', '), eqn];
   }
   vars = vars.concat(constants); // add constants to known variables
   const p = new Parser();
@@ -147,8 +148,23 @@ export function validateValueBox(single: boolean, value: string, isError: boolea
   return ['', value];
 } 
 
-export function validateVariable(variable: string, knownVars: string[]): string[] {
-  // TODO: implement this function
+export function validateVariable(variable: string, existingVars: string[]): string[] {
+  variable = variable.trim();
+  
+  if (existingVars.includes(variable)) {
+    return ['Variable already exists', variable];
+  }
+
+  if (constants.includes(variable)) {
+    return ['Variable name conflicts with known constants: ' + constants.join(', '), variable];
+  }
+
+  const regex = /^[a-zA-Z][a-zA-Z0-9]+$/
+  if (!regex.test(variable)) {
+    return ['Variable name must be alphanumeric and begin with letter', variable];
+  }
+  // TODO: integrate the checking into ValueBox component and use the otherVariables prop to check for conflicts
+
   return ['', ''];
 }
 
