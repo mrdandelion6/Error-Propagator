@@ -55,6 +55,7 @@ function ValueBox({
   // references to the text areas
   const nominalRef = useRef<HTMLTextAreaElement>(null);
   const variableErrorRef = useRef<HTMLTextAreaElement>(null);
+  const constErrorRef = useRef<HTMLInputElement>(null);
 
   const updateErrorMessageHeight = () => {
     if (errorRef.current) {
@@ -153,23 +154,7 @@ function ValueBox({
     return height;
   }
 
-  const setFocus = (location: string) => {
-    switch (location) {
-      case "nominalValue":
-        nominalRef.current?.focus();
-        break;
-      case "variableError":
-        variableErrorRef.current?.focus();
-        break;
-      default:
-        break
-    }
-    if (!hasError) {
-      setIsFocused(true);
-    }
-  }
-
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>, eventLocation: string) => {
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement> | React.KeyboardEvent<HTMLInputElement>, eventLocation: string) => {
     if (event.key === 'Enter') {
       // only listening for the enter key
       if (event.ctrlKey) { // if ctrl + enter
@@ -181,13 +166,13 @@ function ValueBox({
         event.preventDefault();
         switch (eventLocation) {
           case "nominalValue":
-            handleBlur("nominalValue");
+            nominalRef.current?.blur();
             break;
           case "variableError":
-            handleBlur("variableError");
+            variableErrorRef.current?.blur();
             break;
           case "constantError":
-            handleBlur("constantError");
+            constErrorRef.current?.blur();
             break;
           // no default case, we should never get here because of the check at the beginning
         }
@@ -196,22 +181,24 @@ function ValueBox({
       else if (event.shiftKey) { // if shift + enter
         // should cause a blur event then focus on the other box.
         // pressing enter in contsantError will have same effect
-        const validLocations = ["nominalValue", "variableError, constantError"];
+        const validLocations = ["nominalValue", "variableError", "constantError"];
         if (!validLocations.includes(eventLocation)) {
           return;
         }
         event.preventDefault();
         switch (eventLocation) {
           case "nominalValue":
-            handleBlur("nominalValue");
-            setFocus("variableError");
+            nominalRef.current?.blur();
+            if (!constError) {
+              variableErrorRef.current?.focus();
+            }
             break;
           case "variableError": // there is nothing to focus on after variable error
-            handleBlur("variableError");
+            variableErrorRef.current?.blur();
             break;
           case "constantError": 
-            handleBlur("constantError");
-            setFocus("nominalValue");
+            constErrorRef.current?.blur();
+            nominalRef.current?.focus();
             break;
           // no default case, we should never get here because of the check at the beginning
         }
@@ -226,8 +213,8 @@ function ValueBox({
         event.preventDefault();
         switch (eventLocation) {
           case "constantError":
-            handleBlur("constantError");
-            setFocus("nominalValue");
+            constErrorRef.current?.blur();
+            nominalRef.current?.focus();
             break;
           // no default case, we should never get here because of the check at the beginning
         }
@@ -254,6 +241,8 @@ function ValueBox({
           maxLength={4}
           value={variableName}
           onChange={(e) => updateVariables(e.target.value)}
+          onFocus={() => {setIsFocused(true)}}
+          onBlur={() => {handleBlur("variableName")}}
         />
         
         <div className="errorButton" onClick={() => errorToggle()}>
@@ -273,6 +262,7 @@ function ValueBox({
       )}
       {constError && (
       <input
+        ref={constErrorRef}
         placeholder="Enter Error"
         spellCheck="false"
         className="constErrorField" 
@@ -282,6 +272,7 @@ function ValueBox({
         onFocus={() => {setIsFocused(true)}}
         onBlur={() => {handleBlur("constantError")}}
         style={ hasError ? {borderTop: "none"} : {}}
+        onKeyDown={(e) => handleKeyDown(e, "constantError")}
       />
       )}
       <div className="boxCase">
@@ -298,6 +289,7 @@ function ValueBox({
           onFocus={() => {setIsFocused(true)}}
           onBlur={() => {handleBlur("nominalValue")}}
           style={{height: String(getHeight()) + "px"}}
+          onKeyDown={(e) => handleKeyDown(e, "nominalValue")}
         ></textarea>
         {!constError && (
         <>
@@ -315,6 +307,7 @@ function ValueBox({
             onFocus={() => {setIsFocused(true)}}
             onBlur={() => {handleBlur("variableError")}}
             style={{height: String(getHeight()) + "px"}}
+            onKeyDown={(e) => handleKeyDown(e, "variableError")}
           ></textarea>
         </>
         )}

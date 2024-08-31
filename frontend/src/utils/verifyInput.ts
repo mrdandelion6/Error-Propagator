@@ -144,4 +144,12 @@ export function validateValueBox(single: boolean, value: string, isError: boolea
     return ['Invalid nominal values provided', value];
   }
   return ['', value];
-} // TODO: integrate this function into the ErrorPropagator component
+} 
+
+export function validateVariable(variable: string, knownVars: string[]): string[] {
+  // TODO: implement this function
+  return ['', ''];
+}
+
+// LONGTERM TODO: consider offloading the validation checks to the backend when input size is past a certain threshold
+// maybe 20,000 characters or so (test this on crappy hardware)
