@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import './InputBoxes.scss';
 import deleteImage from '../../assets/delete.png';
 import { InlineMath } from 'react-katex';
-import { validateValueBox  } from "../../utils/verifyInput";
+import { validateValueBox, validateVariable } from "../../utils/verifyInput";
 
 interface ValueBoxProps { // interfaces can be used as a nice packing for types 
   variableName: string; // this prop needs to be determined by the parent component
@@ -13,6 +13,7 @@ interface ValueBoxProps { // interfaces can be used as a nice packing for types
   updateErrorValuesVariable: (errorValue: string) => void;
   updateErrorValuesConstant: (errorValue: string) => void;
   updateConstErrors: (constError: boolean) => void;
+  updateInvalidInputs: (invalidInput: boolean) => void;
 }
 
 
@@ -24,7 +25,8 @@ function ValueBox({
   updateNominalValues,
   updateErrorValuesVariable,
   updateErrorValuesConstant,
-  updateConstErrors}: ValueBoxProps) {
+  updateConstErrors,
+  updateInvalidInputs}: ValueBoxProps) {
   /* 
     The ValueBox component is a component that represents a single box in the input section of the application.
     It contains two text areas, one for the nominal values and one for the error values.
@@ -45,6 +47,7 @@ function ValueBox({
   // we display error issue if there is no nominal issue
   const[badNominalInputMessage, setBadNominalInputMessage] = useState<string>('');
   const[badErrorInputMessage, setBadErrorInputMessage] = useState<string>('');
+  const[badVariableInputMessage, setBadVariableInputMessage] = useState<string>('');
   const[hasError, setHasError] = useState<boolean>(false);
 
   // we want to track the height of the error message that will pop up inside the value box
@@ -52,7 +55,7 @@ function ValueBox({
   // we also want to update the height when the window is resized
   const boxHeight = 500; // in px
   const errorRef = useRef<HTMLDivElement>(null);
-  const [errorMessageHeight, setErrorMessageHeight] = useState(0);
+  const [badInputMessageHeight, setBadInputMessageHeight] = useState(0);
 
   // references to the text areas
   const nominalRef = useRef<HTMLTextAreaElement>(null);
@@ -61,21 +64,21 @@ function ValueBox({
 
   const[focusedBefore, setFocusedBefore] = useState<boolean[]>([false, false, false]) // for [nominal, variable, constant] errors
 
-  const updateErrorMessageHeight = () => {
+  const updatebadInputMessageHeight = () => {
     if (errorRef.current) {
-      setErrorMessageHeight(errorRef.current.clientHeight);
+      setBadInputMessageHeight(errorRef.current.clientHeight);
     } else { // the errorRef.current will be null if the error message is not displayed
-      setErrorMessageHeight(0);
+      setBadInputMessageHeight(0);
     }
   };
 
   useEffect(() => {
-    updateErrorMessageHeight();
-    window.addEventListener('resize', updateErrorMessageHeight);
+    updatebadInputMessageHeight();
+    window.addEventListener('resize', updatebadInputMessageHeight);
     return () => {
-      window.removeEventListener('resize', updateErrorMessageHeight);
+      window.removeEventListener('resize', updatebadInputMessageHeight);
     };
-  }, [badErrorInputMessage, badNominalInputMessage]);
+  }, [badErrorInputMessage, badNominalInputMessage, badVariableInputMessage]);
 
   const scrollBarHoverCheck = (event: React.MouseEvent<HTMLTextAreaElement, MouseEvent>) => {
     const { clientX, clientY } = event;
@@ -127,6 +130,7 @@ function ValueBox({
     let validation: string[] = [];
     let tempBadNominalInputMessage = badNominalInputMessage;
     let tempBadErrorInputMessage = badErrorInputMessage;
+    const tempBadVariableInputMessage = badVariableInputMessage;
 
     // first check nominal vals
     validation = validateValueBox(false, nominalValue, false);
@@ -148,10 +152,12 @@ function ValueBox({
       tempBadErrorInputMessage = validation[0];
     }
 
-    if (tempBadNominalInputMessage + tempBadErrorInputMessage !== '') {
+    if (tempBadNominalInputMessage + tempBadErrorInputMessage + tempBadVariableInputMessage !== '') {
       setHasError(true);
+      updateInvalidInputs(true);
     } else {
       setHasError(false);
+      updateInvalidInputs(false);
     }
   }
 
@@ -161,7 +167,7 @@ function ValueBox({
     if (constError) {
       height -= 40;
     }
-    height -= errorMessageHeight;
+    height -= badInputMessageHeight;
     return height;
   }
 
@@ -233,6 +239,14 @@ function ValueBox({
     }
   }
 
+  const handleVarChange = (value: string) => {
+    const validation = validateVariable(value, otherVariableNames);
+    updateVariables(validation[1]);
+    setBadVariableInputMessage(validation[0]);
+    setHasError(validation[0] !== '');
+    updateInvalidInputs(validation[0] !== '');
+  }
+
   return (
     <div className={(() => {
         let class_name = "valueBoxPackage noMP"
@@ -251,7 +265,7 @@ function ValueBox({
           type="text" 
           maxLength={4}
           value={variableName}
-          onChange={(e) => updateVariables(e.target.value)}
+          onChange={(e) => handleVarChange(e.target.value)}
           onFocus={() => {setIsFocused(true)}}
           onBlur={() => {handleBlur()}}
         />
@@ -266,11 +280,16 @@ function ValueBox({
         </div>
       </div>
       <div className={ hasError ? "invalidBox focusedBox noMP" : (isFocused ? "focusedBox noMP" : "noMP") }/>
-      {badNominalInputMessage !== '' ? (<div ref={errorRef} className={!constError ? "badInputMessage inBoxMessage" : "badInputMessage inBoxMessage constError"}>{badNominalInputMessage}</div>
-      ) : (
-        badErrorInputMessage !== '' ? (<div ref={errorRef} className={!constError ? "badInputMessage inBoxMessage" : "badInputMessage inBoxMessage constError"}>{badErrorInputMessage}</div>
-        ) : (null)
-      )}
+      {
+        (() =>  {
+          const invalidInputMessage = badVariableInputMessage || badNominalInputMessage || badErrorInputMessage || "";
+          let class_name = "badInputMessage inBoxMessage";
+          if (constError) {
+            class_name += " constError";
+          }
+          return invalidInputMessage !== '' ? (<div ref={errorRef} className={class_name}>{invalidInputMessage}</div>) : null;
+        })() 
+      }
       {constError && (
       <input
         ref={constErrorRef}

@@ -134,7 +134,7 @@ export function validateValueBox(single: boolean, value: string, isError: boolea
     }
     return ['', value]; // no errors
   }
-
+``
   // we have multiple values
   const errors = value.split('\n');
   // console.log("we have errors in multiple values");
@@ -148,24 +148,23 @@ export function validateValueBox(single: boolean, value: string, isError: boolea
   return ['', value];
 } 
 
-export function validateVariable(variable: string, existingVars: string[]): string[] {
-  variable = variable.trim();
+export function validateVariable(existingVariable: string, existingVars: string[]): string[] {
+  existingVariable = existingVariable.trim();
   
-  if (existingVars.includes(variable)) {
-    return ['Variable already exists', variable];
+  if (constants.includes(existingVariable)) {
+    return ['Variable name conflicts with known constants: ' + constants.join(', '), existingVariable];
   }
 
-  if (constants.includes(variable)) {
-    return ['Variable name conflicts with known constants: ' + constants.join(', '), variable];
+  const regex = /^[a-zA-Z]([a-zA-Z0-9]?)+$/
+  if (!regex.test(existingVariable)) {
+    return ['Variable name must be alphanumeric and begin with letter', existingVariable];
   }
 
-  const regex = /^[a-zA-Z][a-zA-Z0-9]+$/
-  if (!regex.test(variable)) {
-    return ['Variable name must be alphanumeric and begin with letter', variable];
+  if (existingVars.includes(existingVariable)) {
+    return ['Variable already exists', existingVariable];
   }
-  // TODO: integrate the checking into ValueBox component and use the otherVariables prop to check for conflicts
 
-  return ['', ''];
+  return ['', existingVariable];
 }
 
 // LONGTERM TODO: consider offloading the validation checks to the backend when input size is past a certain threshold

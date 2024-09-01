@@ -25,6 +25,12 @@ function ErrorPropagator() {
   const [errorValuesConstant, setErrorValuesConstant] = useState<string[]>(['']);
 
   const [equationBadInputMessage, setEquationBadInputMessage] = useState<string>('');
+  const [invalidInputs, setInvalidInputs] = useState<boolean[]>([false]);
+
+  // for when we send a propagation request to the python backend
+  const [showResponse, setShowResponse] = useState(false);
+  const [responseNominalValues, setResponseNominalValues] = useState<string[]>([]);
+  const [responseErrorValues, setResponseErrorValues] = useState<string[]>([]);
 
   const updateNominalValues = (index: number, newNominalValue: string) => {
     const newNominalValuesList = [...nominalValues];
@@ -114,6 +120,13 @@ function ErrorPropagator() {
     newVariables[index] = value; // update the state of the specific box
     setVariables(newVariables);
   };
+
+  const updateInvalidInputs = (index: number, invalidInput: boolean) => {
+    // update the list of invalid inputs
+    const newInvalidInputs = [...invalidInputs];
+    newInvalidInputs[index] = invalidInput;
+    setInvalidInputs(newInvalidInputs);
+  }
 
   /////////////////////////////////////////////
   // this is for testing and can be deleted later
@@ -205,6 +218,7 @@ function ErrorPropagator() {
                 updateErrorValuesVariable={(errorValue: string) => updateErrorValuesVariable(index, errorValue)}
                 updateErrorValuesConstant={(errorValue: string) => updateErrorValuesConstant(index, errorValue)}
                 updateConstErrors={(constError: boolean) => updateConstErrors(index, constError)}
+                updateInvalidInputs={(invalidInput: boolean) => updateInvalidInputs(index, invalidInput)}
               />
             </div>
             ))}

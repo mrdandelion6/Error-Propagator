@@ -1,4 +1,4 @@
-import { validateEquation, validateValueBox } from '../../utils/verifyInput';
+import { validateEquation, validateValueBox, validateVariable } from '../../utils/verifyInput';
 
 describe('validateEquation', () => {
   // basic valid equations
@@ -117,5 +117,12 @@ describe('validateValueBox', () => {
     expect(validateValueBox(false, '')).toEqual(['Empty error fields', '']);
     expect(validateValueBox(true, '', false)).toEqual(['Empty nominal field', '']);
     expect(validateValueBox(false, '', false)).toEqual(['Empty nominal fields', '']);
+  });
+});
+
+describe('validateVariable', () => {
+  it('should return empty error string for valid variables', () => {
+    expect(validateVariable('z', ['x', 'y'])).toEqual(['', 'z']);
+    expect(validateVariable('z13sad2313', ['x', 'y'])).toEqual(['', 'z13sad2313']);
   });
 });
