@@ -5,7 +5,7 @@ import homeImg from '../assets/scratch/error_propagator_3.png';
 import clubLogoImg from '../assets/navbar/club_logo_2.png';
 import aboutImg from '../assets/navbar/about.png';
 import discordImg from '../assets/navbar/discord.png';
-// import clubLogoSmall from '../assets/navbar/club_logo_3.png';
+import clubLogoSmall from '../assets/navbar/club_logo_3.png';
 // import trayImg from '../assets/navbar/tray.png';
 // import docsImg from '../assets/navbar/book.png';
 
@@ -17,6 +17,7 @@ interface Buttons {
   smaller_images: (string | undefined)[];
   right: number[];
   width: number[];
+  small_width: number[];
   height: number[];
   spacing: number[];
   img_height: number[];
@@ -43,9 +44,10 @@ const buttons: Buttons = {
              undefined,
              undefined,
              discordImg], // TODO: make second undefined be clubLogoSmall
-  "smaller_images": [homeImg, undefined, undefined, undefined, undefined, undefined, discordImg],
+  "smaller_images": [homeImg, clubLogoSmall, undefined, undefined, undefined, undefined, discordImg],
   "right": [0, 0, 1, 1, 1, 1, 1],  
   "width": [70, 350, 73, 73, 73, 120, 70], // in px for li
+  "small_width": [70, 200, 73, 73, 73, 120, 70], // in px for li
   "height": [56, 56, 36, 36, 36, 36, 56], // in px for li
   "spacing": [2, 2, 2, 2, 2, 2, 2], // in px for li, the left and right margin
   "img_height": [90, 90, 75, 60, 60, 60, 50], // in percentage, for scaling images inside the li
@@ -64,6 +66,7 @@ function TopNavBar() {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [showMenu, setShowMenu] = useState(false);
   const { pathname } = useLocation();
+  const [buttonsInTray, setButtonsInTray] = useState(0);
 
   const handleNavLinkClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>, link: string) => {
     if (pathname === link) {
@@ -82,6 +85,14 @@ function TopNavBar() {
       if (windowWidth > 650) {
         setShowMenu(false);
       }
+      switch (true) {
+        case  windowWidth < 885:
+          setButtonsInTray(1);
+          break;
+        default:
+          setButtonsInTray(0);
+        // TODO: add more cases for different screen sizes, and implement dynamic tray button hiding
+      }
     };
 
     // some classic js dom listening
@@ -96,13 +107,20 @@ function TopNavBar() {
     return (
       <li key={index} className={buttons.special_btn[index] ? "specialBtn" : ""}>
         { buttons.images[index] ? (
-          <img 
+          windowWidth > 650 ?
+          (<img 
             src={buttons.images[index]} 
             alt={buttons.names[index]} 
             style={{width: buttons.width[index] + "%", height: buttons.img_height[index] + "%"}  }
-          />
+          />) 
+          : 
+          (<img 
+            src={buttons.smaller_images[index]} 
+            alt={buttons.names[index]} 
+            style={{width: buttons.width[index] + "%", height: buttons.img_height[index] + "%"}  }
+          />)
         ) : (
-          <p>{buttons.names[index]}</p> 
+          <p>{buttons.names[index]}</p>
         )}
       </li>
     );
@@ -117,7 +135,7 @@ function TopNavBar() {
       <a href={buttons.links[index]}
         style=
         {{
-          width: buttons.width[index] + "px",
+          width: (windowWidth > 650) ? (buttons.width[index] + "px") : (buttons.small_width[index] + "px"),
           height: buttons.height[index] + "px",
           marginLeft: buttons.spacing[index] + "px",
           marginRight: buttons.spacing[index] + "px",
