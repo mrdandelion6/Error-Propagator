@@ -13,6 +13,11 @@ $page-margins: calc(0.15 * $page-width);
   box-sizing: border-box;
 }
 
+img {
+  user-select: none;
+  pointer-events: none;
+}
+
 html, body {
   padding: 0;
 }
