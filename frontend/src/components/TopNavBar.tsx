@@ -66,7 +66,12 @@ function TopNavBar() {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [showMenu, setShowMenu] = useState(false);
   const { pathname } = useLocation();
-  const [buttonsInTray, setButtonsInTray] = useState(0);
+  const [allItems, setAllItems] = useState<JSX.Element[]>([]); // this is where we make all the buttons originally, then we distribute therm to the sub lists accordingly
+  const [rightItems, setRightItems] = useState<JSX.Element[]>([]);
+  const [leftItems, setLeftItems] = useState<JSX.Element[]>([]);
+  const [trayItems, setTrayItems] = useState<JSX.Element[]>([]); // for when we collapse the menu
+  const numLeftItems = 2; // number of items on the left side of the navbar. used for knowing the right items
+
 
   const handleNavLinkClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>, link: string) => {
     if (pathname === link) {
@@ -84,14 +89,6 @@ function TopNavBar() {
       setWindowWidth(window.innerWidth);
       if (windowWidth > 650) {
         setShowMenu(false);
-      }
-      switch (true) {
-        case  windowWidth < 885:
-          setButtonsInTray(1);
-          break;
-        default:
-          setButtonsInTray(0);
-        // TODO: add more cases for different screen sizes, and implement dynamic tray button hiding
       }
     };
 
@@ -126,44 +123,52 @@ function TopNavBar() {
     );
   }
 
-  // we have buttons on the left and right
-  const leftItems: JSX.Element[] = [];
-  const rightItems: JSX.Element[] = [];
+  useEffect(() => {
+    const leftItems: JSX.Element[] = [];
+    const rightItems: JSX.Element[] = [];
+    const trayItems: JSX.Element[] = [];
 
-  buttons.names.forEach((_, index) => {
-    const item = buttons.external[index] === 1 ? ( // external link, use classic html anchors
-      <a href={buttons.links[index]}
-        style=
-        {{
-          width: (windowWidth > 650) ? (buttons.width[index] + "px") : (buttons.small_width[index] + "px"),
-          height: buttons.height[index] + "px",
-          marginLeft: buttons.spacing[index] + "px",
-          marginRight: buttons.spacing[index] + "px",
-        }}
-        key={index}
-        target="_blank"
-        rel="noopener noreferrer"
-      >{loadLi(index)}</a>
-    ) : ( // internal link, use react router
-      <NavLink to={buttons.links[index]}
-        style=
-        {{width: buttons.width[index] + "px", 
-          height: buttons.height[index] + "px",
-          marginLeft: buttons.spacing[index] + "px",
-          marginRight: buttons.spacing[index] + "px",
-        }}
-        key={index}
-        className="navLink"
-        onClick={(e) => handleNavLinkClick(e, buttons.links[index])}
-      >{loadLi(index)}</NavLink>
-    );
+    buttons.names.forEach((_, index) => {
+      const item = buttons.links[index].startsWith('http') ? (
+        <a href={buttons.links[index]}
+          style={{
+            width: (windowWidth > 650) ? (buttons.width[index] + "px") : (buttons.small_width[index] + "px"),
+            height: buttons.height[index] + "px",
+            marginLeft: buttons.spacing[index] + "px",
+            marginRight: buttons.spacing[index] + "px",
+          }}
+          key={index}
+          target="_blank"
+          rel="noopener noreferrer"
+        >{loadLi(index)}</a>
+      ) : (
+        <NavLink to={buttons.links[index]}
+          style={{
+            width: buttons.width[index] + "px",
+            height: buttons.height[index] + "px",
+            marginLeft: buttons.spacing[index] + "px",
+            marginRight: buttons.spacing[index] + "px",
+          }}
+          key={index}
+          className="navLink"
+          onClick={(e) => handleNavLinkClick(e, buttons.links[index])}
+        >{loadLi(index)}</NavLink>
+      );
 
-    if (buttons.right[index]) {
-      rightItems.push(item);
-    } else {
-      leftItems.push(item);
-    }
-  });
+      if (index < numLeftItems) {
+        leftItems.push(item);
+      } else {
+        // we need to check whether we want to add it in rightItems or trayItems
+        if (windowWidth < 925) {
+
+          rightItems.push(item);
+        }
+      }
+    });
+
+    setLeftItems(leftItems);
+    setRightItems(rightItems);
+  }, [windowWidth]);
 
   return (
     <nav className="topNavBar">
@@ -171,13 +176,7 @@ function TopNavBar() {
         <div className='navSideSpacing'></div>
         {leftItems}
         <div className="rightGroup">
-          { windowWidth > 650 ? rightItems : 
-            <div className="trayButton" onClick={toggleMenu}
-              style={{width: buttonTray.width + "px"}}
-            >
-              <img src={buttonTray.image} alt={buttonTray.name} />
-            </div>
-          }
+          {rightItems}
         </div>
       </ul>
       { showMenu ? null : null }
@@ -186,4 +185,4 @@ function TopNavBar() {
   );
 }
 
-export default TopNavBar;
+export default TopNavBar; 
