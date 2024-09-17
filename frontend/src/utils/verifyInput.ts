@@ -2,6 +2,16 @@ import { Parser } from "expr-eval";
 
 const constants = ['pi', 'e'];
 
+function preprocessEquation(eqn: string): string {
+  // use regex to modify the equation and add * between the coefficient and the variable if there exist any coefficients with no space, e.g) 2x -> 2*x
+
+  eqn = eqn.trim();
+  const regex = /(?<![a-zA-Z0-9])(\d+(?:\.\d+)?)([a-zA-Z]+)/g;
+  eqn = eqn.replace(regex, '$1*$2');
+
+  return eqn;
+}
+
 export function validateEquation(eqn: string, vars: string[]): string[] {
   /* 
     This function is called by the ErrorPropagator component to validate the equation entered by the user.
@@ -12,9 +22,7 @@ export function validateEquation(eqn: string, vars: string[]): string[] {
   */
 
   eqn = eqn.trim();
-  if (eqn === '') {
-    return ['Empty equation', ''];
-  }
+
 
   const clean = (message: string): string => {
     // this function cleans up the error message returned by the parser and makes it more user-friendly
@@ -73,12 +81,11 @@ export function validateEquation(eqn: string, vars: string[]): string[] {
   vars = vars.concat(constants); // add constants to known variables
   const p = new Parser();
   try {
-    // use regex to modify the equation and add * between the coefficient and the variable if there exist any coefficients with no space, e.g) 2x -> 2*x
-    const regex = /(?<![a-zA-Z0-9])(\d+(?:\.\d+)?)([a-zA-Z]+)/g;
-    eqn = eqn.replace(regex, '$1*$2');
-    // const matches = eqn.match(regex);
-    // console.log("matches are: ", matches);
-    // console.log("eqn is: ", eqn);
+    eqn = preprocessEquation(eqn); // clean up the equation
+    if (eqn === '') {
+      return ['Empty equation', ''];
+    }
+
     const parsed = p.parse(eqn);
     const enteredVariables: string[] = parsed.variables();
     
@@ -165,6 +172,19 @@ export function validateVariable(existingVariable: string, existingVars: string[
   }
 
   return ['', existingVariable];
+}
+
+export function getVariablesUsedInEquation(variables: string[], equation: string): boolean[] {
+  // this function is called by the ErrorPropagator component to check which variables are used in the equation
+  // returns an array of booleans, where true means that the variable is used in the equation
+  equation = preprocessEquation(equation);
+  if (equation === '') {
+    return variables.map(() => false);
+  }
+  const p = new Parser();
+  const parsed = p.parse(equation);
+  const enteredVariables: string[] = parsed.variables();
+  return variables.map(v => enteredVariables.includes(v));
 }
 
 // LONGTERM TODO: consider offloading the validation checks to the backend when input size is past a certain threshold

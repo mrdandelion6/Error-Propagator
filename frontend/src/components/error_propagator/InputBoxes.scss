@@ -18,7 +18,7 @@ $error-button-width: 60px;
 $btn-hover: #535bf2;
 
 // box styling
-$val-box-width: calc(max(calc(8vw + 34px), 140px));
+$val-box-width: calc(max(calc(8vw + 32px), 140px));
 $err-box-width: calc($error-button-width + $delete-button-width - 1px);
 $box-width: calc($val-box-width + $err-box-width);
 $secondary-color: rgb(255, 255, 255);

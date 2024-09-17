@@ -3,6 +3,7 @@ import ValueBox from './ValueBox'
 import EquationBox from './EquationBox'
 import './ErrorPropagator.scss';
 import { validateEquation } from '../../utils/verifyInput';
+import { getVariablesUsedInEquation } from '../../utils/verifyInput';
 
 
 function ErrorPropagator() {
@@ -24,8 +25,9 @@ function ErrorPropagator() {
   const [errorValuesVariable, setErrorValuesVariable] = useState<string[]>(['']);
   const [errorValuesConstant, setErrorValuesConstant] = useState<string[]>(['']);
 
+  const [failedPropagationMessage, setFailedPropagationMessage] = useState<string>('');
   const [equationBadInputMessage, setEquationBadInputMessage] = useState<string>('');
-  const [invalidInputs, setInvalidInputs] = useState<boolean[]>([false]);
+  const [invalidInputs, setInvalidInputs] = useState<string[]>(['']);
 
   // for when we send a propagation request to the python backend
   const [showResponse, setShowResponse] = useState(false);
@@ -121,7 +123,7 @@ function ErrorPropagator() {
     setVariables(newVariables);
   };
 
-  const updateInvalidInputs = (index: number, invalidInput: boolean) => {
+  const updateInvalidInputs = (index: number, invalidInput: string) => {
     // update the list of invalid inputs
     const newInvalidInputs = [...invalidInputs];
     newInvalidInputs[index] = invalidInput;
@@ -150,8 +152,7 @@ function ErrorPropagator() {
 
   // alter this to actually deal with data from several things
   // eslint-disable-next-line
-  const handleSubmit = async (event: React.FormEvent, inputData: string) => {
-    event.preventDefault();
+  const propagateRequest = async () => {
 
     try {
       const response = await fetch("api/submit", {
@@ -159,10 +160,17 @@ function ErrorPropagator() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ input_data: inputData }),
+        body: JSON.stringify({ 
+          "equation": equation, 
+          "variables": variables, 
+          "nominalValues": nominalValues, 
+          "errorValuesVariable": errorValuesVariable, 
+          "errorValuesConstant": errorValuesConstant, 
+          "constErrors": constErrors}),
       });
   
       if (response.ok) {
+        // TODO: parse the response accordingly. extract the output nominals and errors
         const data: number = await response.json();
         setResponse(data);
       } else {
@@ -181,8 +189,65 @@ function ErrorPropagator() {
     setEquation(newEquation);
   };
 
+  useEffect(() => {
+    // this is a side use effect to double check if the equation has been fixed after the variables have been updated
+    // the main checks is called by the EquationBox component
+    if (equationBadInputMessage !== '') {
+      handleEquationChange(equation ?? '');
+    }
+  }, [variables]);
+
+  const checkCell = (index: number): string => {
+    // verify if there are any issues with the input in the cell
+    if (invalidInputs[index] !== '') {
+      return "Variable " + variables[index] + ": " + invalidInputs[index].toLowerCase();
+    }
+
+    // empty input checks
+    if (nominalValues[index] === '') {
+      return `Variable ${variables[index]}: nominal value is empty.`;
+    }
+    if (constErrors[index] && errorValuesConstant[index] === '') {
+      return `Variable ${variables[index]}: constant error value are empty.`;
+    }
+    if (!constErrors[index] && errorValuesVariable[index] === '') {
+      return `Variable ${variables[index]}: error value are empty.`;
+    }
+
+    return "";
+  }
+
+  const checkErrors = (): string => {
+    if (equationBadInputMessage !== '') {
+      return equationBadInputMessage;
+    }
+    if (equation === undefined || equation === '') {
+      return "Equation is empty.";
+    }
+    if (variables.length === 0) {
+      return "No variables have been added.";
+    }
+
+    const bitMap = getVariablesUsedInEquation(variables, equation ?? '');
+    // returns an array of booleans, where true means that the variable is used in the equation
+    for (let i = 0; i < variables.length; i++) {
+      if (bitMap[i]) { // check if the cell for the variable is proper
+        if (checkCell(i) !== '') {
+          return checkCell(i);
+        }
+      }
+    }
+
+    return '';
+  };
+
   const handlePropagation = () => {
-    // TODO: if there are no issues with the input, propagate the error by making a POST request to the server
+    const issues = checkErrors();
+    setFailedPropagationMessage(issues);
+    if (issues === '') {
+      propagateRequest();
+    }
+
   };
 
   /////////////////////////////////////////////
@@ -204,6 +269,10 @@ function ErrorPropagator() {
           <button onClick={addValueBox}>Add Variable</button>
           <button className="propagationBtn" onClick={handlePropagation}>Propagate</button>
         </div>
+        {
+          failedPropagationMessage !== '' &&
+          <p className="badInputMessage failedPropagation">{failedPropagationMessage}</p>
+        }
 
         { numBoxes > 0 ? (
           <div className="valueBoxes">
@@ -218,7 +287,7 @@ function ErrorPropagator() {
                 updateErrorValuesVariable={(errorValue: string) => updateErrorValuesVariable(index, errorValue)}
                 updateErrorValuesConstant={(errorValue: string) => updateErrorValuesConstant(index, errorValue)}
                 updateConstErrors={(constError: boolean) => updateConstErrors(index, constError)}
-                updateInvalidInputs={(invalidInput: boolean) => updateInvalidInputs(index, invalidInput)}
+                updateInvalidInputs={(invalidInput: string) => updateInvalidInputs(index, invalidInput)}
               />
             </div>
             ))}

@@ -3,7 +3,7 @@ $page-width: calc(100vw - $page-scroll-bar-width);
 
 $delete-button-width: 40px;
 $error-button-width: 60px;
-$val-box-width: calc(max(calc(8vw + 34px), 140px) );
+$val-box-width: calc(max(calc(8vw + 32px), 140px) );
 $err-box-width: calc($error-button-width + $delete-button-width - 1px);
 $box-width: calc($val-box-width + $err-box-width);
 
@@ -20,7 +20,7 @@ $box-spacing-horizontal: calc(max((0.7 * $page-width - 5 * $val-box-width) / 4, 
 .badInputMessage {
     color: red;
     font-size: 0.95em;
-    margin-top: 0px;
+margin-top: 0px;
     margin-bottom: 0px;
     margin-left: 0px;
     margin-right: 0px;
@@ -30,6 +30,10 @@ $box-spacing-horizontal: calc(max((0.7 * $page-width - 5 * $val-box-width) / 4, 
     &.constError {
         width: calc($val-box-width);
     }
+}
+
+.failedPropagation {
+    font-weight: bold;
 }
 
 .propagatorButtons{

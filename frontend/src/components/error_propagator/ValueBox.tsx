@@ -13,7 +13,7 @@ interface ValueBoxProps { // interfaces can be used as a nice packing for types
   updateErrorValuesVariable: (errorValue: string) => void;
   updateErrorValuesConstant: (errorValue: string) => void;
   updateConstErrors: (constError: boolean) => void;
-  updateInvalidInputs: (invalidInput: boolean) => void;
+  updateInvalidInputs: (invalidInput: string) => void;
 }
 
 
@@ -152,12 +152,18 @@ function ValueBox({
       tempBadErrorInputMessage = validation[0];
     }
 
-    if (tempBadNominalInputMessage + tempBadErrorInputMessage + tempBadVariableInputMessage !== '') {
+    if (tempBadVariableInputMessage !== '') {
       setHasError(true);
-      updateInvalidInputs(true);
+      updateInvalidInputs(tempBadVariableInputMessage);
+    } else if (tempBadNominalInputMessage !== '') {
+      setHasError(true);
+      updateInvalidInputs(tempBadNominalInputMessage);
+    } else if (tempBadErrorInputMessage !== '') {
+      setHasError(true);
+      updateInvalidInputs(tempBadErrorInputMessage);
     } else {
       setHasError(false);
-      updateInvalidInputs(false);
+      updateInvalidInputs('');
     }
   }
 
@@ -244,7 +250,7 @@ function ValueBox({
     updateVariables(validation[1]);
     setBadVariableInputMessage(validation[0]);
     setHasError(validation[0] !== '');
-    updateInvalidInputs(validation[0] !== '');
+    updateInvalidInputs(validation[0]);
   }
 
   return (
