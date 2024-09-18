@@ -21,7 +21,6 @@ interface Buttons {
   spacing: number[];
   img_height: number[];
   special_btn: number[];
-  hide_by_default: number[];
 }
 
 const buttons: Buttons = {
@@ -54,13 +53,11 @@ const buttons: Buttons = {
   "spacing": [2, 2, 2, 2, 2, 2, 2, 2], // in px for li, the left and right margin
   "img_height": [90, 90, 75, 60, 60, 60, 50, 100], // in percentage, for scaling images inside the li
   "special_btn": [0, 0, 0, 0, 0, 1, 0, 0], // special buttons get a unique background color
-  "hide_by_default": [0, 0, 0, 0, 0, 0, 0, 0] // hide buttons by default. only used when choosing which li's to load in the useEffect
 };
 
 function TopNavBar() {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [showMenu, setShowMenu] = useState(false);
-  const { pathname } = useLocation();
   const [rightItems, setRightItems] = useState<JSX.Element[]>([]);
   const [leftItems, setLeftItems] = useState<JSX.Element[]>([]);
   const [trayItems, setTrayItems] = useState<JSX.Element[]>([]); // for when we collapse the menu
@@ -69,7 +66,7 @@ function TopNavBar() {
 
 
   const handleNavLinkClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>, link: string) => {
-    if (pathname === link) {
+    if (link === "/") {
       event.preventDefault();
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
