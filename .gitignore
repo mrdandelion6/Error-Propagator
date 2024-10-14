@@ -1,4 +1,12 @@
-# dependencies
+# general
 .vscode
+
+# frontend
 frontend/node_modules
-backend/env
+
+# backend
+#   note that the env for the django backend should not be added within this repo
+#   please store that in a secure location
+__pycache__
+backend-old/
+

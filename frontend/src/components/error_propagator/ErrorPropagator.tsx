@@ -131,31 +131,13 @@ function ErrorPropagator() {
   }
 
   /////////////////////////////////////////////
-  // this is for testing and can be deleted later
-  useEffect(() => {
-    // fetch data from API
-    fetch("api/members")
-      .then(res => {
-        if (!res.ok) {
-          throw new Error(`HTTP error! Status: ${res.status}`);
-        }
-        return res.json();
-      })
-      .then(data => {
-        setData(data);
-        // console.log(data);
-      })
-      .catch(error => {
-        console.error("Fetch error:", error);
-      });
-  }, []);
 
   // alter this to actually deal with data from several things
   // eslint-disable-next-line
   const propagateRequest = async () => {
-
+    const url = "/api/process/";
     try {
-      const response = await fetch("api/submit", {
+      const response = await fetch(url, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -172,7 +154,7 @@ function ErrorPropagator() {
       if (response.ok) {
         // TODO: parse the response accordingly. extract the output nominals and errors
         const data: number = await response.json();
-        setResponse(data);
+        console.log(data);
       } else {
         console.error("Server returned an error:", response.statusText);
       }
@@ -245,6 +227,7 @@ function ErrorPropagator() {
     const issues = checkErrors();
     setFailedPropagationMessage(issues);
     if (issues === '') {
+      console.log("no issues, propagating");
       propagateRequest();
     }
 
