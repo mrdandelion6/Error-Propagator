@@ -65,11 +65,11 @@ function TopNavBar() {
   const swapSmallLogoUnder = 670; // when to swap the logo for a smaller version
 
 
-  const handleNavLinkClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>, link: string) => {
-    if (link === "/") {
+  const handleNavLinkClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+    if (event.currentTarget.href === window.location.href) {
       event.preventDefault();
-      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const toggleMenu = () => {
@@ -121,6 +121,7 @@ function TopNavBar() {
     const trayItems: JSX.Element[] = [];
 
     buttons.names.forEach((_, index) => {
+      console.log("link for index: ", index, " is: ", buttons.links[index]);
       const link = buttons.links[index];
       if (link === undefined) {
         return;
@@ -147,7 +148,7 @@ function TopNavBar() {
           }}
           key={index}
           className="navLink"
-          onClick={(e) => handleNavLinkClick(e, link)}
+          onClick={(e) => handleNavLinkClick(e)}
         >{loadLi(index)}</NavLink>
       );
 
@@ -156,8 +157,7 @@ function TopNavBar() {
       } else {
         // we need to check whether we want to add it in rightItems or trayItems
         if ((windowWidth - (4 - index) * 73 > 750) || (index === buttons.names.length - 3)) {
-          console.log(index);
-          rightItems.push(item);
+        rightItems.push(item);
         } else {
           trayItems.push(item);
         }
