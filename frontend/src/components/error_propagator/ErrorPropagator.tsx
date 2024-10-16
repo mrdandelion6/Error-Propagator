@@ -3,7 +3,7 @@ import ValueBox from './ValueBox'
 import EquationBox from './EquationBox'
 import ResultBox from './ResultBox'
 import './ErrorPropagator.scss';
-import { validateEquation } from '../../utils/verifyInput';
+import { validateExpression } from '../../utils/verifyInput';
 import { getVariablesUsedInEquation } from '../../utils/verifyInput';
 import openEye from '../../assets/error_propagator/open_eye.png';
 import closedEye from '../../assets/error_propagator/closed_eye.png';
@@ -23,6 +23,12 @@ function ErrorPropagator() {
   const [equation, setEquation] = useState<string>();
 
   // TODO: implement result rounding option with a toggle button
+  interface InputCount {
+    [key: string]: number[];
+    // this is a dictionary where the key is the variable name and the value is an array of two numbers
+    // the first number is the number of nominal values and the second number is the number of error values
+  }
+  const [inputCount, setInputCount] = useState<InputCount>({});
   const [roundResult, setRoundResult] = useState<boolean>(false);
   const [constErrors, setConstErrors] = useState<boolean[]>([true]); // keep track if we have constant or variable error
   const [variables, setVariables] = useState<string[]>(['x']);
@@ -138,11 +144,9 @@ function ErrorPropagator() {
     setInvalidInputs(newInvalidInputs);
   }
 
-  /////////////////////////////////////////////
-
-  // alter this to actually deal with data from several things
-  // eslint-disable-next-line
+  
   const propagateRequest = async () => {
+    // Handle the propagation request by sending a POST request to the backend.
     interface PropagationResponse {
       errors: string[]; 
       nominals: string[]; 
@@ -187,11 +191,41 @@ function ErrorPropagator() {
     }
   };
 
+  const updateInputCounts = () => {
+    const newInputCount: InputCount = {};
+    for (const i in variables) {
+      const noms = nominalValues[i].split('\n');
+      // remove any first or last empty strings
+      if (noms[0] === '') {
+        noms.shift();
+      }
+      if (noms[noms.length - 1] === '') {
+        noms.pop();
+      }
+      const nomsCount = noms.length;
+      let errorsCount = -1;
+      if (!constErrors[i]) {
+        const errors = errorValuesVariable[i].split('\n');
+        if (errors[0] === '') {
+          errors.shift();
+        }
+        if (errors[errors.length - 1] === '') {
+          errors.pop();
+        }
+        errorsCount = errors.length;
+      }
+      newInputCount[variables[i]] = [nomsCount, errorsCount];
+    }
+    setInputCount(newInputCount);
+    console.log(newInputCount);
+  }
+
   const handleEquationChange = (value: string) => {
     // validate the equation
-    const equationResult = validateEquation(value, variables)[0];
+    updateInputCounts();
+    const equationResult = validateExpression(value, variables, inputCount)[0];
     setEquationBadInputMessage(equationResult);
-    const newEquation = validateEquation(value, variables)[1];
+    const newEquation = validateExpression(value, variables, inputCount)[1];
     setEquation(newEquation);
   };
 
@@ -251,14 +285,11 @@ function ErrorPropagator() {
     const issues = checkErrors();
     setFailedPropagationMessage(issues);
     if (issues === '') {
-      console.log("no issues, propagating");
+      // console.log("no issues, propagating");
       propagateRequest();
     }
 
   };
-
-  
-  /////////////////////////////////////////////
 
   return (
     <div className="main">
@@ -295,14 +326,16 @@ function ErrorPropagator() {
                 style={{width: "40px", height: "40px"}}
               />
             </div>
-            {/* <div className="roundResult"
+            { // TODO: implement rounding option
+            /* <div className="roundResult"
               onClick={() => setRoundResult(!roundResult)}>
               <img
                 src={roundResult ? roundedIcon : notRoundedIcon}
                 alt="round result"
                 style={{width: "20px", height: "20px"}}
               />
-            </div> */}
+            </div> */
+            }
           </div>
           { 
             showFullResponse && <div className="response">

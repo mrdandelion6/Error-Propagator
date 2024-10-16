@@ -12,17 +12,18 @@ function preprocessEquation(eqn: string): string {
   return eqn;
 }
 
-export function validateEquation(eqn: string, vars: string[]): string[] {
+export function validateExpression(eqn: string, vars: string[], counts: { [key: string]: number[] }): string[] {
   /* 
     This function is called by the ErrorPropagator component to validate the equation entered by the user.
     It uses the expr-eval library to parse the equation and check for unknown variables.
     The function returns an error message if there are unknown variables or if the equation is invalid.
     The error message is displayed to the user in the ErrorPropagator component.
+
+    Takes two arguments:
+      eqn: the equation to be validated
+      vars: the list of variables passed as the useState in the ErrorPropagator component
     Returns an array with two elements: the error message and the modified equation: [error message, modified equation]
   */
-
-  eqn = eqn.trim();
-
 
   const clean = (message: string): string => {
     // this function cleans up the error message returned by the parser and makes it more user-friendly
@@ -34,9 +35,7 @@ export function validateEquation(eqn: string, vars: string[]): string[] {
 
     message = message.toLowerCase();
     message = message.trim();
-    // console.log("message is: ", message);
     
-
     if (message.startsWith('parse error')) {
       const words = message.split(' ');
       if (message.includes('expected')) {
@@ -75,6 +74,8 @@ export function validateEquation(eqn: string, vars: string[]): string[] {
     return message;
   }
 
+  eqn = eqn.trim();
+
   if (vars.some(v => constants.includes(v))) {
     return ['Variable name conflicts with known constants: ' + constants.join(', '), eqn];
   }
@@ -98,7 +99,6 @@ export function validateEquation(eqn: string, vars: string[]): string[] {
     if (unknownVars.length > 1) {
       return [`Unknown variables: ${unknownVars.join(', ')}`, eqn];
     }
-    return ['', eqn]; // no errors
   } catch (error) {
     if (error instanceof Error) {
       let message: string = error.message;
@@ -116,8 +116,73 @@ export function validateEquation(eqn: string, vars: string[]): string[] {
       return ['An unknown error occurred', eqn];
     }
   } 
+
+  return validateValueBoxNumbers(eqn, vars, counts);
 }
 
+
+function validateValueBoxNumbers(eqn: string, vars: string[], counts: { [key: string]: number[] }): string[] {
+  /*
+  This function is called by the validateExpression function to check that all the variables used 
+  in the equation have the same number of nominal and error values entered by the user.
+
+  For example, consider the expression: x + y with the following values:
+
+  x = {nominal: [1, 2, 3], error: [0.1, 0.2, 0.3]}
+  y = {nominal: [4, 5], error: [0.4, 0.5]}
+
+  In this case, the function will return an error message because the variable y has a different 
+  number of nominal and error values.
+
+  Here is another example: x + y with the following values:
+  x = {nominal: [1, 2, 3], error: [0.1, 0.2, 0.3]}
+  y = {nominal: [4, 5, 1], error: [0.4, 0.5]}
+
+  In this case, the function will return an error message because the variable y has a different
+  number of error values compared to the nominal values.
+
+  Here is a correct example: x + y with the following values:
+  x = {nominal: [1, 2, 3], error: [0.1, 0.2, 0.3]}
+  y = {nominal: [4, 5, 6], error: [0.4, 0.5, 0.6]}
+
+  In this case, the function will return an empty error message because all the variables have the same
+  number of nominal and error values.
+  */
+  let match = -1;
+  // the bitMap is the variables used in the equation, the only ones we need to validate
+  const bitMap = getVariablesUsedInEquation(vars, eqn);
+  for (const i in vars) { 
+    if (bitMap[i]) {
+      const errCount = counts[vars[i]][1]; // number of error values
+      const nomCount = counts[vars[i]][0]; // number of nominal values
+
+      if (nomCount < 0) {
+        return [`Unexpected client error: variable ${vars[i]} has negative number of nominal values: ${nomCount}. Contact Faisal.`, eqn];
+      }
+      if (errCount < -1) {
+        return [`Unexpected client error: variable ${vars[i]} has negative number of error values: ${errCount}. Contact Faisal.`, eqn];
+      }
+
+      if (match == -1) {
+        // first time we encounter a variable in the equation
+        match = nomCount; // number of nominal values
+      }
+
+      if (errCount != -1) {
+        // if the errCount is -1, it means we have constant error values and we don't need to validate
+        if (errCount != match) {
+          return [`Variable ${vars[i]} has ${match} nominal values but ${errCount} error values`, eqn];
+        }
+      }
+      if (match != nomCount) {
+        return [`Variable ${vars[i]} has ${nomCount} nominal values but ${match} error values`, eqn];
+      }
+    }
+  }
+
+  // no errors
+  return ['', eqn];
+}
 
 export function validateValueBox(single: boolean, value: string, isError: boolean=true): string[] {
   // this function is called by the ValueBox component to validate both nominal and error values entered by the user
@@ -141,7 +206,7 @@ export function validateValueBox(single: boolean, value: string, isError: boolea
     }
     return ['', value]; // no errors
   }
-``
+
   // we have multiple values
   const errors = value.split('\n');
   // console.log("we have errors in multiple values");
