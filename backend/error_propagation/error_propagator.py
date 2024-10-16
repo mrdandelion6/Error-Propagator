@@ -1,4 +1,3 @@
-import numpy as np
 import pandas as pd
 import uncertainties as unc
 from typing import List, Dict, Tuple
