@@ -12,7 +12,11 @@ def process_data(request):
         data = json.loads(request.body)
 
         # the actual processing is done in the propagate_errors function
-        result = propagate_errors(data)
-        return JsonResponse({'result': result})
+        result, code = propagate_errors(data)
+        if code == 200:
+            print(JsonResponse(result, status=code))
+            return JsonResponse(result, status=code)
+        else:
+            return JsonResponse({'error': f'Invalid equation: {data['equation']}'}, status=code)
     else:
         return JsonResponse({'error': 'Invalid request method'}, status=400)

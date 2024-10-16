@@ -17,6 +17,7 @@ function ErrorPropagator() {
   const [numBoxes, setNumBoxes] = useState<number>(1); // track the number of boxes
   const [equation, setEquation] = useState<string>();
 
+  const [roundResult, setRoundResult] = useState<boolean>(false);
   const [constErrors, setConstErrors] = useState<boolean[]>([true]); // keep track if we have constant or variable error
   const [variables, setVariables] = useState<string[]>(['x']);
   const [nominalValues, setNominalValues] = useState<string[]>(['']);
@@ -148,7 +149,9 @@ function ErrorPropagator() {
           "nominalValues": nominalValues, 
           "errorValuesVariable": errorValuesVariable, 
           "errorValuesConstant": errorValuesConstant, 
-          "constErrors": constErrors}),
+          "constErrors": constErrors,
+          "roundResult": roundResult,
+        }),
       });
   
       if (response.ok) {
