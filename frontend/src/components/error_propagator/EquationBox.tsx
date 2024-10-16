@@ -1,6 +1,5 @@
 import './InputBoxes.scss';
 import React, { useState, useRef } from "react";
-// import validateEquation from '../../utils/validateEquation';
 
 interface EquationBoxProps { // interfaces can be used as a nice packing for types 
   value: string;

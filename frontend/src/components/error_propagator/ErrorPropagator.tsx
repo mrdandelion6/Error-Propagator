@@ -1,9 +1,14 @@
 import React, { useEffect, useState } from "react";
 import ValueBox from './ValueBox'
 import EquationBox from './EquationBox'
+import ResultBox from './ResultBox'
 import './ErrorPropagator.scss';
 import { validateEquation } from '../../utils/verifyInput';
 import { getVariablesUsedInEquation } from '../../utils/verifyInput';
+import openEye from '../../assets/error_propagator/open_eye.png';
+import closedEye from '../../assets/error_propagator/closed_eye.png';
+// import roundedIcon from '../../assets/error_propagator/rounded_icon.png';
+// import notRoundedIcon from '../../assets/error_propagator/not_rounded_icon.png';
 
 
 function ErrorPropagator() {
@@ -17,6 +22,7 @@ function ErrorPropagator() {
   const [numBoxes, setNumBoxes] = useState<number>(1); // track the number of boxes
   const [equation, setEquation] = useState<string>();
 
+  // TODO: implement result rounding option with a toggle button
   const [roundResult, setRoundResult] = useState<boolean>(false);
   const [constErrors, setConstErrors] = useState<boolean[]>([true]); // keep track if we have constant or variable error
   const [variables, setVariables] = useState<string[]>(['x']);
@@ -32,6 +38,7 @@ function ErrorPropagator() {
 
   // for when we send a propagation request to the python backend
   const [showResponse, setShowResponse] = useState(false);
+  const [showFullResponse, setShowFullResponse] = useState(true);
   const [responseNominalValues, setResponseNominalValues] = useState<string[]>([]);
   const [responseErrorValues, setResponseErrorValues] = useState<string[]>([]);
 
@@ -136,7 +143,19 @@ function ErrorPropagator() {
   // alter this to actually deal with data from several things
   // eslint-disable-next-line
   const propagateRequest = async () => {
+    interface PropagationResponse {
+      errors: string[]; 
+      nominals: string[]; 
+    }
+
     const url = "/api/process/";
+
+    const usedVariablesBitmap = getVariablesUsedInEquation(variables, equation ?? '');
+    const filteredVariables = variables.filter((_, index) => {
+      const nominalValue = nominalValues[index];
+      return nominalValue !== '' && usedVariablesBitmap[index];
+    });
+
     try {
       const response = await fetch(url, {
         method: "POST",
@@ -145,7 +164,7 @@ function ErrorPropagator() {
         },
         body: JSON.stringify({ 
           "equation": equation, 
-          "variables": variables, 
+          "variables": filteredVariables, 
           "nominalValues": nominalValues, 
           "errorValuesVariable": errorValuesVariable, 
           "errorValuesConstant": errorValuesConstant, 
@@ -155,9 +174,11 @@ function ErrorPropagator() {
       });
   
       if (response.ok) {
-        // TODO: parse the response accordingly. extract the output nominals and errors
-        const data: number = await response.json();
+        const data: PropagationResponse = await response.json();
         console.log(data);
+        setResponseErrorValues(data['errors']);
+        setResponseNominalValues(data['nominals']);
+        setShowResponse(true);
       } else {
         console.error("Server returned an error:", response.statusText);
       }
@@ -236,6 +257,7 @@ function ErrorPropagator() {
 
   };
 
+  
   /////////////////////////////////////////////
 
   return (
@@ -260,7 +282,41 @@ function ErrorPropagator() {
           <p className="badInputMessage failedPropagation">{failedPropagationMessage}</p>
         }
 
-        { numBoxes > 0 ? (
+        { 
+        showResponse && 
+        <div className="responseContainer">
+          <div className="responseHeader">
+            <h2 className="responseTitle">{showFullResponse ? "Calculated Values" : "Calculated Values..."}</h2>
+            <div className="toggleFullResponse"
+              onClick={() => setShowFullResponse(!showFullResponse)}>
+              <img
+                src={showFullResponse ?  openEye : closedEye}
+                alt="toggle response"
+                style={{width: "40px", height: "40px"}}
+              />
+            </div>
+            {/* <div className="roundResult"
+              onClick={() => setRoundResult(!roundResult)}>
+              <img
+                src={roundResult ? roundedIcon : notRoundedIcon}
+                alt="round result"
+                style={{width: "20px", height: "20px"}}
+              />
+            </div> */}
+          </div>
+          { 
+            showFullResponse && <div className="response">
+              <ResultBox
+                nominalValues={responseNominalValues}
+                errorValues={responseErrorValues}
+              />
+            </div>
+          }
+        </div>
+        }
+
+        { 
+          numBoxes > 0 ? (
           <div className="valueBoxes">
             {variables.map((_, index) => (
             <div key={index} className="noMP">
@@ -278,8 +334,8 @@ function ErrorPropagator() {
             </div>
             ))}
           </div>
-        ) : ( <><p className="noVarsMessage">Wow, it's looking empty here! To start, click "Add Variable".</p>
-          <p style={{ marginTop: "10px"}}>Read the <strong>docs</strong> for help.</p></>
+          ) : ( <><p className="noVarsMessage">Wow, it's looking empty here! To start, click "Add Variable".</p>
+            <p style={{ marginTop: "10px"}}>Read the <strong>docs</strong> for help.</p></>
         )}
       </div>
   );

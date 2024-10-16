@@ -1,0 +1,82 @@
+$result-box-width: calc(max(calc(35vw + 32px), 320px));
+$result-text-max-height: 600px; 
+$scrollbar-track-color: rgb(255, 255, 255);
+$scrollbar-thumb-color: rgb(94, 92, 92);
+$scrollbar-thumb-hover-color: rgb(94, 92, 92);
+
+.resultBox {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    width: $result-box-width;
+    padding-bottom: 15px;
+
+    .resCol {
+        padding: 10px;
+        overflow-y: auto;
+
+        .valTitle {
+            background-color: rgb(221, 218, 218);
+            border: 1px solid #ccc;
+            border-bottom: none;
+            border-top-left-radius: 5px; 
+            border-top-right-radius: 5px; 
+        }
+
+        .nomTitle {
+
+        }
+
+        .errTitle {
+
+        }
+
+        
+
+    }
+
+    .nominalColumn {
+        height: 100%;
+        width: 50%;
+    }
+
+    .errorColumn {
+        height: 100%;
+        width: 50%;
+    }
+
+    .resultText {
+        max-height: $result-text-max-height;
+        overflow-y: auto;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        flex-grow: 1;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+
+        &::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        &::-webkit-scrollbar-track {
+            background: $scrollbar-track-color;
+        }
+
+        &::-webkit-scrollbar-thumb {
+            background: $scrollbar-thumb-color;
+            border-radius: 5px;
+        }
+
+        &::-webkit-scrollbar-thumb:hover {
+            background: $scrollbar-thumb-hover-color;
+        }
+
+        // firefox scrollbar styles
+        scrollbar-color: $scrollbar-thumb-color $scrollbar-track-color;
+
+
+    }
+
+}

@@ -3,7 +3,7 @@ $page-width: calc(100vw - $page-scroll-bar-width);
 
 $delete-button-width: 40px;
 $error-button-width: 60px;
-$val-box-width: calc(max(calc(8vw + 32px), 140px) );
+$val-box-width: calc(max(calc(8vw + 32px), 140px));
 $err-box-width: calc($error-button-width + $delete-button-width - 1px);
 $box-width: calc($val-box-width + $err-box-width);
 
@@ -54,11 +54,46 @@ margin-top: 0px;
             background-color: rgb(255, 0, 43); 
         }
     }
+}
 
-  }
-
-  .noVarsMessage {
+.noVarsMessage {
     margin-top: 50px;
-  }
+}
 
-  
+.response {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+}
+
+.responseContainer {
+    margin-top: 33px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    margin-bottom: 10px;
+}
+
+.responseTitle {
+    padding-left: 15px;
+    font-size: 2.2em;
+}
+
+.responseHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.toggleFullResponse {
+    display: flex;
+    height: 43px;
+    width: 43px;
+    background-color: #535bf2;
+    align-items: center;
+    border-radius: 5px;
+    justify-content: center;
+    margin-right: 8px;
+    cursor: pointer;
+    user-select: none;
+}

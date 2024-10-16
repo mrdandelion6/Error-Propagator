@@ -1,6 +1,7 @@
 import pandas as pd
-import uncertainties as unc
 from typing import List, Dict, Tuple
+from uncertainties import ufloat
+from uncertainties.umath import *
 import math
 
 
@@ -53,7 +54,18 @@ def setup_df(data) -> pd.DataFrame:
     variables = data['variables']
     is_const_error = data['constErrors'] # bitmap of which variables are constants
     
-    nominal_values = [data['nominalValues'][i].split('\n') for i in range(len(data['nominalValues']))]
+    nominal_values = []
+    # split the nominal values and don't include empty strings if they are first or last
+    for i in range(len(data['nominalValues'])):
+        noms = data['nominalValues'][i].split('\n')
+        if noms[0] == '':
+            noms.pop(0)
+        if noms[-1] == '':
+            noms.pop()
+        nominal_values.append(noms)
+
+
+    print(nominal_values)
     variable_errors = [data['errorValuesVariable'][i].split('\n') for i in range(len(data['errorValuesVariable']))]
     constant_errors = data['errorValuesConstant']
 
@@ -64,9 +76,9 @@ def setup_df(data) -> pd.DataFrame:
     for i in range(len(nominal_values[0])):
         for j in range(len(variables)):
             if is_const_error[j]:
-                df.loc[i, variables[j]] = unc.ufloat(float(nominal_values[j][i]), float(constant_errors[j]))
+                df.loc[i, variables[j]] = ufloat(float(nominal_values[j][i]), float(constant_errors[j]))
             else:
-                df.loc[i, variables[j]] = unc.ufloat(float(nominal_values[j][i]), float(variable_errors[j][i]))
+                df.loc[i, variables[j]] = ufloat(float(nominal_values[j][i]), float(variable_errors[j][i]))
     return df
 
 
@@ -94,33 +106,79 @@ def propagate_errors(data: Dict[str, list]) -> Tuple[Dict[str, List[str]], int]:
     try:
         eqn = validate_equation(eqn, data['variables'])
     except Exception as e:
-        return {f"Bad equation: {eqn}"}, 500
+        print(e)
+        return {f"Bad equation"}, 500
 
-    allowed_functions = {
-        'sin': math.sin,
-        'cos': math.cos,
-        'tan': math.tan,
-        'log': math.log,
-    'exp': math.exp,
-        'sqrt': math.sqrt,
+    allowed_constants = {
         'pi': math.pi,
         'e': math.e
     }
+
+    allowed_functions = {
+        # these are defined by the uncertainties.umath module
+        'abs': abs,
+        'sin': sin,
+        'cos': cos,
+        'tan': tan,
+        'asin': asin,
+        'acos': acos,
+        'atan': atan,
+        'atan2': atan2,
+        'sinh': sinh,
+        'cosh': cosh,
+        'tanh': tanh,
+        'asinh': asinh,
+        'acosh': acosh,
+        'atanh': atanh,
+        'exp': exp,
+        'log': log,
+        'sqrt': sqrt,
+        'ceil': ceil,
+        'floor': floor,
+    }
     
-    vals, errs = [], []
+    noms, errs = [], []
     for i in range(df.shape[0]):
         vars = df.iloc[i].to_dict()
         
-        # merge the vars and allowed_functions dictionaries
+        if vars is None or allowed_constants is None:
+            return {"error": "Internal server error: variables or functions not defined"}, 500
+       
+        # merge the vars and allowed constants dictionaries
         try:
-            result = eval(eqn, {"__builtins__": None}, {**vars, **allowed_functions})
+            result = eval(eqn, {"__builtins__": None}, {**vars, **allowed_constants, **allowed_functions})
+
+        except OSError as e:
+            print(f"2: {e}")
+            if e.errno == 34 and str(e) == 'Result too large':
+                return {f"Result too large to process"}, 422
+            return {f"Unknown OS error"}, 500
+            
+        except OverflowError as e: 
+            print(f"3: {e}")
+            if str(e) == 'Result too large':
+                return {f"Result too large to process"}, 422
+            return {f"Overflow error"}, 500
+            
+        except ZeroDivisionError as e:
+            print(f"4: {e}")
+            return {f"Zero division error"}, 500
+        
+        except ValueError as e:
+            print(f"5: {e}")
+            if str(e) == 'math domain error':
+                return {f"Math domain error"}, 500
+            return {f"Value error"}, 500
+    
         except Exception as e:
-            return {f"Bad equation: {eqn}"}, 500
-        n, s = str(result.n), str(result.s)
+            print(f"5: {e}")
+            return {f"Bad equation"}, 500
+        
+        n, s = result.n, result.s
+
         if roundingEnabled:
             n, s = round_result(n, s)
-        vals.append(n)
+        noms.append(n)
         errs.append(s)
 
-    results = {"values": vals, "errors": errs}
-    return results, 200
+    return {"nominals": noms, "errors": errs}, 200
