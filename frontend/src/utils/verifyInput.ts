@@ -29,7 +29,6 @@ export function validateExpression(eqn: string, vars: string[], counts: { [key: 
     // this function cleans up the error message returned by the parser and makes it more user-friendly
 
     if (message === "") {
-      console.log('Unexpected empty string for error message');
       return message;
     }
 
@@ -102,8 +101,6 @@ export function validateExpression(eqn: string, vars: string[], counts: { [key: 
   } catch (error) {
     if (error instanceof Error) {
       let message: string = error.message;
-      // console.log(message);
-
       switch (message) {
         case "unexpected TEOF: EOF":
           return ['Unexpected end of equation', eqn];
@@ -209,7 +206,6 @@ export function validateValueBox(single: boolean, value: string, isError: boolea
 
   // we have multiple values
   const errors = value.split('\n');
-  // console.log("we have errors in multiple values");
   
   if (errors.some(e => validateValueBox(true, e)[0] != '')) { // if there is some error message that is invalid
     if (isError) {

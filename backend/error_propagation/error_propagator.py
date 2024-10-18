@@ -58,9 +58,9 @@ def setup_df(data) -> pd.DataFrame:
     # split the nominal values and don't include empty strings if they are first or last
     for i in range(len(data['nominalValues'])):
         noms = data['nominalValues'][i].split('\n')
-        if noms[0] == '':
+        if noms and noms[0] == '':
             noms.pop(0)
-        if noms[-1] == '':
+        if noms and noms[-1] == '':
             noms.pop()
         nominal_values.append(noms)
 

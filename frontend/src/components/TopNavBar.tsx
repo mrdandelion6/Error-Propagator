@@ -121,7 +121,6 @@ function TopNavBar() {
     const trayItems: JSX.Element[] = [];
 
     buttons.names.forEach((_, index) => {
-      console.log("link for index: ", index, " is: ", buttons.links[index]);
       const link = buttons.links[index];
       if (link === undefined) {
         return;

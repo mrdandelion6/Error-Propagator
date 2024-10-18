@@ -16,6 +16,7 @@ $button-height: 40px;
 $delete-button-width: 40px;
 $error-button-width: 60px;
 $btn-hover: #535bf2;
+$error-button-color: rgb(6, 122, 255);
 
 // box styling
 $val-box-width: calc(max(calc(8vw + 32px), 140px));
@@ -286,7 +287,7 @@ input {
   }
 
   .errorButton{
-    background-color: rgb(6, 122, 255);
+    background-color: $error-button-color;
     width: $error-button-width;
     height: $button-height;
     position: absolute;

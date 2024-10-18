@@ -33,6 +33,9 @@ function ValueBox({
     All the states of the component are managed here, except for the variable name which is managed by the parent component.
     The parent component, App.tsx, passes down the variable name, the function to change the variable name, and the function to delete the box.
   */
+
+  // TODO: add a button to collapse the box
+
   const[isHoveringOverScrollbar, setIsHoveringOverScrollbar] = useState(false);
   const[isFocused, setIsFocused] = useState(false);
   const[nominalValue, setNominalValue] = useState('');
@@ -109,7 +112,6 @@ function ValueBox({
     // when users click the error change button which swaps between constant error and variable error
     setConstError(!constError);
     updateConstErrors(!constError);
-    console.log("changing constError to: " + !constError);
     handleBlur(!constError);
   }
 
@@ -117,7 +119,6 @@ function ValueBox({
     const newFocusedBefore = [...focusedBefore];
     newFocusedBefore[index] = true;
     setFocusedBefore(newFocusedBefore);
-    console.log(focusedBefore);
     setIsFocused(true);
   }
 
@@ -139,7 +140,6 @@ function ValueBox({
     tempBadNominalInputMessage = validation[0];
 
     // then check error vals
-    console.log("in handleBlur, constantError is: " + constantError);
     if (constantError) {
       validation = validateValueBox(true, constantErrorValue);
       setBadErrorInputMessage(validation[0]);

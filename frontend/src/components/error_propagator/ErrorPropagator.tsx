@@ -5,8 +5,8 @@ import ResultBox from './ResultBox'
 import './ErrorPropagator.scss';
 import { validateExpression } from '../../utils/verifyInput';
 import { getVariablesUsedInEquation } from '../../utils/verifyInput';
-import openEye from '../../assets/error_propagator/open_eye.png';
-import closedEye from '../../assets/error_propagator/closed_eye.png';
+import openEye from '../../assets/error_propagator/open_eye2.png';
+import closedEye from '../../assets/error_propagator/closed_eye2.png';
 // import roundedIcon from '../../assets/error_propagator/rounded_icon.png';
 // import notRoundedIcon from '../../assets/error_propagator/not_rounded_icon.png';
 
@@ -23,12 +23,11 @@ function ErrorPropagator() {
   const [equation, setEquation] = useState<string>();
 
   // TODO: implement result rounding option with a toggle button
-  interface InputCount {
+  interface InputCounts {
     [key: string]: number[];
     // this is a dictionary where the key is the variable name and the value is an array of two numbers
     // the first number is the number of nominal values and the second number is the number of error values
   }
-  const [inputCount, setInputCount] = useState<InputCount>({});
   const [roundResult, setRoundResult] = useState<boolean>(false);
   const [constErrors, setConstErrors] = useState<boolean[]>([true]); // keep track if we have constant or variable error
   const [variables, setVariables] = useState<string[]>(['x']);
@@ -179,7 +178,6 @@ function ErrorPropagator() {
   
       if (response.ok) {
         const data: PropagationResponse = await response.json();
-        console.log(data);
         setResponseErrorValues(data['errors']);
         setResponseNominalValues(data['nominals']);
         setShowResponse(true);
@@ -191,8 +189,8 @@ function ErrorPropagator() {
     }
   };
 
-  const updateInputCounts = () => {
-    const newInputCount: InputCount = {};
+  const getInputCounts = (): InputCounts => {
+    const inputCounts: InputCounts = {};
     for (const i in variables) {
       const noms = nominalValues[i].split('\n');
       // remove any first or last empty strings
@@ -214,19 +212,22 @@ function ErrorPropagator() {
         }
         errorsCount = errors.length;
       }
-      newInputCount[variables[i]] = [nomsCount, errorsCount];
+      inputCounts[variables[i]] = [nomsCount, errorsCount];
     }
-    setInputCount(newInputCount);
-    console.log(newInputCount);
+    return inputCounts;
   }
 
   const handleEquationChange = (value: string) => {
     // validate the equation
-    updateInputCounts();
-    const equationResult = validateExpression(value, variables, inputCount)[0];
+    const inputCounts = getInputCounts();
+    const equationResult = validateExpression(value, variables, inputCounts)[0];
+    console.log("equation result: ", equationResult);
     setEquationBadInputMessage(equationResult);
-    const newEquation = validateExpression(value, variables, inputCount)[1];
+    const newEquation = validateExpression(value, variables, inputCounts)[1];
     setEquation(newEquation);
+    if (failedPropagationMessage !== '') {
+      updatePropagationMessage();
+    }
   };
 
   useEffect(() => {
@@ -235,7 +236,7 @@ function ErrorPropagator() {
     if (equationBadInputMessage !== '') {
       handleEquationChange(equation ?? '');
     }
-  }, [variables]);
+  } , [variables, nominalValues, errorValuesVariable, errorValuesConstant, constErrors, equation]);
 
   const checkCell = (index: number): string => {
     // verify if there are any issues with the input in the cell
@@ -268,6 +269,13 @@ function ErrorPropagator() {
       return "No variables have been added.";
     }
 
+    // check equation additionally
+    const inputCounts = getInputCounts();
+    const equationResult = validateExpression(equation ?? '', variables, inputCounts)[0];
+    if (equationResult !== '') {
+      return equationResult
+    }
+
     const bitMap = getVariablesUsedInEquation(variables, equation ?? '');
     // returns an array of booleans, where true means that the variable is used in the equation
     for (let i = 0; i < variables.length; i++) {
@@ -281,14 +289,19 @@ function ErrorPropagator() {
     return '';
   };
 
-  const handlePropagation = () => {
+  
+  const updatePropagationMessage = (): string => {
     const issues = checkErrors();
+    console.log("issues: ", issues);
     setFailedPropagationMessage(issues);
+    return issues;
+  }
+
+  const handlePropagation = () => {
+    const issues = updatePropagationMessage();
     if (issues === '') {
-      // console.log("no issues, propagating");
       propagateRequest();
     }
-
   };
 
   return (
@@ -313,7 +326,7 @@ function ErrorPropagator() {
           <p className="badInputMessage failedPropagation">{failedPropagationMessage}</p>
         }
 
-        { 
+        {
         showResponse && 
         <div className="responseContainer">
           <div className="responseHeader">

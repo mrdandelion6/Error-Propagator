@@ -20,16 +20,20 @@ $box-spacing-horizontal: calc(max((0.7 * $page-width - 5 * $val-box-width) / 4, 
 .badInputMessage {
     color: red;
     font-size: 0.95em;
-margin-top: 0px;
+    margin-top: 0px;
     margin-bottom: 0px;
     margin-left: 0px;
     margin-right: 0px;
     white-space: normal;
-    width: $box-width;
 
-    &.constError {
+    &.constError.inBoxMessage {
         width: calc($val-box-width);
     }
+
+    &.inBoxMessage {
+        width: calc($box-width);
+    }
+
 }
 
 .failedPropagation {
@@ -89,7 +93,7 @@ margin-top: 0px;
     display: flex;
     height: 43px;
     width: 43px;
-    background-color: #535bf2;
+    background-color: rgb(6, 122, 255);
     align-items: center;
     border-radius: 5px;
     justify-content: center;
