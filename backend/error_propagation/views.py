@@ -17,6 +17,6 @@ def process_data(request):
             print(JsonResponse(result, status=code))
             return JsonResponse(result, status=code)
         else:
-            return JsonResponse({'error': f'Invalid equation: {data['equation']}'}, status=code)
+            return JsonResponse({'error': f"Invalid equation: {data['equation']}"}, status=code)
     else:
         return JsonResponse({'error': 'Invalid request method'}, status=400)
