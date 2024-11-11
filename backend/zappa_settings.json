@@ -1,9 +1,36 @@
 {
     "dev": {
-        "django_settings": "your_project.settings",
+        "aws_region": "us-east-1",
+        "django_settings": "backend.settings",
         "profile_name": "default",
-        "project_name": "your-project",
-        "runtime": "python3.9",
-        "s3_bucket": "zappa-your-project-bucket"
+        "project_name": "backend",
+        "runtime": "python3.12",
+        "s3_bucket": "zappa-6wedshlck",
+        "slim_handler": true,
+        "exclude": [
+            "*.pyc",
+            "**/*.pyc",
+            "tests.py",
+            "test.py",
+            "**/tests/**",
+            "tests/**",
+            "concurrent"
+        ],
+        "exclude_glob": [
+            "AVAILABLE-ON-LAMBDA",
+            "boto3*",
+            "botocore*",
+            "pip*",
+            "setuptools*",
+            "wheel*",
+            "awscli*",
+            "python-dateutil*",
+            
+            "DEV-TOOLS",
+            "zappa*",
+            "troposphere*",
+            "kappa*",
+            "placebo*"
+        ]
     }
-} 
+}
