@@ -9,4 +9,5 @@ frontend/node_modules
 #   please store that in a secure location
 __pycache__
 backend-old/
+secret/
 *.csv
