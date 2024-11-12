@@ -3,6 +3,7 @@
 *.zip
 *.tgz
 *.csv
+*.tar.gz
 
 # frontend
 frontend/node_modules
@@ -14,4 +15,6 @@ __pycache__
 backend-old/
 secret/
 layers/
+handler_venv/
 zappa_settings.json
+db.sqlite3
