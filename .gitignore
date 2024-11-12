@@ -1,5 +1,8 @@
 # general
 .vscode
+*.zip
+*.tgz
+*.csv
 
 # frontend
 frontend/node_modules
@@ -10,8 +13,5 @@ frontend/node_modules
 __pycache__
 backend-old/
 secret/
-*.csv
 layers/
-*.zip
-*.tgz
 zappa_settings.json
