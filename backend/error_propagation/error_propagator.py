@@ -93,10 +93,25 @@ def validate_equation(equation: str, variables: List[str]) -> str:
     return equation
 
 
+def check_missing_fields(data: Dict[str, list]) -> bool:
+    """
+    Check if any of the required fields are missing from the data dictionary. If any of the required fields are missing, then return True. Otherwise, return False.
+    """
+    required_fields = ['equation', 'variables', 'nominalValues', 'errorValuesVariable', 'errorValuesConstant', 'constErrors', 'roundResult']
+    for field in required_fields:
+        if field not in data:
+            return True
+    return False
+
+
 def propagate_errors(data: Dict[str, list]) -> Tuple[Dict[str, List[str]], int]:
     """
     The backbone of the backend. This function takes the data from the views.py file as a dictionary and processes it. It returns a tuple of a dictionary: {"values": List[str], "errors": List[str]} and an integer representing the status code. If the status code is 200, then the processing was successful. Otherwise, the processing was not successful. The views.py file will then return a JsonResponse with the dictionary and status code.
     """
+    # check if any of the required fields are missing
+    if check_missing_fields(data):
+        return {"error": "Missing required fields"}, 400
+
     # setup the dataframe
     df = setup_df(data)
     eqn = data['equation']
@@ -151,33 +166,41 @@ def propagate_errors(data: Dict[str, list]) -> Tuple[Dict[str, List[str]], int]:
         except OSError as e:
             print(f"2: {e}")
             if e.errno == 34 and str(e) == 'Result too large':
-                return {f"Result too large to process"}, 422
+                result = "too large: OS error"
             return {f"Unknown OS error"}, 500
             
         except OverflowError as e: 
             print(f"3: {e}")
             if str(e) == 'Result too large':
-                return {f"Result too large to process"}, 422
+                result = "too large: overflow"
             return {f"Overflow error"}, 500
             
         except ZeroDivisionError as e:
             print(f"4: {e}")
-            return {f"Zero division error"}, 500
+            result = "undefined"
         
         except ValueError as e:
             print(f"5: {e}")
             if str(e) == 'math domain error':
-                return {f"Math domain error"}, 500
-            return {f"Value error"}, 500
+                result = "undefined"
+            else:
+                return {f"Value error"}, 400
     
         except Exception as e:
             print(f"5: {e}")
-            return {f"Bad equation"}, 500
-        
-        n, s = result.n, result.s
 
-        if roundingEnabled:
-            n, s = round_result(n, s)
+            if str(e).startswith('invalid syntax'):
+                return {f"Bad equation"}, 400
+
+            return {f"Internal error"}, 500
+        
+        if isinstance(result, str):
+            n = s = result
+        else:    
+            n, s = result.n, result.s
+            if roundingEnabled:
+                n, s = round_result(n, s)
+                
         noms.append(n)
         errs.append(s)
 
