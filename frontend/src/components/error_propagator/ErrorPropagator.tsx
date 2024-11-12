@@ -151,6 +151,16 @@ function ErrorPropagator() {
       nominals: string[]; 
     }
 
+    interface ErrorPropagatorRequest {
+      equation: string | undefined;
+      variables: string[];
+      nominalValues: string[];
+      errorValuesVariable: string[];
+      errorValuesConstant: string[];
+      constErrors: boolean[];
+      roundResult: boolean;
+    }
+
     const url = "/api/process/";
 
     const usedVariablesBitmap = getVariablesUsedInEquation(variables, equation ?? '');
@@ -159,21 +169,23 @@ function ErrorPropagator() {
       return nominalValue !== '' && usedVariablesBitmap[index];
     });
 
+    const requestBody: ErrorPropagatorRequest = {
+      equation, 
+      variables: filteredVariables, 
+      nominalValues, 
+      errorValuesVariable, 
+      errorValuesConstant, 
+      constErrors,
+      roundResult,
+    };
+
     try {
       const response = await fetch(url, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ 
-          "equation": equation, 
-          "variables": filteredVariables, 
-          "nominalValues": nominalValues, 
-          "errorValuesVariable": errorValuesVariable, 
-          "errorValuesConstant": errorValuesConstant, 
-          "constErrors": constErrors,
-          "roundResult": roundResult,
-        }),
+        body: JSON.stringify(requestBody),
       });
   
       if (response.ok) {
