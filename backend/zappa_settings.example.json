@@ -1,6 +1,6 @@
 {
     "dev": {
-        "aws_region": "us-east-1",
+        "aws_region": "<AWS_REGION>",
         "django_settings": "backend.settings",
         "slim_handler": true,
         "manage_roles": false,
