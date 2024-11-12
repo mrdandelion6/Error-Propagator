@@ -2,11 +2,12 @@
     "dev": {
         "aws_region": "us-east-1",
         "django_settings": "backend.settings",
-        "profile_name": "default",
-        "project_name": "backend",
-        "runtime": "python3.12",
-        "s3_bucket": "zappa-6wedshlck",
         "slim_handler": true,
+        "manage_roles": false,
+        "apigateway_enabled": true,
+        "aws_environment_variables": {
+            "DJANGO_SETTINGS_MODULE": "backend.settings"
+        },
         "exclude": [
             "*.pyc",
             "**/*.pyc",
