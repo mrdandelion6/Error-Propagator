@@ -11,3 +11,6 @@ __pycache__
 backend-old/
 secret/
 *.csv
+layers/
+*.zip
+*.tgz
