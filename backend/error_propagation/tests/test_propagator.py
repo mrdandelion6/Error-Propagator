@@ -7,11 +7,11 @@ from error_propagation.error_propagator import (
     validate_equation,
     propagate_errors,
 )
-from uncertainties import ufloat
+from uncertainties import ufloat, UFloat
 import pandas as pd
 import math
 
-class ErrorPropagatorTestCase(TestCase):
+class ErrorPropagatorTests(TestCase):
     def test_round_result(self):
         # test round_result function
         nom, err = round_result("1.23456", "0.05678")
@@ -40,7 +40,7 @@ class ErrorPropagatorTestCase(TestCase):
         df = setup_df(data)
         self.assertIsInstance(df, pd.DataFrame)
         self.assertEqual(df.shape, (3, 2))
-        self.assertIsInstance(df.iloc[0, 0], ufloat)
+        self.assertIsInstance(df.iloc[0, 0], UFloat)
 
     def test_validate_equation(self):
         # test validate_equation function
