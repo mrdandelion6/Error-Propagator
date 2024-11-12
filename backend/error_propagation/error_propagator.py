@@ -82,7 +82,7 @@ def setup_df(data) -> pd.DataFrame:
     return df
 
 
-def validate_equation(equation: str, variables: List[str]) -> bool:
+def validate_equation(equation: str, variables: List[str]) -> str:
     """
     Validates that the equation is correct by checking that all the variables in the equation are in the list of variables. Also checks that the equation is a valid mathematical expression. If the equation is not valid, then an exception is raised.
     """
