@@ -1,0 +1,32 @@
+{
+    "dev": {
+        "aws_region": "us-east-1",
+        "django_settings": "backend.settings",
+        "slim_handler": true,
+        "manage_roles": false,
+        "apigateway_enabled": true,
+        "aws_environment_variables": {
+            "DJANGO_SETTINGS_MODULE": "backend.settings",
+            "DJANGO_SECRET_KEY": "<DJANGO_SECRET_KEY>",
+            "DJANGO_DEBUG": "False"
+        },
+        "layers": [
+            "arn:aws:lambda:us-east-1:<AWS_ACCOUNT_ID>:layer:werkzeug-flask-layer:1"
+        ],
+        
+        "exclude": [
+            "*.pyc",
+            "**/*.pyc",
+            "tests.py",
+            "test.py",
+            "**/tests/**",
+            "tests/**"
+        ],
+        "exclude_glob": [
+            "boto3*",
+            "botocore*",
+            "werkzeug*",
+            "flask*"
+        ]
+    }
+}
