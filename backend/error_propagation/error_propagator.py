@@ -49,13 +49,14 @@ def match_sigfigs(num1: str, num2: str) -> str:
 
 def setup_df(data) -> pd.DataFrame:
     """
-    Takes the data from the frontend and sets up a pandas dataframe with the variables and their errors.
+    Takes the data from the frontend and sets up a pandas dataframe with the variables and their errors. Note that each entry in data['nominalValues'] is a string with the nominal values separated by a newline character. That means a single string can represent multiple nominal values for a single variable, for example, x -> "1\n2\n3". The same goes for the error values.  
     """
     variables = data['variables']
     is_const_error = data['constErrors'] # bitmap of which variables are constants
     
     nominal_values = []
     # split the nominal values and don't include empty strings if they are first or last
+    # we do this because the user might have entered an extra newline at the beginning or end that the client side didn't remove
     for i in range(len(data['nominalValues'])):
         noms = data['nominalValues'][i].split('\n')
         if noms and noms[0] == '':
@@ -164,23 +165,23 @@ def propagate_errors(data: Dict[str, list]) -> Tuple[Dict[str, List[str]], int]:
             result = eval(eqn, {"__builtins__": None}, {**vars, **allowed_constants, **allowed_functions})
 
         except OSError as e:
-            print(f"2: {e}")
+            print(f"1: {e}")
             if e.errno == 34 and str(e) == 'Result too large':
                 result = "too large: OS error"
             return {f"Unknown OS error"}, 500
             
         except OverflowError as e: 
-            print(f"3: {e}")
+            print(f"2: {e}")
             if str(e) == 'Result too large':
                 result = "too large: overflow"
             return {f"Overflow error"}, 500
             
         except ZeroDivisionError as e:
-            print(f"4: {e}")
+            print(f"3: {e}")
             result = "undefined"
         
         except ValueError as e:
-            print(f"5: {e}")
+            print(f"4: {e}")
             if str(e) == 'math domain error':
                 result = "undefined"
             else:
