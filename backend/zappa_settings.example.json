@@ -2,31 +2,62 @@
     "dev": {
         "aws_region": "<AWS_REGION>",
         "django_settings": "backend.settings",
-        "slim_handler": true,
         "manage_roles": false,
         "apigateway_enabled": true,
+        "slim_handler": true,
         "aws_environment_variables": {
+            "ENVIRONMENT": "dev",
             "DJANGO_SETTINGS_MODULE": "backend.settings",
             "DJANGO_SECRET_KEY": "<DJANGO_SECRET_KEY>",
             "DJANGO_DEBUG": "False"
         },
         "layers": [
-            "arn:aws:lambda:us-east-1:<AWS_ACCOUNT_ID>:layer:werkzeug-flask-layer:1"
+            "arn:aws:lambda:us-east-1:851725344124:layer:web-framework-layer:4",
+            "arn:aws:lambda:us-east-1:851725344124:layer:data-science-layer:1"
         ],
-        
         "exclude": [
+            "ALREADY IN LAMBDA RUNTIME",
+            "boto3*",
+            "botocore*",
+            "s3transfer*",
+            "jmespath*",
+            "certifi*",
+            "urllib3*",
+            "python-dateutil*",
+            "six*",
+            "PyYAML*",
+            "typing_extensions*",
+
+            "IN OUR CUSTOM LAMBDA LAYERS",
+            "django",
+            "Django*",
+            "djangorestframework",
+            "rest_framework",
+            "django-cors-headers",
+            "sqlparse",
+            "asgiref",
+            "pandas",
+            "numpy",
+            "python-dateutil",
+            "uncertainties"
+        ],
+        "exclude_glob": [
             "*.pyc",
             "**/*.pyc",
             "tests.py",
             "test.py",
             "**/tests/**",
-            "tests/**"
-        ],
-        "exclude_glob": [
-            "boto3*",
-            "botocore*",
-            "werkzeug*",
-            "flask*"
+            "tests/**",
+            "__pycache__",
+            "**/__pycache__/**",
+            ".git/*",
+            ".env",
+            ".env.*",
+            "*.md",
+            "*.txt",
+            "*.yaml",
+            "*.yml",
+            "deployment/**"
         ]
     }
 }

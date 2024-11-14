@@ -9,12 +9,10 @@
 frontend/node_modules
 
 # backend
-#   note that the env for the django backend should not be added within this repo
-#   please store that in a secure location
 __pycache__
-backend-old/
 secret/
-layers/
+python/
 handler_venv/
 zappa_settings.json
 db.sqlite3
+.env
