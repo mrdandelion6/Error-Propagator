@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 import os
+from config import Config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,22 +21,27 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-# SECRET_KEY = 'django-insecure-0zit++r2mg0y96766vx)awo@54y!#ai2ea46o(!(h3xxqy2ey_'
-SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
+# from .env
+SECRET_KEY = Config.SECRET_KEY
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = Config.ENVIRONMENT != 'production'
+
 
 ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
     '.execute-api.us-east-1.amazonaws.com',
-    'obi6jgu1cj.execute-api.us-east-1.amazonaws.com' 
 ]
 
-# Application definition
+# add API endpoint if available
+if Config.API_BASE_URL:
+    from urllib.parse import urlparse
+    api_host = urlparse(Config.API_BASE_URL).netloc
+    if api_host:
+        ALLOWED_HOSTS.append(api_host)
 
+# Application definition
 INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'error_propagation',
