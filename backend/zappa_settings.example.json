@@ -29,17 +29,17 @@
             "typing_extensions*",
 
             "IN OUR CUSTOM LAMBDA LAYERS",
-            "django",
+            "django*",
             "Django*",
-            "djangorestframework",
-            "rest_framework",
-            "django-cors-headers",
-            "sqlparse",
-            "asgiref",
-            "pandas",
-            "numpy",
-            "python-dateutil",
-            "uncertainties"
+            "djangorestframework*",
+            "rest_framework*",
+            "django-cors-headers*",
+            "sqlparse*",
+            "asgiref*",
+            "pandas*",
+            "numpy*",
+            "python-dateutil*",
+            "uncertainties*"
         ],
         "exclude_glob": [
             "*.pyc",
