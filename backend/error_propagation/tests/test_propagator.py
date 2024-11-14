@@ -111,8 +111,8 @@ class ErrorPropagatorTests(TestCase):
             'roundResult': True,
         }
         result, status = propagate_errors(data)
-        self.assertEqual(status, 500)
-        self.assertIn("Zero division error", result)
+        self.assertEqual(status, 200)
+        self.assertIn("undefined", result['nominals'][0])
 
     def test_propagate_errors_math_domain_error(self):
         # test propagate_errors function with math domain error
@@ -126,5 +126,5 @@ class ErrorPropagatorTests(TestCase):
             'roundResult': True,
         }
         result, status = propagate_errors(data)
-        self.assertEqual(status, 500)
-        self.assertIn("Math domain error", result)
+        self.assertEqual(status, 200)
+        self.assertIn("undefined", result['nominals'][0])
