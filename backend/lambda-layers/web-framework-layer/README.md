@@ -10,7 +10,7 @@ We first need to install our web framework libraries in a new directory and zip 
 cd backend/layers/web-framework-layer
 mkdir -p python/lib/python3.10/site-packages
 
-# install werkzeug, flask, django, and other web frameworks in a new directory
+# install django and other web frameworks in a new directory
 pip install -r requirements.txt -t python/lib/python3.10/site-packages/
 zip -r web-framework.zip python/
 ```
@@ -23,9 +23,6 @@ aws lambda publish-layer-version \
     --zip-file fileb://web-framework.zip \
     --compatible-runtimes python3.8 python3.9 python3.10
 ```
-
-Note that we are using `Werkzeug (2.0.3)` even though this is an older version. I was having issues with later versions but you are free to experiment.
-
 Do not modify the `zappa_settings.json` file, as it is already set up to use the layer. Only modify it if you want to remove the layer and upload the libraries directly.
 
 ## Removing the Layer (Not Recommended)
