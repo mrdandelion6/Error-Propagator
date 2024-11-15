@@ -1,90 +1,94 @@
 import { validateExpression, validateValueBox, validateVariable } from '../../utils/verifyInput';
 
 describe('validateExpression', () => {
+  const defaultCounts = { x: [1, 1], y: [1, 1], z: [1, 1] };
+
   // basic valid equations
   it('should return empty string for valid equations', () => {
-    expect(validateExpression('x + y', ['x', 'y'])[0]).toBe('');
+    expect(validateExpression('x + y', ['x', 'y'], defaultCounts)[0]).toBe('');
   });
 
   it('should treat values like pi and e as known variables', () => {
-    expect(validateExpression('x + pi', ['x'])[0]).toBe('');
-    expect(validateExpression('x + e', ['x'])[0]).toBe('');
+    expect(validateExpression('x + pi', ['x'], { x: [1, 1] })[0]).toBe('');
+    expect(validateExpression('x + e', ['x'], { x: [1, 1] })[0]).toBe('');
   });
 
   it('should not have an issue with having variables in vars that are not in the equation', () => {
-    expect(validateExpression('x + y', ['x', 'y', 'z'])[0]).toBe('');
+    expect(validateExpression('x + y', ['x', 'y', 'z'], defaultCounts)[0]).toBe('');
   });
 
   it('should not throw error for empty equations', () => {
-    expect(validateExpression('', ['x', 'y'])[0]).toBe('Empty equation');
+    expect(validateExpression('', ['x', 'y'], defaultCounts)[0]).toBe('Empty equation');
   });
 
   // special functions
   it('should not have an issue with trig functions', () => {
-    expect(validateExpression('sin(x^y^x^(3+x)) + cos(y)', ['x', 'y'])[0]).toBe('');
-    expect(validateExpression('sin(x) + cos(y) + tan(z)', ['x', 'y', 'z'])[0]).toBe('');
+    expect(validateExpression('sin(x^y^x^(3+x)) + cos(y)', ['x', 'y'], { x: [1, 1], y: [1, 1] })[0]).toBe('');
+    expect(validateExpression('sin(x) + cos(y) + tan(z)', ['x', 'y', 'z'], defaultCounts)[0]).toBe('');
   });
 
   it('should not have an issue with log functions', () => {
-    expect(validateExpression('log(x) + ln(y)', ['x', 'y'])[0]).toBe('');
+    expect(validateExpression('log(x) + ln(y)', ['x', 'y'], { x: [1, 1], y: [1, 1] })[0]).toBe('');
   });
 
   // basic errors
   it('should return error message for unknown variables', () => {
-    expect(validateExpression('x + y + z', ['x', 'y'])[0]).toBe('Unknown variable: z');
-    expect(validateExpression('x + y + z + w', ['x', 'y'])[0]).toBe('Unknown variables: z, w');
+    expect(validateExpression('x + y + z', ['x', 'y'], { x: [1, 1], y: [1, 1] })[0]).toBe('Unknown variable: z');
+    expect(validateExpression('x + y + z + w', ['x', 'y'], { x: [1, 1], y: [1, 1] })[0]).toBe('Unknown variables: z, w');
   });
 
   it('should return error message for variable name conflicts with known constants', () => {
-    expect(validateExpression('x + pi', ['x', 'pi'])[0]).toBe('Variable name conflicts with known constants: pi, e');
+    expect(validateExpression('x + pi', ['x', 'pi'], { x: [1, 1], pi: [1, 1] })[0]).toBe('Variable name conflicts with known constants: pi, e');
   });
 
   it('should return an error message when the equation unexpectedly ends', () => {
-    expect(validateExpression('x + y +', ['x', 'y'])[0]).toBe('Unexpected end of equation');
-    expect(validateExpression('x + y *', ['x', 'y'])[0]).toBe('Unexpected end of equation');
+    expect(validateExpression('x + y +', ['x', 'y'], { x: [1, 1], y: [1, 1] })[0]).toBe('Unexpected end of equation');
+    expect(validateExpression('x + y *', ['x', 'y'], { x: [1, 1], y: [1, 1] })[0]).toBe('Unexpected end of equation');
   });
 
   it('should specify missing brackets in the error message', () => {
-    expect(validateExpression('(x + y * z', ['x', 'y', 'z'])[0]).toBe('Expected ) at character 11');
-    expect(validateExpression('x + y * z)', ['x', 'y', 'z'])[0]).toBe('Expected end of equation at character 11');
-    expect(validateExpression('x + y * (z', ['x', 'y', 'z'])[0]).toBe('Expected ) at character 11');
-    expect(validateExpression('x + (y * z', ['x', 'y', 'z'])[0]).toBe('Expected ) at character 11');
-    expect(validateExpression('(x + (y * z', ['x', 'y', 'z'])[0]).toBe('Expected ) at character 12');
-    expect(validateExpression('x + )y * z', ['x', 'y', 'z'])[0]).toBe('Unexpected parenthesis');
-    expect(validateExpression(')x + y * z', ['x', 'y', 'z'])[0]).toBe('Unexpected parenthesis');
+    const counts = { x: [1, 1], y: [1, 1], z: [1, 1] };
+    expect(validateExpression('(x + y * z', ['x', 'y', 'z'], counts)[0]).toBe('Expected ) at character 11');
+    expect(validateExpression('x + y * z)', ['x', 'y', 'z'], counts)[0]).toBe('Expected end of equation at character 11');
+    expect(validateExpression('x + y * (z', ['x', 'y', 'z'], counts)[0]).toBe('Expected ) at character 11');
+    expect(validateExpression('x + (y * z', ['x', 'y', 'z'], counts)[0]).toBe('Expected ) at character 11');
+    expect(validateExpression('(x + (y * z', ['x', 'y', 'z'], counts)[0]).toBe('Expected ) at character 12');
+    expect(validateExpression('x + )y * z', ['x', 'y', 'z'], counts)[0]).toBe('Unexpected parenthesis');
+    expect(validateExpression(')x + y * z', ['x', 'y', 'z'], counts)[0]).toBe('Unexpected parenthesis');
   });
 
   // leading numbers
   it('should not have an issue with leading numbers in variable names', () => {
-    expect(validateExpression('3x + 2y + 8z', ['x', 'y', 'z'])[0]).toBe('');
-    expect(validateExpression('3.2x + 2.1y + 8.9z', ['x', 'y', 'z'])[0]).toBe('');
-    expect(validateExpression('a3x + b2y + c8z', ['x', 'y', 'z'])[0]).toBe('Unknown variables: a3x, b2y, c8z');
-    expect(validateExpression('a34342x + b223424y + c23428z', ['x', 'y', 'z'])[0]).toBe('Unknown variables: a34342x, b223424y, c23428z');
+    expect(validateExpression('3x + 2y + 8z', ['x', 'y', 'z'], defaultCounts)[0]).toBe('');
+    expect(validateExpression('3.2x + 2.1y + 8.9z', ['x', 'y', 'z'], defaultCounts)[0]).toBe('');
+    expect(validateExpression('a3x + b2y + c8z', ['x', 'y', 'z'], defaultCounts)[0]).toBe('Unknown variables: a3x, b2y, c8z');
+    expect(validateExpression('a34342x + b223424y + c23428z', ['x', 'y', 'z'], defaultCounts)[0]).toBe('Unknown variables: a34342x, b223424y, c23428z');
   });
 
   // trailing numbers
   it('should recognize trailing numbers as part of the variable name', () => {
-    expect(validateExpression('x3 + y2 + z8', ['x3', 'y2', 'z8'])[0]).toBe('');
-    expect(validateExpression('x3 + y2 + z8', ['x', 'y', 'z'])[0]).toBe('Unknown variables: x3, y2, z8');
-    expect(validateExpression('x3a + y2b + z8c', ['x3', 'y2', 'z8'])[0]).toBe('Unknown variables: x3a, y2b, z8c');
-    expect(validateExpression('x34342a + y223424b + z23428c', ['x', 'y', 'z'])[0]).toBe('Unknown variables: x34342a, y223424b, z23428c');
+    const countsWithNumbers = { x3: [1, 1], y2: [1, 1], z8: [1, 1] };
+    expect(validateExpression('x3 + y2 + z8', ['x3', 'y2', 'z8'], countsWithNumbers)[0]).toBe('');
+    expect(validateExpression('x3 + y2 + z8', ['x', 'y', 'z'], defaultCounts)[0]).toBe('Unknown variables: x3, y2, z8');
+    expect(validateExpression('x3a + y2b + z8c', ['x3', 'y2', 'z8'], countsWithNumbers)[0]).toBe('Unknown variables: x3a, y2b, z8c');
+    expect(validateExpression('x34342a + y223424b + z23428c', ['x', 'y', 'z'], defaultCounts)[0]).toBe('Unknown variables: x34342a, y223424b, z23428c');
   });
 
   // trailing and leading white space
   it('should ignore and correct leading and trailing white space in equation', () => {
-    expect(validateExpression(' x + y ', ['x', 'y'])[0]).toBe('');
-    expect(validateExpression('x + y ', ['x', 'y'])[0]).toBe('');
-    expect(validateExpression(' x + y', ['x', 'y'])[0]).toBe('');
-    expect(validateExpression('x + y', ['x', 'y'])[0]).toBe('');
-    expect(validateExpression('          ', ['x', 'y'])[0]).toBe('Empty equation');
+    const counts = { x: [1, 1], y: [1, 1] };
+    expect(validateExpression(' x + y ', ['x', 'y'], counts)[0]).toBe('');
+    expect(validateExpression('x + y ', ['x', 'y'], counts)[0]).toBe('');
+    expect(validateExpression(' x + y', ['x', 'y'], counts)[0]).toBe('');
+    expect(validateExpression('x + y', ['x', 'y'], counts)[0]).toBe('');
+    expect(validateExpression('          ', ['x', 'y'], counts)[0]).toBe('Empty equation');
   });
 
   // unknown characters
   it('should correctly point out the unknown character \\', () => {
-    expect(validateExpression('x\\ + y', ['x', 'y'])[0]).toBe("Invalid character \"\\\"");
+    expect(validateExpression('x\\ + y', ['x', 'y'], { x: [1, 1], y: [1, 1] })[0]).toBe('Invalid character "\\"');
   });
 });
-
 
 describe('validateValueBox', () => {
   // basic valid equations

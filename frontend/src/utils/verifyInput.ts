@@ -22,7 +22,7 @@ export function validateExpression(eqn: string, vars: string[], counts: { [key: 
     Takes three arguments:
       eqn: the equation to be validated
       vars: the list of variables passed as the useState in the ErrorPropagator component
-      counts: an object that contains the number of nominal and error values for each variable entered
+      counts: an object that contains the number of nominal and error values for each variable in the form {variable: [nominal, error]}
     Returns an array with two elements: the error message and the modified equation: [error message, modified equation]
   */
 
@@ -79,6 +79,8 @@ export function validateExpression(eqn: string, vars: string[], counts: { [key: 
   if (vars.some(v => constants.includes(v))) {
     return ['Variable name conflicts with known constants: ' + constants.join(', '), eqn];
   }
+  // we save original vars so we can verify that the number of nominal and error values entered by the user is correct without counting constants
+  const originalVars = vars;
   vars = vars.concat(constants); // add constants to known variables
   const p = new Parser();
   try {
@@ -115,7 +117,7 @@ export function validateExpression(eqn: string, vars: string[], counts: { [key: 
     }
   } 
 
-  return validateValueBoxNumbers(eqn, vars, counts);
+  return validateValueBoxNumbers(eqn, originalVars, counts);
 }
 
 
@@ -155,7 +157,7 @@ function validateValueBoxNumbers(eqn: string, vars: string[], counts: { [key: st
       const errCount = counts[vars[i]][1]; // number of error values
       const nomCount = counts[vars[i]][0]; // number of nominal values
 
-      console.log("variable: ", vars[i], "nomCount: ", nomCount, "errCount: ", errCount);
+      // console.log("variable: ", vars[i], "nomCount: ", nomCount, "errCount: ", errCount);
       
 
       if (nomCount < 0) {
