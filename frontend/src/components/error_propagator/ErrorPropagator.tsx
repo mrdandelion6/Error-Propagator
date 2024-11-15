@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import ValueBox from './ValueBox'
 import EquationBox from './EquationBox'
 import ResultBox from './ResultBox'
