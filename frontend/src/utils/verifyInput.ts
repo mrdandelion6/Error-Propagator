@@ -19,9 +19,10 @@ export function validateExpression(eqn: string, vars: string[], counts: { [key: 
     The function returns an error message if there are unknown variables or if the equation is invalid.
     The error message is displayed to the user in the ErrorPropagator component.
 
-    Takes two arguments:
+    Takes three arguments:
       eqn: the equation to be validated
       vars: the list of variables passed as the useState in the ErrorPropagator component
+      counts: an object that contains the number of nominal and error values for each variable entered
     Returns an array with two elements: the error message and the modified equation: [error message, modified equation]
   */
 
@@ -145,13 +146,17 @@ function validateValueBoxNumbers(eqn: string, vars: string[], counts: { [key: st
   In this case, the function will return an empty error message because all the variables have the same
   number of nominal and error values.
   */
-  let match = -1;
+  let prev = -1;
+  let firstVar = null;
   // the bitMap is the variables used in the equation, the only ones we need to validate
   const bitMap = getVariablesUsedInEquation(vars, eqn);
-  for (const i in vars) { 
+  for (var i = 0; i < vars.length; i++) { 
     if (bitMap[i]) {
       const errCount = counts[vars[i]][1]; // number of error values
       const nomCount = counts[vars[i]][0]; // number of nominal values
+
+      console.log("variable: ", vars[i], "nomCount: ", nomCount, "errCount: ", errCount);
+      
 
       if (nomCount < 0) {
         return [`Unexpected client error: variable ${vars[i]} has negative number of nominal values: ${nomCount}. Contact Faisal.`, eqn];
@@ -160,19 +165,20 @@ function validateValueBoxNumbers(eqn: string, vars: string[], counts: { [key: st
         return [`Unexpected client error: variable ${vars[i]} has negative number of error values: ${errCount}. Contact Faisal.`, eqn];
       }
 
-      if (match == -1) {
+      if (prev == -1) {
         // first time we encounter a variable in the equation
-        match = nomCount; // number of nominal values
+        prev = nomCount; // number of nominal values
+        firstVar = vars[i];
       }
 
       if (errCount != -1) {
         // if the errCount is -1, it means we have constant error values and we don't need to validate
-        if (errCount != match) {
-          return [`Variable ${vars[i]} has ${match} nominal values but ${errCount} error values`, eqn];
+        if (errCount != nomCount) {
+          return [`Variable ${vars[i]} has ${nomCount} nominal values but ${errCount} error values`, eqn];
         }
       }
-      if (match != nomCount) {
-        return [`Variable ${vars[i]} has ${nomCount} nominal values but ${match} error values`, eqn];
+      if (prev != nomCount) {
+        return [`Variable ${vars[i]} has ${nomCount} nominal values but ${firstVar} has ${prev}.`, eqn];
       }
     }
   }
