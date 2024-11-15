@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { NavLink, useLocation } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import './TopNavBar.scss';
 import homeImg from '../assets/scratch/error_propagator_3.png';
 import clubLogoImg from '../assets/navbar/club_logo_2.png';
@@ -60,7 +60,8 @@ function TopNavBar() {
   const [showMenu, setShowMenu] = useState(false);
   const [rightItems, setRightItems] = useState<JSX.Element[]>([]);
   const [leftItems, setLeftItems] = useState<JSX.Element[]>([]);
-  const [trayItems, setTrayItems] = useState<JSX.Element[]>([]); // for when we collapse the menu
+  // TODO: add tray items to the state and display them when the menu is collapsed
+  const [_, setTrayItems] = useState<JSX.Element[]>([]); // for when we collapse the menu
   const numLeftItems = 2; // number of items on the left side of the navbar. used for knowing the right items
   const swapSmallLogoUnder = 670; // when to swap the logo for a smaller version
 

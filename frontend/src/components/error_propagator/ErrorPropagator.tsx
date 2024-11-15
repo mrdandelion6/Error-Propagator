@@ -13,22 +13,19 @@ import closedEye from '../../assets/error_propagator/closed_eye2.png';
 
 function ErrorPropagator() {
 
-  // eslint-disable-next-line
-  const [data, setData] = useState({ members: [] });
-  // eslint-disable-next-line
-  const [response, setResponse] = useState<number | null>(null);
-
   // box component states:
   const [numBoxes, setNumBoxes] = useState<number>(1); // track the number of boxes
   const [equation, setEquation] = useState<string>();
 
   // TODO: implement result rounding option with a toggle button
+  // make sure to use setRoundResult to update the state
   interface InputCounts {
     [key: string]: number[];
     // this is a dictionary where the key is the variable name and the value is an array of two numbers
     // the first number is the number of nominal values and the second number is the number of error values
   }
-  const [roundResult, setRoundResult] = useState<boolean>(false);
+
+  const [roundResult, _] = useState<boolean>(false);
   const [constErrors, setConstErrors] = useState<boolean[]>([true]); // keep track if we have constant or variable error
   const [variables, setVariables] = useState<string[]>(['x']);
   const [nominalValues, setNominalValues] = useState<string[]>(['']);
