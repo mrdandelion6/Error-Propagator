@@ -1,15 +1,35 @@
 """
-Django base settings for backend project.
+Django settings for backend project.
 """
-
 from pathlib import Path
 import os
 from config import Config
+from urllib.parse import urlparse
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent
 
+# SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = Config.SECRET_KEY
+
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = Config.ENVIRONMENT != 'prod'
+
+# Dynamically set ALLOWED_HOSTS based on environment
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1',
+]
+
+# Add API endpoint if available
+if Config.API_BASE_URL:
+    api_host = urlparse(Config.API_BASE_URL).netloc
+    if api_host:
+        ALLOWED_HOSTS.append(api_host)
+
+# Add GitHub Pages domain for prod
+if Config.ENVIRONMENT == 'prod':
+    ALLOWED_HOSTS.append('error-propagator.github.io')
 
 # Application definition
 INSTALLED_APPS = [
@@ -81,8 +101,27 @@ STATIC_URL = 'static/'
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Base CORS settings
+# CORS settings
 CORS_ALLOW_ALL_ORIGINS = False
+
+# Set CORS settings based on environment
+if Config.ENVIRONMENT == 'prod':
+    CORS_ALLOWED_ORIGINS = [
+        "https://error-propagator.github.io",
+    ]
+    CSRF_TRUSTED_ORIGINS = [
+        "https://error-propagator.github.io",
+    ]
+else:  # dev/local environment
+    CORS_ALLOWED_ORIGINS = [
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+    ]
+    CSRF_TRUSTED_ORIGINS = [
+        'http://localhost:5173', 
+        'http://127.0.0.1:5173'
+    ]
+
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_METHODS = [
     "DELETE",
