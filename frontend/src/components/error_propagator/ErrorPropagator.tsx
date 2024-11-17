@@ -7,7 +7,6 @@ import { validateExpression } from '../../utils/verifyInput';
 import { getVariablesUsedInEquation } from '../../utils/verifyInput';
 import openEye from '../../assets/error_propagator/open_eye2.png';
 import closedEye from '../../assets/error_propagator/closed_eye2.png';
-import { API_URL } from '../../config';
 // import roundedIcon from '../../assets/error_propagator/rounded_icon.png';
 // import notRoundedIcon from '../../assets/error_propagator/not_rounded_icon.png';
 
