@@ -7,6 +7,11 @@ export default defineConfig(({ mode }) => {
     ? process.env.VITE_LAMBDA_API_URL
     : 'http://127.0.0.1:8000';
 
+  console.log('Build Configuration:');
+  console.log('Mode:', mode);
+  console.log('Proxy Target:', proxyTarget);
+  console.log('Environment variables:', process.env);
+
   return {
     plugins: [react()],
     base: '/',
@@ -16,7 +21,10 @@ export default defineConfig(({ mode }) => {
         '/api': {
           target: proxyTarget,
           changeOrigin: true,
-          rewrite: (path) => path.replace(/^\/api/, '/api'),
+          rewrite: (path) => {
+            console.log('Rewriting path:', path);
+            return path.replace(/^\/api/, '/api');
+          },
         },
       },
     },

@@ -181,6 +181,7 @@ function ErrorPropagator() {
     };
 
     try {
+      console.log('Attempting fetch with body:', requestBody); // Add this before fetch
       const response = await fetch(url, {
         method: "POST",
         headers: {
@@ -195,10 +196,26 @@ function ErrorPropagator() {
         setResponseNominalValues(data['nominals']);
         setShowResponse(true);
       } else {
-        console.error("Server returned an error:", response.statusText);
+        console.error("Server returned an error:", {
+          status: response.status,
+          statusText: response.statusText,
+          url: response.url  // This will show the actual URL being hit
+        });
+        // Try to get more error details if possible
+        try {
+          const errorText = await response.text();
+          console.error("Error response body:", errorText);
+        } catch (e) {
+          console.error("Couldn't read error response body");
+        }
       }
     } catch (error) {
-      console.error(`Form error: ${error}`);
+      console.error("Fetch error:", error);
+      console.error("Request details:", {
+        url,
+        origin: window.location.origin,
+        fullUrl: new URL(url, window.location.origin).href
+      });
     }
   };
 
