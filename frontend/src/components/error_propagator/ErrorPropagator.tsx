@@ -160,6 +160,10 @@ function ErrorPropagator() {
 
     const url = "/api/process/";
 
+    console.log('Current origin:', window.location.origin);
+    console.log('API endpoint:', window.location.origin + url);
+    console.log('Full request URL:', new URL(url, window.location.origin).href);
+
     const usedVariablesBitmap = getVariablesUsedInEquation(variables, equation ?? '');
     const filteredVariables = variables.filter((_, index) => {
       const nominalValue = nominalValues[index];
