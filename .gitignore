@@ -11,6 +11,7 @@ frontend/node_modules
 # backend
 __pycache__
 secret/
+.secret/
 python/
 handler_venv/
 zappa_settings.json
